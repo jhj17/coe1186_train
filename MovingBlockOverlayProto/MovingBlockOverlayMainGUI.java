@@ -48,6 +48,5 @@ public class MovingBlockOverlayMainGUI {
 				System.exit(0);
 			}
 		});
-
 	}
 }
