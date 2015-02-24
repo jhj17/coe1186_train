@@ -58,20 +58,21 @@ public class MovingBlockOverlayMainGUI {
 		startButton.setBackground(Color.WHITE);
 		dispatchButton.setBackground(Color.WHITE);
 
-		/****************************************************************************/
-		String columnNames[] = { "Column 1", "Column 2", "Column 3", "Column 4", "Column 5", "Column 6" };
+		/***************SET CONDITION DEPENDING ON MODE OF OPERATION****************/
+		String columnNames[] = { "Train ID", "Line", "Station", "MBO Mode", "Fixed Block Mode" };
 
 		String dataValues[][] =
 		{
-			{ "12", "234", "67", "1", "1", "1" },
-			{ "-123", "43", "853", "1", "1", "1" },
-			{ "93", "89.2", "109", "1", "1", "1" },
-			{ "279", "9033", "3092", "1", "1", "1"}
+			{ "1", "GREEN", "67", "1", "1", "1" },
+			{ "2", "GREEN", "853", "1", "1", "1" },
+			{ "3", "GREEN", "109", "1", "1", "1" },
+			{ "4", "GREEN", "3092", "1", "1", "1"}
 		};
-		/****************************************************************************/
 
 		JTable scheduleTable = new JTable(dataValues, columnNames);
 		JScrollPane jScrollPane = new JScrollPane(scheduleTable);
+		/****************************************************************************/
+
 
 		Panel topPanel      = new Panel();
 		Panel centerPanel   = new Panel(new FlowLayout());
@@ -131,6 +132,12 @@ public class MovingBlockOverlayMainGUI {
 			}
 		});
 
+		startButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent unused) {
+				JOptionPane.showMessageDialog(mainFrame, "Boo!");
+			}
+		});
+
 		dispatchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent unused) {
 				JOptionPane.showMessageDialog(mainFrame, "This will dipatch trains from the yard showing success or failure...");
@@ -140,6 +147,15 @@ public class MovingBlockOverlayMainGUI {
 		exportButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent unused) {
 				JOptionPane.showMessageDialog(mainFrame, "This will export the current schedule to the CTC showing success or failure...");
+			}
+		});
+
+		viewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent unused) {
+				JFrame operatorScheduleFrame = new JFrame("Transit Operator Schedule");
+				operatorScheduleFrame.setLayout(new BorderLayout());
+				operatorScheduleFrame.setSize(650,200);
+				operatorScheduleFrame.setVisible(true);
 			}
 		});
 
