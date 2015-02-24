@@ -1,52 +1,147 @@
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
 
 public class MovingBlockOverlayMainGUI {
 
-	private static Frame mainFrame;
-	private static TextField startInput;
-	private static Label headerLabel, modeLabel, startLabel;
-	private static Button mboButton, fixedBlockButton, viewButton, exportButton, helpButton, startButton, dispatchButton;
+	private static JFrame mainFrame;
+	private static JMenuBar menuBar;
+	private static JMenu helpMenu;
+	private static JMenuItem manualMenu, aboutMenu;
+	private static JTextField startInput;
+	private static JLabel headerLabel, modeLabel, startLabel, lineLabel;
+	private static JButton mboButton, fixedBlockButton, viewButton, exportButton, startButton, dispatchButton;
+	private static Boolean mboMode, fixedBlockMode;
 
 	public static void main(String[] args) {
 
-		mainFrame = new Frame("Moving Block Overlay Module");
-		mainFrame.setSize(800,600);
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}catch (Exception e) {
+			System.out.println("Class Not Found!");
+		}
+
+		mboMode = false;
+		fixedBlockMode = true;
+
+		mainFrame = new JFrame("Moving Block Overlay Module");
+		mainFrame.setLayout(new BorderLayout());
+		mainFrame.setSize(650,500);
+
+		menuBar = new JMenuBar();
+		helpMenu = new JMenu("Help");
+		manualMenu = new JMenuItem("User's Manual");
+		aboutMenu = new JMenuItem("About...");
+		helpMenu.add(manualMenu);
+		helpMenu.add(aboutMenu);
+		menuBar.add(helpMenu);
+
+		startInput        = new JTextField();
+		startInput.setColumns(4);
+
+		headerLabel       = new JLabel("John Abraham - Moving Block Overlay Scheduler");
+		lineLabel         = new JLabel("_______________________________________________________________________________________________");
+		modeLabel         = new JLabel("Mode of Operation:");
+		startLabel        = new JLabel("Start Schedule at Time:");
+
+		mboButton         = new JButton("MBO");
+		fixedBlockButton  = new JButton("Fixed Block");
+		viewButton        = new JButton("View Operator Schedule");
+		exportButton      = new JButton("Export Schedule to CTC");
+		startButton       = new JButton("Start");
+		dispatchButton    = new JButton("Dispatch Trains from the Yard");
+
+		mboButton.setBackground(Color.WHITE);
+		fixedBlockButton.setBackground(Color.GREEN);
+		viewButton.setBackground(Color.WHITE);
+		exportButton.setBackground(Color.WHITE);
+		startButton.setBackground(Color.WHITE);
+		dispatchButton.setBackground(Color.WHITE);
+
+		/****************************************************************************/
+		String columnNames[] = { "Column 1", "Column 2", "Column 3", "Column 4", "Column 5", "Column 6" };
+
+		String dataValues[][] =
+		{
+			{ "12", "234", "67", "1", "1", "1" },
+			{ "-123", "43", "853", "1", "1", "1" },
+			{ "93", "89.2", "109", "1", "1", "1" },
+			{ "279", "9033", "3092", "1", "1", "1"}
+		};
+		/****************************************************************************/
+
+		JTable scheduleTable = new JTable(dataValues, columnNames);
+		JScrollPane jScrollPane = new JScrollPane(scheduleTable);
+
+		Panel topPanel      = new Panel();
+		Panel centerPanel   = new Panel(new FlowLayout());
+
+		mainFrame.add(topPanel, BorderLayout.NORTH);
+		mainFrame.add(centerPanel, BorderLayout.CENTER);
+		mainFrame.setJMenuBar(menuBar);
+
+		topPanel.add(headerLabel);
+		centerPanel.add(lineLabel);
+		centerPanel.add(modeLabel);
+		centerPanel.add(mboButton);
+		centerPanel.add(fixedBlockButton);
+		centerPanel.add(startLabel);
+		centerPanel.add(startInput);
+		centerPanel.add(startButton);
+		centerPanel.add(dispatchButton);
+		centerPanel.add(viewButton);
+		centerPanel.add(exportButton);
+		centerPanel.add(jScrollPane);
+
 		mainFrame.setVisible(true);
 
-		Panel panel = new Panel(new GridLayout(20, 1));
-
-		startInput = new TextField();
-
-		headerLabel = new Label("John Abraham - Moving Block Overlay Scheduler", Label.CENTER);
-		modeLabel = new Label("Mode of Operation:");
-		startLabel = new Label("Start Schedule at Time:");
-
-		mboButton        = new Button("MBO");
-		fixedBlockButton = new Button("Fixed Block");
-		viewButton       = new Button("View Operator Schedule");
-		exportButton     = new Button("Export Schedule to CTC");
-		helpButton       = new Button("Help");
-		startButton      = new Button("Start");
-		dispatchButton   = new Button("Dispatch Trains from the Yard");
-
-		panel.add(headerLabel);
-		panel.add(modeLabel);
-		panel.add(startLabel);
-		panel.add(mboButton);
-		panel.add(fixedBlockButton);
-		panel.add(startInput);
-		panel.add(startButton);
-		panel.add(viewButton);
-		panel.add(exportButton);
-		panel.add(helpButton);
-		panel.add(dispatchButton);
-		mainFrame.add(panel);
-
-		mainFrame.addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent we){
+		mainFrame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
 		});
+
+		manualMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent unused) {
+				JOptionPane.showMessageDialog(mainFrame, "This will be the \"User's Manual\" section...");
+			}
+		});
+
+		aboutMenu.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent unused) {
+				JOptionPane.showMessageDialog(mainFrame, "This will be the \"About\" section...");
+			}
+		});
+
+		mboButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent unused) {
+				mboMode = true;
+				fixedBlockMode = false;
+				mboButton.setBackground(Color.GREEN);
+				fixedBlockButton.setBackground(Color.WHITE);
+			}
+		});
+
+		fixedBlockButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent unused) {
+				mboMode = false;
+				fixedBlockMode = true;
+				mboButton.setBackground(Color.WHITE);
+				fixedBlockButton.setBackground(Color.GREEN);
+			}
+		});
+
+		dispatchButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent unused) {
+				JOptionPane.showMessageDialog(mainFrame, "This will dipatch trains from the yard showing success or failure...");
+			}
+		});
+
+		exportButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent unused) {
+				JOptionPane.showMessageDialog(mainFrame, "This will export the current schedule to the CTC showing success or failure...");
+			}
+		});
+
 	}
 }
