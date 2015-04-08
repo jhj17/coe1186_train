@@ -130,13 +130,11 @@ public class TrainModel implements TrainModelInterface
 
 		double oldSpeed = speed;
 
-		distance += (speed * deltaT) + ( (1.0/2.0)*(acceleration)*(deltaT * deltaT) );
-
 		// vf = vi + at;
 		speed += acceleration*deltaT;
 
 		// If the brakes are on, the train stops at 0
-		if ((brake || eBrake) && ((oldSpeed * speed) < 0))
+		if ((brake || eBrake) && (speed < 0.05))
 		{
 			speed = 0;
 			acceleration = 0;
@@ -176,6 +174,8 @@ public class TrainModel implements TrainModelInterface
 				acceleration = 0;
 			}
 		}
+
+		distance += (speed * deltaT) + ( (1.0/2.0)*(acceleration)*(deltaT * deltaT) );
 
 		// Update temperature;
 		if (commandedTemperature > temperature)
