@@ -145,7 +145,7 @@ public class TrainModel implements TrainModelInterface
 			frictionForce = ROLLINGCOEFFICIENT * mass * GRAVITY * Math.cos(theta);
 			gravityForce = mass * GRAVITY * Math.sin(theta);
 
-			engineForce = power / speed;
+			engineForce = power / (speed + 0.00001);
 			
 			double totalForce = engineForce + gravityForce + frictionForce;
 			
