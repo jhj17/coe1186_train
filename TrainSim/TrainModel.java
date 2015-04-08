@@ -1,0 +1,370 @@
+import java.awt.EventQueue;
+import java.util.*;
+import java.lang.Thread;
+
+public class TrainModel implements TrainModelInterface
+{
+	//public enum TrainModelFailures
+	//{
+	//	ENGINE,
+	//	BRAKE,
+	//	SIGNAL;
+
+	//	public static final EnumSet<TrainModelFailures> TOTAL_FAILURE = EnumSet.allOf(TrainModelFailures.class);
+	//}
+
+	//public enum DoorStatus
+	//{
+	//	LEFT,
+	//	RIGHT;
+
+	//	public static final EnumSet<DoorStatus> BOTHDOORS = EnumSet.allOf(DoorStatus.class);
+	//}
+
+	//Constants
+	private final double EMPTYMASS = 36378.1; // kg
+	private final double LENGTH = 32.2; // m
+	private final double WIDTH = 2.65; // m
+	private final double HEIGHT = 3.42; // m
+	private final double WHEELRADIUS = 270; // mm
+	private final double MAXPOWER = 120000; // W
+	private final double BRAKEACC = -1.2; // m/s^2
+	private final double EBRAKEACC = -2.73; // m/s^2
+	private final double GRAVITY = -9.81; // m/s^2
+	private final double ROLLINGCOEFFICIENT = .001;
+	private final double KINETICCOEFFICIENT = 0.58; // Sliding
+	private final double PERSONMASS = 81; //kg
+	private final int    MAXPASSENGERS = 222;
+	
+	// Train Info
+	private double time = 0; //In seconds.
+	private double power = 0; //In Watts.
+	private double distance = 0; //In meters.
+	private double speed = 0; //In meters per second.
+	private double acceleration = 0; //In meters per second per second.
+	private double temperature = 69; //In fahrenheit.
+	private String lastStop = "";
+	
+	private double mass = EMPTYMASS;
+
+	private double authority;
+	private double commandedSpeed;
+
+	private double commandedTemperature = 69;
+	
+	private int numCrew = 2;
+	private int numPassengers = 0;
+	
+	private boolean brake = false;
+	private boolean eBrake = false;
+
+	//EnumSet<TrainModelFailures> failures = EnumSet.noneOf(TrainModelFailures.class);
+	//EnumSet<DoorStatus> doors = EnumSet.noneOf(DoorStatus.class);
+	
+	private byte failureMask = 0;
+
+	private boolean engineFailure;
+	private boolean brakeFailure;
+	private boolean signalFailure;
+	
+	private boolean leftDoor = false;
+	private boolean rightDoor = false;
+	private boolean lights = false;
+
+	// Simulation Info
+	private long lastUpdate = 0;
+
+	public TrainModel(double authority, double commandedSpeed)
+	{
+		this.authority = authority;
+		this.commandedSpeed = commandedSpeed;
+	}
+
+	public DynamicTrainValues updateSamples(double power)
+	{
+		// Take power and update speed and acceleration.
+		double frictionForce = 0;
+		double gravityForce = 0;
+		double engineForce = 0;
+
+		double deltaT = 0;
+		
+		//double grade = (Call to get grade from track)
+		double grade = 0;
+
+		// Radians
+		double theta = Math.atan2(grade, 100);
+
+		long current = System.currentTimeMillis();
+
+		if (lastUpdate == 0)
+		{
+			deltaT = 0;
+		}
+		else
+		{
+			deltaT = (current - lastUpdate) / 1000;
+		}
+		
+		lastUpdate = current;
+
+		// Limit power
+		if (power > MAXPOWER)
+		{
+			power = MAXPOWER;
+		}
+		
+		if (engineFailure)
+		{
+			power = 0;
+		}
+		
+		if (eBrake)
+		{
+			acceleration = EBRAKEACC;
+		}
+		else if (brake)
+		{
+			acceleration = BRAKEACC;
+		}
+
+		double oldSpeed = speed;
+
+		distance += (speed * deltaT) + ( (1.0/2.0)*(acceleration)*(deltaT * deltaT) );
+
+		// vf = vi + at;
+		speed += acceleration*deltaT;
+
+		// If the brakes are on, the train stops at 0
+		if ((brake || eBrake) && ((oldSpeed * speed) < 0))
+		{
+			speed = 0;
+			acceleration = 0;
+		}
+		// Else do the power calculation
+		{
+			//replace frictionforce with one that calls for the friction coefficient from the track
+			frictionForce = ROLLINGCOEFFICIENT * mass * GRAVITY * Math.cos(theta);
+			gravityForce = mass * GRAVITY * Math.sin(theta);
+
+			engineForce = power / speed;
+			
+			double totalForce = engineForce + gravityForce + frictionForce;
+			
+			// Engine overcomes gravity and friction
+			if (totalForce > 0)
+			{
+				acceleration = totalForce / mass;
+			}
+			// Engine overcomes gravity, but not friction
+			else if (engineForce > Math.abs(gravityForce))
+			{
+				acceleration = totalForce / mass;
+				if (speed < 0.1 && speed > 0.1)
+				{
+					speed = 0;
+					acceleration = 0;
+				}
+			}
+			// Gravity overcomes both engine and friction and slides backwards
+			else if (Math.abs((engineForce - gravityForce)) > Math.abs(frictionForce))
+			{
+				acceleration = totalForce / mass;
+			}
+			else
+			{
+				acceleration = 0;
+			}
+		}
+
+		// Update temperature;
+		if (commandedTemperature > temperature)
+		{
+			temperature += (0.00005 * deltaT);
+		}
+		else if (commandedTemperature < temperature)
+		{
+			temperature -= (0.00005 * deltaT);
+		}
+
+		if ((commandedTemperature - temperature) > -0.01 && (commandedTemperature - temperature) < 0.01)
+		{
+			temperature = commandedTemperature;
+		}
+
+		// Populate train values and return them
+		DynamicTrainValues dtv = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);
+		System.out.println(dtv);
+		return dtv;
+	}
+
+	// Setters
+	public double setAuthority(double auth)
+	{
+		authority = auth;
+		return authority;
+	}
+
+	public double setCommandedSpeed(double comSpeed)
+	{
+		commandedSpeed = comSpeed;
+		return commandedSpeed;
+	}
+
+	public boolean emergencyBrake(boolean state)
+	{
+		eBrake = state;
+		return eBrake;
+	}
+
+	public boolean serviceBrake(boolean state)
+	{
+		brake = state;
+		return brake;
+	}
+
+	public boolean setLights(boolean state)
+	{
+		lights = state;
+		return lights;
+	}
+
+	public double setTemp(double cmdTemp)
+	{
+		commandedTemperature = cmdTemp;
+		return commandedTemperature;
+	}
+	
+	public boolean setLeftDoor(boolean leftStatus)
+	{
+		leftDoor = leftStatus;
+		return leftDoor;
+	}
+	
+	public boolean setRightDoor(boolean rightStatus)
+	{
+		rightDoor = rightStatus;
+		return rightDoor;
+	}
+
+	// Update the number of passengers on the train
+	// Remove a random number of passengers and then add as many as possible up to a max of numBoarding
+	// return the number of passengers that boarded the train
+	public int updatePassengers(int numBoarding)
+	{
+		// Remove a random number of passengers
+		Random rand = new Random();
+		numPassengers -= numPassengers * rand.nextDouble();
+
+		// Add more passengers up to the maximum, but no more than numBoarding
+		int emptySpots = MAXPASSENGERS - numPassengers;
+
+		if (emptySpots > numBoarding)
+		{
+			numPassengers += numBoarding;
+			mass = EMPTYMASS + (PERSONMASS * numPassengers);
+			return numBoarding;
+		}
+		else
+		{
+			numPassengers += emptySpots;
+			mass = EMPTYMASS * (PERSONMASS * numPassengers);
+			return emptySpots;
+		}
+	}
+
+	// Getters
+	public Position getPosition()
+	{
+		return new Position(distance, lastStop);
+	}
+
+	public int getNumPassengers()
+	{
+		return numPassengers;
+	}
+
+	public double getMass()
+	{
+		return mass;
+	}
+	
+	public double getAuthority()
+	{
+		return authority;
+	}
+	
+	public double getCommandedSpeed()
+	{
+		return commandedSpeed;
+	}
+	
+	public static void main(String[] args){
+        TrainModel tm = new TrainModel(0, 0);
+        TrainController tc = new TrainController();
+        tc.initTrainModel(tm);
+        int i = 0;
+        while(i<50)
+		{
+			try
+			{
+				Thread.sleep(1000);
+			}
+			catch(InterruptedException ie)
+			{
+				Thread.currentThread().interrupt();
+			}
+
+            tc.tick();
+            if(i==10)
+			{
+                //tc.passBeacon("HERMANVILLE,50,LEFT");
+				tm.setAuthority(1000);
+				tm.setCommandedSpeed(50);
+            }
+			i++;
+        }
+    }
+}
+
+class DynamicTrainValues
+{
+	public final double curSpeed;
+	public final double curAcceleration;
+	public final double curAuthority;
+	public final double commandedSpeed;
+	public final double distance;
+	public final double curTemp;
+
+	public DynamicTrainValues(double speed, double acceleration, double authority, double commandedSpeed, double distance, double temp)
+	{
+		curSpeed = speed;
+		curAcceleration = acceleration;
+		curAuthority = authority;
+		this.commandedSpeed = commandedSpeed;
+		this.distance = distance;
+		curTemp = temp;
+	}
+	
+	public String toString()
+	{
+		return "\nSpeed: " + curSpeed + 
+			   "\nAcceleration: " + curAcceleration + 
+			   "\nAuthority: " + curAuthority + 
+			   "\nCommanded Speed: " + commandedSpeed + 
+			   "\nDistance: " + distance + 
+			   "\nTemperature: " + curTemp;
+	}
+}
+
+class Position
+{
+	public final double distance;
+	public final String lastStop;
+
+	public Position(double distance, String lastStop)
+	{
+		this.distance = distance;
+		this.lastStop = lastStop;
+	}
+}
