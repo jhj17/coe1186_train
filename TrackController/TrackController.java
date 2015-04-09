@@ -8,9 +8,9 @@ public class TrackController {
 	private String trackLine;
 	private int trackControllerID;
 	private String plcFile;
-	private PLCClass plc;
+	public PLCClass plc;
 	private boolean plcLoaded;
-	private ArrayList<Block> blocks;
+	private int blockIDs[];
 	
 	/**
 	 * Constructor for track controller object
@@ -18,10 +18,10 @@ public class TrackController {
 	 * @param id		track controller id
 	 * @param blocks	all blocks covered by this instance of track controller
 	 */
-	public TrackController(String line, int id, ArrayList<Block> blocks) {
+	public TrackController(String line, int id, int blockIDs[]) {
 		this.trackLine = line;
 		this.trackControllerID = id;
-		this.blocks = blocks;
+		this.blockIDs = blockIDs;
 		this.plcLoaded = false;
 	}
 	
@@ -51,12 +51,6 @@ public class TrackController {
 	 * @param blockID
 	 */
 	public void setMaintenace(int blockID) {
-		for(Iterator<Block> i = blocks.iterator(); i.hasNext(); ) {
-		    Block item = i.next();
-		    
-		    if(item.getID() == blockID) {
-		    	
-		    }
-		}
+			
 	}
 }
