@@ -543,6 +543,18 @@ public class TrackControllerWrapper {
 
 		return true;
 	}
+	
+	/**
+	 * Tell track to flash beacon at selected station
+	 * @param line	track line station is on
+	 * @param blockID	ID of block the station is on
+	 * @return
+	 */
+	public boolean showBeacon(String line, int blockID) {
+		//track.showBeacon(blockID, line);
+		
+		return true;
+	}
 
 	/**
 	 * Function for the CTC to gather status of the blocks
