@@ -22,6 +22,10 @@ class SimClock implements Runnable {
  public void setSpeedFactor(int factor) {
   this.factor  = factor;
  }
+
+ {
+  return factor;
+ }
  
  public String getCurrentTime() {
 

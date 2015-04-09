@@ -140,6 +140,8 @@ public class TrainModel implements TrainModelInterface
 		{
 			deltaT = (current - lastUpdate) / 1000.0;
 		}
+
+		deltaT *= clock.getSpeedFactor();
 		
 		lastUpdate = current;
 
