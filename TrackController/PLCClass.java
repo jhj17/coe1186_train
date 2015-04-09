@@ -13,10 +13,10 @@ public class PLCClass {
 	private static String canSwitchExpr;
 	private static String canDoCrossingExpr;
 	private static String canMaintExpr;
-	
+
 	boolean isOperational = true;
 	public boolean isSafe = true;
-	
+
 	/**
 	 * Constructor for PLCClass
 	 * @param plcFile path to PLC file that will be loaded
@@ -25,7 +25,7 @@ public class PLCClass {
 		readFile(plcFile);
 		jexl = new JexlEngine();
 	}
-	
+
 	/**
 	 * Function to load PLC file and create expressions for the different actions
 	 * @param filename	path for the PLC file
@@ -33,10 +33,10 @@ public class PLCClass {
 	private static void readFile(String filename) {
 		try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
 			String currentLine;
- 
+
 			while ((currentLine = reader.readLine()) != null) {
 				String[] parts = currentLine.split(":");
-				
+
 				if(parts[0].equals("proceed")) {
 					canProceedExpr = parts[1];
 				}
@@ -55,7 +55,7 @@ public class PLCClass {
 			e.printStackTrace();
 		} 
 	}
-	
+
 	/**
 	 * Function to decide if the train can proceed to the next block
 	 * @param nextBlock object of the next block the train would proceed to
@@ -65,18 +65,33 @@ public class PLCClass {
 	public boolean verifyProceed(Block nextBlock, Block destinationBlock) {
 		// grab expression to verify proceed
 		Expression e = jexl.createExpression(canProceedExpr);
-		
+
 		// populate the context
-	    JexlContext context = new MapContext();
-	    context.set("b1_occupied", nextBlock.isBlockOccupied());
-	    context.set("b2_occupied", destinationBlock.isBlockOccupied());
-	    
-	    // evaluate expression with variables
-	    boolean result = (boolean) e.evaluate(context);
-		
+		JexlContext context = new MapContext();
+		context.set("b1_occupied", nextBlock.isBlockOccupied());
+		context.set("b2_occupied", destinationBlock.isBlockOccupied());
+
+		// evaluate expression with variables
+		boolean result = (boolean) e.evaluate(context);
+
 		return result;
 	}
-	
+
+	public boolean verifyToggleSwitch(Block nextBlock, Block destinationBlock) {
+		// grab expression to verify we can switch
+		Expression e = jexl.createExpression(canSwitchExpr);
+
+		// populate the context
+		JexlContext context = new MapContext();
+		context.set("b1_occupied", nextBlock.isBlockOccupied());
+		context.set("b2_occupied", destinationBlock.isBlockOccupied());
+
+		// evaluate expression with variables
+		boolean result = (boolean) e.evaluate(context);
+
+		return result;
+	}
+
 	/**
 	 * Function to decide if the CTC can close a block for maintenance
 	 * @param prevBlock object of the previous block to the one to be closed
@@ -86,14 +101,14 @@ public class PLCClass {
 	public boolean verifySetMaint(Block prevBlock, Block desiredBlock) {
 		// grab expression to verify maintenance
 		Expression e = jexl.createExpression(canMaintExpr);
-		
+
 		// populate the context
-	    JexlContext context = new MapContext();
-	    //context.set("b1_occupied", b1_occupied);
-	    
-	    // evaluate expression with variables
-	    boolean result = (boolean) e.evaluate(context);
-		
+		JexlContext context = new MapContext();
+		//context.set("b1_occupied", b1_occupied);
+
+		// evaluate expression with variables
+		boolean result = (boolean) e.evaluate(context);
+
 		return result;
 	}
 }
