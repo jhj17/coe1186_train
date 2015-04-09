@@ -1,0 +1,7 @@
+download the jexl binaries for 2.1.1 
+  http://commons.apache.org/proper/commons-jexl/download_jexl.cgi 
+     add the external jar files to where the project will be built
+     
+download logging binaries for 1.2
+  http://commons.apache.org/proper/commons-logging/download_logging.cgi
+    dd the external jar files to where the project will be built
