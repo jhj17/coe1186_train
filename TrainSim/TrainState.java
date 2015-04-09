@@ -1,6 +1,6 @@
 
 public class TrainState {
-final double SampleRate = .002;
+final double SampleRate = .001;
 final double EBrakeRate = 2.73; //need real value
 final double SBrakeRate = 1.2; //need real value
 final double StationStopTime = 2; //need real values
@@ -25,7 +25,7 @@ public double distToStation;
 public String stationSide; //LEFT, RIGHT
 public boolean stationAnnounced;
 public double timeOfStationArrival;
-public boolean isEmergency = false;
+public boolean isEmergency = true;
 public boolean isService = false;
 public boolean isLeftDoor = false;
 public boolean isRightDoor = false;

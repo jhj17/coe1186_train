@@ -35,6 +35,7 @@ public class TrainModel implements TrainModelInterface
 	private final double KINETICCOEFFICIENT = 0.58; // Sliding
 	private final double PERSONMASS = 81; //kg
 	private final int    MAXPASSENGERS = 222;
+	private final double MAXACCELERATION = 2.73;
 	
 	// Train Info
 	private double time = 0; //In seconds.
@@ -56,7 +57,7 @@ public class TrainModel implements TrainModelInterface
 	private int numPassengers = 0;
 	
 	private boolean brake = false;
-	private boolean eBrake = false;
+	private boolean eBrake = true;
 
 	//EnumSet<TrainModelFailures> failures = EnumSet.noneOf(TrainModelFailures.class);
 	//EnumSet<DoorStatus> doors = EnumSet.noneOf(DoorStatus.class);
@@ -103,7 +104,7 @@ public class TrainModel implements TrainModelInterface
 		}
 		else
 		{
-			deltaT = (current - lastUpdate) / 1000;
+			deltaT = (current - lastUpdate) / 1000.000;
 		}
 		
 		lastUpdate = current;
@@ -133,6 +134,7 @@ public class TrainModel implements TrainModelInterface
 		// vf = vi + at;
 		speed += acceleration*deltaT;
 
+		
 		// If the brakes are on, the train stops at 0
 		if ((brake || eBrake) && (speed < 0.05))
 		{
@@ -140,12 +142,12 @@ public class TrainModel implements TrainModelInterface
 			acceleration = 0;
 		}
 		// Else do the power calculation
-		{
+		else if(!eBrake && !brake){
 			//replace frictionforce with one that calls for the friction coefficient from the track
 			frictionForce = ROLLINGCOEFFICIENT * mass * GRAVITY * Math.cos(theta);
 			gravityForce = mass * GRAVITY * Math.sin(theta);
 
-			engineForce = power / (speed + 0.00001);
+			engineForce = power / (speed + 0.0000001);
 			
 			double totalForce = engineForce + gravityForce + frictionForce;
 			
@@ -158,11 +160,6 @@ public class TrainModel implements TrainModelInterface
 			else if (engineForce > Math.abs(gravityForce))
 			{
 				acceleration = totalForce / mass;
-				if (speed < 0.1 && speed > 0.1)
-				{
-					speed = 0;
-					acceleration = 0;
-				}
 			}
 			// Gravity overcomes both engine and friction and slides backwards
 			else if (Math.abs((engineForce - gravityForce)) > Math.abs(frictionForce))
@@ -174,7 +171,9 @@ public class TrainModel implements TrainModelInterface
 				acceleration = 0;
 			}
 		}
-
+		
+		
+		acceleration = Math.min(acceleration, MAXACCELERATION);
 		distance += (speed * deltaT) + ( (1.0/2.0)*(acceleration)*(deltaT * deltaT) );
 
 		// Update temperature;
@@ -195,6 +194,8 @@ public class TrainModel implements TrainModelInterface
 		// Populate train values and return them
 		DynamicTrainValues dtv = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);
 		System.out.println(dtv);
+		System.out.println("Power: " + power);
+		System.out.println("E and S: "+ eBrake + " "+ brake);
 		return dtv;
 	}
 
@@ -300,28 +301,33 @@ public class TrainModel implements TrainModelInterface
 	}
 	
 	public static void main(String[] args){
-        TrainModel tm = new TrainModel(0, 0);
+		double auth = 0;
+		double speed = 0;
+        TrainModel tm = new TrainModel(auth, speed);
         TrainController tc = new TrainController();
         tc.initTrainModel(tm);
         int i = 0;
-        while(i<50)
+        while(i<10000)
 		{
 			try
 			{
-				Thread.sleep(1000);
+				Thread.sleep(10);
 			}
 			catch(InterruptedException ie)
 			{
 				Thread.currentThread().interrupt();
 			}
-
+			tm.setAuthority(auth);
+			tm.setCommandedSpeed(speed);
             tc.tick();
-            if(i==10)
+            if(i==5)
 			{
                 //tc.passBeacon("HERMANVILLE,50,LEFT");
-				tm.setAuthority(1000);
-				tm.setCommandedSpeed(50);
+				auth = 100;
+				speed = 15;
             }
+            if(i == 1000)
+            	tc.passBeacon("HERMANVILLE,50,LEFT");
 			i++;
         }
     }

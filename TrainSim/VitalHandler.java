@@ -1,12 +1,15 @@
 
 public class VitalHandler {
-	private final double KI = .5;
-	private final double KP = .8;
+	//private final double KI = .5;
+	//private final double KP = .8;
+	private final double MAXSPEED = 19;
+	private final double KI = 1000;
+	private final double KP = 50000;
 	private double uk = 0;
 	private double uk_prev = 0;
 	private double ek = 0;
 	private double ek_prev = 0;
-	private double maxEnginePower = 120; //in kiloWatts
+	private double maxEnginePower = 120000; //in W
 	public VitalHandler(){
 		
 	}
@@ -24,7 +27,7 @@ public class VitalHandler {
 		return ts.commandedPower;
 	}
 	public int shouldBrake(TrainState ts){ // either 1,2,or 0 
-		if(shouldBrakeAuthority(ts) || shouldBrakeError(ts) || shouldBrakeUserEmergency(ts) || velError(ts)){
+		if(shouldBrakeAuthority(ts) || shouldBrakeError(ts) || shouldBrakeUserEmergency(ts) || velError(ts) || noBackwards(ts)){
 			ts.shouldEmergency = true;
 			ts.shouldService = false;
 			return 1;
@@ -45,11 +48,18 @@ public class VitalHandler {
 			return true;
 		return false;
 	}
+	private boolean noBackwards(TrainState ts){
+		if(ts.tv.curSpeed < 0){
+			return true;
+		}
+		return false;
+	}
 	private boolean shouldBrakeAuthority(TrainState ts){
 		double vel = ts.tv.curSpeed + ts.tv.curAcceleration*ts.SampleRate;
 		double brake = 2*ts.EBrakeRate;
 		double auth = ts.tv.curAuthority;
 		if(Math.pow(vel, 2)/brake >= auth){
+			System.out.println("AUTHORITY ERROR");
 			return true;
 		}
 		return false;
