@@ -7,7 +7,7 @@ public class TrackController {
 	
 	private String trackLine;
 	private int trackControllerID;
-	private String plcFile;
+	public String plcFile;
 	public PLCClass plc;
 	private boolean plcLoaded;
 	private int blockIDs[];
