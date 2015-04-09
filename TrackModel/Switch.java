@@ -67,7 +67,6 @@ public class Switch implements SwitchInterface {
 					if(innerBlocks != setupSwitch.getNext2())
 					{
 						setupSwitch.setNext2(innerBlocks);
-						
 					}
 					
 				}
@@ -75,11 +74,7 @@ public class Switch implements SwitchInterface {
 			}
 			
 		}
-		
-		
-		
-		
-		
+
 	}
 
 	@Override
@@ -94,20 +89,14 @@ public class Switch implements SwitchInterface {
 		return false;
 	}
 
-
 	public int getSwitchNumber() {
 		// TODO Auto-generated method stub
 		return switchNumber;
 	}
 
-
 	public void addBlock(Block currentBlock) {
 		// TODO Auto-generated method stub
-		
 		switchBlocks.add(currentBlock);
-		
-
-		
 	}
 
 
@@ -128,9 +117,6 @@ public class Switch implements SwitchInterface {
 
 					if(makeAdjusts != blocks) 
 					{
-						
-
-
 							if(makeAdjusts.getDirectionArrow().equals("1Tail")||makeAdjusts.getDirectionArrow().equals("2Head"))
 							{
 								makeAdjusts.printBlock();
@@ -149,9 +135,7 @@ public class Switch implements SwitchInterface {
 								blocks.addSwitchBlock2(makeAdjusts);
 								
 							}
-							
-							
-								
+			
 					}
 	
 				}
@@ -202,7 +186,7 @@ public class Switch implements SwitchInterface {
 						if(makeAdjusts != blocks) 
 						{
 							
-							if(makeAdjusts.getDirectionArrow().equals("1Tail")||makeAdjusts.getDirectionArrow().equals("2Head"))
+							if(makeAdjusts.getDirectionArrow().equals("1Tail")||makeAdjusts.getDirectionArrow().equals("2Head")||makeAdjusts.getDirectionArrow().equals("2mid"))
 							{
 								blocks.addSwitchBlock1(makeAdjusts);
 								
@@ -221,10 +205,9 @@ public class Switch implements SwitchInterface {
 						if(makeAdjusts != blocks) 
 						{
 							
-							if(makeAdjusts.getDirectionArrow().equals("1Tail")||makeAdjusts.getDirectionArrow().equals("2Head"))
+							if(makeAdjusts.getDirectionArrow().equals("1Tail")||makeAdjusts.getDirectionArrow().equals("2Head")||makeAdjusts.getDirectionArrow().equals("2mid"))
 							{
 								blocks.addSwitchBlock2(makeAdjusts);
-								
 							}
 								
 						}
@@ -266,35 +249,25 @@ public class Switch implements SwitchInterface {
 			
 			for(Block setupSwitch: switchBlocks)
 			{
+	
+				blocks.addSwitchBlock1(setupSwitch);
+				blocks.addSwitchBlock2(setupSwitch);
 				
-				if(setupSwitch.getDirection() == 1 && setupSwitch.getSwitchBlocks1() != null )
-				{
-					
-					setupSwitch.setNext1(setupSwitch.getSwitchBlocks1().get(0));
-					
-				}
-				else if(setupSwitch.getDirection() == 2)
-				{
-					
-					if(whichNext(setupSwitch) == 1 && setupSwitch.getSwitchBlocks1() != null )
+	/*				if(whichNext(setupSwitch) == 1)
 					{
+						blocks.addSwitchBlock1(setupSwitch);
 						
-						setupSwitch.setNext1(setupSwitch.getSwitchBlocks1().get(0));
+						//setupSwitch.setNext1(setupSwitch.getSwitchBlocks1().get(0));
 					}
-					else if(whichNext(setupSwitch) == 2 && setupSwitch.getSwitchBlocks1() != null )
+					else if(whichNext(setupSwitch) == 2)
 					{
-						
-						setupSwitch.setNext2(setupSwitch.getSwitchBlocks2().get(0));
-						
-					}
-					
-				}
-				
+						blocks.addSwitchBlock2(setupSwitch);
+
+						//setupSwitch.setNext2(setupSwitch.getSwitchBlocks2().get(0));	
+					}	
+				*/
 				
 			}
-
-			
-			
 		}
 		
 		
