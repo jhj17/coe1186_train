@@ -36,6 +36,7 @@ public class TrainModel implements TrainModelInterface
 	private final double PERSONMASS = 81; //kg
 	private final int    MAXPASSENGERS = 222;
 	private final double MAXACCELERATION = 2.73;
+	private final int ID;
 	
 	// Train Info
 	private double time = 0; //In seconds.
@@ -44,12 +45,12 @@ public class TrainModel implements TrainModelInterface
 	private double speed = 0; //In meters per second.
 	private double acceleration = 0; //In meters per second per second.
 	private double temperature = 69; //In fahrenheit.
-	private String lastStop = "";
+	private String lastStop = "Yard";
 	
 	private double mass = EMPTYMASS;
 
-	private double authority;
-	private double commandedSpeed;
+	private double authority = 0;
+	private double commandedSpeed = 0;
 
 	private double commandedTemperature = 69;
 	
@@ -74,11 +75,28 @@ public class TrainModel implements TrainModelInterface
 
 	// Simulation Info
 	private long lastUpdate = 0;
+	
+	TrainController controller;
+	TrackModel track;
+	
+	SimClock clock;
+	
+	//Block getBlock(int ID)
+	
+	//Block Methods:
+	
+	//double getGrade()
+	//double getTrainAuthority
+	//double getTrainCommandedSpeed
+	//double getFrictionCoefficient
+	//string getBeacon()
 
-	public TrainModel(double authority, double commandedSpeed)
+	public TrainModel(int ID, TrackModel track, TrainController controller, SimClock clock)
 	{
-		this.authority = authority;
-		this.commandedSpeed = commandedSpeed;
+		this.ID = ID;
+		this.track = track;
+		this.controller = controller;
+		this.clock = clock;
 	}
 
 	public DynamicTrainValues updateSamples(double power)
@@ -90,8 +108,19 @@ public class TrainModel implements TrainModelInterface
 
 		double deltaT = 0;
 		
+		Block curBlock = track.getBlock(ID);
+		
+		commandedSpeed = curBlock.getCommandedSpeed();
+		authority = curBlock.getAuthority();
+		
+		String beacon = curBlock.getBeacon();
+		if (!beacon.isEmpty())
+		{
+			controller.passBeacon(beacon);
+		}
+		
 		//double grade = (Call to get grade from track)
-		double grade = 0;
+		double grade = curBlock.getGrade();
 
 		// Radians
 		double theta = Math.atan2(grade, 100);
@@ -104,7 +133,7 @@ public class TrainModel implements TrainModelInterface
 		}
 		else
 		{
-			deltaT = (current - lastUpdate) / 1000.000;
+			deltaT = (current - lastUpdate) / 1000.0;
 		}
 		
 		lastUpdate = current;
@@ -142,12 +171,12 @@ public class TrainModel implements TrainModelInterface
 			acceleration = 0;
 		}
 		// Else do the power calculation
-		else if(!eBrake && !brake){
-			//replace frictionforce with one that calls for the friction coefficient from the track
-			frictionForce = ROLLINGCOEFFICIENT * mass * GRAVITY * Math.cos(theta);
+		else if(!eBrake && !brake)
+		{
+			frictionForce = curBlock.getFrictionCoefficient() * mass * GRAVITY * Math.cos(theta);
 			gravityForce = mass * GRAVITY * Math.sin(theta);
 
-			engineForce = power / (speed + 0.0000001);
+			engineForce = power / (speed + 0.00001);
 			
 			double totalForce = engineForce + gravityForce + frictionForce;
 			
@@ -193,9 +222,6 @@ public class TrainModel implements TrainModelInterface
 
 		// Populate train values and return them
 		DynamicTrainValues dtv = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);
-		System.out.println(dtv);
-		System.out.println("Power: " + power);
-		System.out.println("E and S: "+ eBrake + " "+ brake);
 		return dtv;
 	}
 
@@ -299,38 +325,6 @@ public class TrainModel implements TrainModelInterface
 	{
 		return commandedSpeed;
 	}
-	
-	public static void main(String[] args){
-		double auth = 0;
-		double speed = 0;
-        TrainModel tm = new TrainModel(auth, speed);
-        TrainController tc = new TrainController();
-        tc.initTrainModel(tm);
-        int i = 0;
-        while(i<10000)
-		{
-			try
-			{
-				Thread.sleep(10);
-			}
-			catch(InterruptedException ie)
-			{
-				Thread.currentThread().interrupt();
-			}
-			tm.setAuthority(auth);
-			tm.setCommandedSpeed(speed);
-            tc.tick();
-            if(i==5)
-			{
-                //tc.passBeacon("HERMANVILLE,50,LEFT");
-				auth = 100;
-				speed = 15;
-            }
-            if(i == 1000)
-            	tc.passBeacon("HERMANVILLE,50,LEFT");
-			i++;
-        }
-    }
 }
 
 class DynamicTrainValues

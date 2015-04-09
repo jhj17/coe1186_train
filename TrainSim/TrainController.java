@@ -4,11 +4,13 @@ public class TrainController {
 	VitalHandler vh;
 	TrainControllerGUI gui;
 	TrainModelInterface tm;
+	SimClock sm;
 	
-	public TrainController(){
+	public TrainController(SimClock sm){
 		ts = new TrainState();
 		vh = new VitalHandler();
 		gui = new TrainControllerGUI();
+		this.sm = sm;
 	}
 	public void initTrainModel(TrainModel tmodel)
 	{
