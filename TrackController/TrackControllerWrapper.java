@@ -520,8 +520,7 @@ public class TrackControllerWrapper {
 		String delimeter = ",";
 		String[] msgContents;
 		
-		Block currBlock;
-		Block destBlock;
+		TrackController trackController;
 
 		msgContents = msg.split(delimeter);
 		String line = msgContents[0];
@@ -536,39 +535,55 @@ public class TrackControllerWrapper {
 		// based on the track line and current block, decide which track controller to request
 		if(line.equals("red")) {
 			// track controller part of the red line
-			if(Arrays.asList(redTc1Blocks).contains(currentBlock) &&
-					Arrays.asList(redTc1Blocks).contains(nextBlock) &&
-					Arrays.asList(redTc1Blocks).contains(destinationBlock)) {
+			if(Arrays.binarySearch(redTc1Blocks, currentBlock) >= 0 &&
+					Arrays.binarySearch(redTc1Blocks, nextBlock) >= 0 &&
+					Arrays.binarySearch(redTc1Blocks, destinationBlock) >= 0)  {
 				// targeted blocks will be in track controller 1
-				currBlock = track.getBlock(currentBlock,"red");
-				destBlock = track.getBlock(destinationBlock,"red");
-				returnResult = redLineTrackControllers.get(0).plc.verifyProceed(currBlock.getNext(), destBlock);
-				
+				trackController = redLineTrackControllers.get(0);
 			}
-			else if(Arrays.asList(redTc2Blocks).contains(currentBlock) &&
-					Arrays.asList(redTc2Blocks).contains(nextBlock) &&
-					Arrays.asList(redTc2Blocks).contains(destinationBlock)) {
+			else if(Arrays.binarySearch(redTc2Blocks, currentBlock) >= 0 &&
+					Arrays.binarySearch(redTc2Blocks, nextBlock) >= 0 &&
+					Arrays.binarySearch(redTc2Blocks, destinationBlock) >= 0) {
 				// targeted blocks will be in track controller 2
-				currBlock = track.getBlock(currentBlock,"red");
-				destBlock = track.getBlock(destinationBlock,"red");
-				returnResult = redLineTrackControllers.get(1).plc.verifyProceed(currBlock.getNext(), destBlock);
+				trackController = redLineTrackControllers.get(1);
 				
 			}
 			else {
-				currBlock = track.getBlock(currentBlock,"red");
-				destBlock = track.getBlock(destinationBlock,"red");
-				returnResult = redLineTrackControllers.get(1).plc.verifyProceed(currBlock.getNext(), destBlock);
+				trackController = redLineTrackControllers.get(1);
 			}
 			
+			// pass suggestion to PLC for it to verify
+			Block currBlock = track.getBlock(currentBlock,"red");
+			Block nxtBlock = track.getBlock(nextBlock,"red");
+			Block destBlock = track.getBlock(destinationBlock,"red");
+			returnResult = trackController.plc.verifyProceed(nxtBlock, destBlock);
+			
 			if(returnResult) {
-				// send block suggested speed and authority
-				
-				track.commandAuthority("red", suggestedAuthority, nextBlock);
-				track.commandSpeed("red", suggestedSpeed, nextBlock);
-				
 				// check if track needs to switch the switch to get to the destination block
-				if(currBlock.getNext().isSwitch()) {
+				if(nxtBlock.isSwitch()) {
+					returnResult = trackController.plc.verifyToggleSwitch(nxtBlock, destBlock);
 					
+					if(returnResult) {
+						// toggle switch for the next block
+						//if(nxtBlock.getNext().getBlockNumber() != destBlock.getBlockNumber()) {
+							// need to toggle switch
+							//track.toggleSwitch("red", nextBlock);
+						//}
+						
+						// send block suggested speed and authority
+						track.commandAuthority("red", suggestedAuthority, nextBlock);
+						track.commandSpeed("red", suggestedSpeed, nextBlock);
+					}
+					else {
+						// send block speed and authority of 0
+						track.commandAuthority("red", 0, nextBlock);
+						track.commandSpeed("red", 0, nextBlock);
+					}
+				}
+				else {
+					// send block suggested speed and authority
+					track.commandAuthority("red", suggestedAuthority, nextBlock);
+					track.commandSpeed("red", suggestedSpeed, nextBlock);
 				}
 				
 			}
@@ -580,53 +595,66 @@ public class TrackControllerWrapper {
 		}
 		else {
 			// track controller part of the green line
-			if(Arrays.asList(greenTc1Blocks).contains(currentBlock) &&
-					Arrays.asList(greenTc1Blocks).contains(nextBlock) &&
-					Arrays.asList(greenTc1Blocks).contains(destinationBlock)) {
+			if(Arrays.binarySearch(greenTc1Blocks, currentBlock) >= 0 &&
+					Arrays.binarySearch(greenTc1Blocks, nextBlock) >= 0 &&
+					Arrays.binarySearch(greenTc1Blocks, destinationBlock) >= 0) {
 				// targeted blocks will be in track controller 1
-				currBlock = track.getBlock(currentBlock,"green");
-				destBlock = track.getBlock(destinationBlock,"green");
-				returnResult = greenLineTrackControllers.get(0).plc.verifyProceed(currBlock.getNext(), destBlock);
+				trackController = greenLineTrackControllers.get(0);
 			}
-			else if(Arrays.asList(greenTc2Blocks).contains(currentBlock) &&
-					Arrays.asList(greenTc2Blocks).contains(nextBlock) &&
-					Arrays.asList(greenTc2Blocks).contains(destinationBlock)) {
+			else if(Arrays.binarySearch(greenTc2Blocks, currentBlock) >= 0 &&
+					Arrays.binarySearch(greenTc2Blocks, nextBlock) >= 0 &&
+					Arrays.binarySearch(greenTc2Blocks, destinationBlock) >= 0)  {
 				// targeted blocks will be in track controller 2
-				currBlock = track.getBlock(currentBlock,"green");
-				destBlock = track.getBlock(destinationBlock,"green");
-				returnResult = greenLineTrackControllers.get(1).plc.verifyProceed(currBlock.getNext(), destBlock);
+				trackController = greenLineTrackControllers.get(1);
 			}
-			else if(Arrays.asList(greenTc3Blocks).contains(currentBlock) &&
-					Arrays.asList(greenTc3Blocks).contains(nextBlock) &&
-					Arrays.asList(greenTc3Blocks).contains(destinationBlock)) {
+			else if(Arrays.binarySearch(greenTc3Blocks, currentBlock) >= 0 &&
+					Arrays.binarySearch(greenTc3Blocks, nextBlock) >= 0 &&
+					Arrays.binarySearch(greenTc3Blocks, destinationBlock) >= 0)  {
 				// targeted blocks will be in track controller 3
-				currBlock = track.getBlock(currentBlock,"green");
-				destBlock = track.getBlock(destinationBlock,"green");
-				returnResult = greenLineTrackControllers.get(3).plc.verifyProceed(currBlock.getNext(), destBlock);
+				trackController = greenLineTrackControllers.get(2);
 			}
-			else if(Arrays.asList(greenTc4Blocks).contains(currentBlock) &&
-					Arrays.asList(greenTc4Blocks).contains(nextBlock) &&
-					Arrays.asList(greenTc4Blocks).contains(destinationBlock)) {
+			else if(Arrays.binarySearch(greenTc4Blocks, currentBlock) >= 0 &&
+					Arrays.binarySearch(greenTc4Blocks, nextBlock) >= 0 &&
+					Arrays.binarySearch(greenTc4Blocks, destinationBlock) >= 0)  {
 				// targeted blocks will be in track controller 4
-				currBlock = track.getBlock(currentBlock,"green");
-				destBlock = track.getBlock(destinationBlock,"green");
-				returnResult = greenLineTrackControllers.get(3).plc.verifyProceed(currBlock.getNext(), destBlock);
+				trackController = greenLineTrackControllers.get(3);
 			}
 			else {
-				currBlock = track.getBlock(currentBlock,"green");
-				destBlock = track.getBlock(destinationBlock,"green");
-				returnResult = greenLineTrackControllers.get(3).plc.verifyProceed(currBlock.getNext(), destBlock);
+				trackController = greenLineTrackControllers.get(0);
 			}
 			
+			// pass suggestion to PLC for it to verify
+			Block currBlock = track.getBlock(currentBlock,"green");
+			Block nxtBlock = track.getBlock(nextBlock,"green");
+			Block destBlock = track.getBlock(destinationBlock,"green");
+			returnResult = trackController.plc.verifyProceed(nxtBlock, destBlock);
+			
 			if(returnResult) {
-				// send block suggested speed and authority
-				
-				track.commandAuthority("green", suggestedAuthority, nextBlock);
-				track.commandSpeed("green", suggestedSpeed, nextBlock);
-				
 				// check if track needs to switch the switch to get to the destination block
-				if(currBlock.getNext().isSwitch()) {
+				if(nxtBlock.isSwitch()) {
+					returnResult = trackController.plc.verifyToggleSwitch(nxtBlock, destBlock);
 					
+					if(returnResult) {
+						// toggle switch for the next block
+						//if(nxtBlock.getNext().getBlockNumber() != destBlock.getBlockNumber()) {
+							// need to toggle switch
+							//track.toggleSwitch("green", nextBlock);
+						//}
+						
+						// send block suggested speed and authority
+						track.commandAuthority("green", suggestedAuthority, nextBlock);
+						track.commandSpeed("green", suggestedSpeed, nextBlock);
+					}
+					else {
+						// send block speed and authority of 0
+						track.commandAuthority("green", 0, nextBlock);
+						track.commandSpeed("green", 0, nextBlock);
+					}
+				}
+				else {
+					// next block is not a switch so just pass suggested speed and authority
+					track.commandAuthority("green", suggestedAuthority, nextBlock);
+					track.commandSpeed("green", suggestedSpeed, nextBlock);
 				}
 				
 			}
