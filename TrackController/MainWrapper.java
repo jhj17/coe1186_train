@@ -12,25 +12,18 @@ public class MainWrapper {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					//SimClock clock = new SimClock(100,0,0,0);
-					//TrackModelWrapper trackModelWrapper = new TrackModelWrapper();
+					SimClock clock = new SimClock(10, 7, 30,00);
 					Track trackModel = new Track();
 					TrackControllerWrapper trackControllerWrapper = new TrackControllerWrapper(trackModel);
-					//CTCWrapper ctcWrapper = new CTCWrapper(trackModelWrapper,trackControllerWrapper,clock);
+					//CTCWrapper ctcWrapper = new CTCWrapper(trackModelWrapper,trackControllerWrapper,clk);
 					//MBOWrapper mboWrapper = new MBOWrapper(trackModelWrapper,ctcWrapper,clock);
 					
 					// test proceed plc functionality with block
-					CtcMessageThread fakeCTC = new CtcMessageThread(trackControllerWrapper);
-					Thread fakeCTCThread = new Thread(fakeCTC, "thread1");
-					//Start the threads
+				    Thread clockThread = new Thread(clock, "clockThread");
+					CtcMessageThread fakeCTC = new CtcMessageThread(trackControllerWrapper,clock);
+					Thread fakeCTCThread = new Thread(fakeCTC, "ctcThread");
+					clockThread.start();
 					fakeCTCThread.start();
-					try {
-						//delay for one second
-						Thread.currentThread().sleep(1000);
-					} 
-					catch (InterruptedException e) 
-					{ }
-					
 					
 				} catch (Exception e) {
 					e.printStackTrace();
