@@ -9,7 +9,7 @@ public class TrainController {
 	public TrainController(SimClock sm){
 		ts = new TrainState();
 		vh = new VitalHandler();
-		gui = new TrainControllerGUI();
+		gui = new TrainControllerGUI(ts);
 		this.sm = sm;
 	}
 	public void initTrainModel(TrainModel tmodel)
@@ -18,10 +18,20 @@ public class TrainController {
 		ts.tv = tm.updateSamples(0);
 	}
 	public void tick(){
+		updateTime();
 		updateFromGUI();
 		powerCalculation();
 		updateFromTrackModel();
 		vitalCalculations();
+	}
+	private void updateTime(){
+		String time = sm.getCurrentTime();
+		String[] parts= time.split(":");
+		double hours = Double.parseDouble(parts[0]);
+		double minutes = Double.parseDouble(parts[1]);
+		double seconds = Double.parseDouble(parts[2]);
+		ts.curTime = 3600*hours + 60*minutes + seconds;
+		ts.curTimeString = time;
 	}
 	public boolean passBeacon(String b){
 		ts.approachingStation = true;

@@ -15,7 +15,7 @@ boolean wannaRun = true;
 				while(wannaRun){
 				tc.tick();
 				try {
-					Thread.sleep((long)tc.ts.SampleRate);
+					Thread.sleep((long)(1000*tc.ts.SampleRate)); //in milliseconds
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
