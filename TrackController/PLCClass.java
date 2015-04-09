@@ -35,7 +35,6 @@ public class PLCClass {
 			String currentLine;
  
 			while ((currentLine = reader.readLine()) != null) {
-				System.out.println(currentLine);
 				String[] parts = currentLine.split(":");
 				
 				if(parts[0].equals("proceed")) {
@@ -69,8 +68,8 @@ public class PLCClass {
 		
 		// populate the context
 	    JexlContext context = new MapContext();
-	    //context.set("b1_occupied", nextBlock.isBlockOccupied());
-	    //context.set("b2_occupied", destinationBlock.isBlockOccupied());
+	    context.set("b1_occupied", nextBlock.isBlockOccupied());
+	    context.set("b2_occupied", destinationBlock.isBlockOccupied());
 	    
 	    // evaluate expression with variables
 	    boolean result = (boolean) e.evaluate(context);
