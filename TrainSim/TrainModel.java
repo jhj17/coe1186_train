@@ -36,7 +36,7 @@ public class TrainModel implements TrainModelInterface
 	private final double PERSONMASS = 81; //kg
 	private final int    MAXPASSENGERS = 222;
 	private final double MAXACCELERATION = 2.73;
-	private final int ID;
+	private final int    ID;
 	
 	// Train Info
 	private double time = 0; //In seconds.
@@ -75,6 +75,8 @@ public class TrainModel implements TrainModelInterface
 
 	// Simulation Info
 	private long lastUpdate = 0;
+
+	private TrainModelGUI gui;
 	
 	TrainController controller;
 	Track track;
@@ -97,6 +99,10 @@ public class TrainModel implements TrainModelInterface
 		this.track = track;
 		this.controller = controller;
 		this.clock = clock;
+		gui = new TrainModelGUI();
+		DynamicTrainValues initialDTV = new DynamicTrainValues(0,0,0,0,0,temperature);
+		TrainData initialData = new TrainData(initialDTV, ID, mass, numPassengers, lastStop, 0, 0, commandedTemperature, leftDoor, rightDoor, lights);
+		gui.updateGUI(initialData);
 	}
 
 	public DynamicTrainValues updateSamples(double power)
@@ -119,7 +125,6 @@ public class TrainModel implements TrainModelInterface
 			controller.passBeacon(beacon);
 		}
 		
-		//double grade = (Call to get grade from track)
 		double grade = curBlock.getGrade(ID);
 
 		// Radians
@@ -173,7 +178,8 @@ public class TrainModel implements TrainModelInterface
 		// Else do the power calculation
 		else if(!eBrake && !brake)
 		{
-			frictionForce = curBlock.getFrictionCoefficient(ID) * mass * GRAVITY * Math.cos(theta);
+			//frictionForce = curBlock.getFrictionCoefficient() * mass * GRAVITY * Math.cos(theta);
+			frictionForce = ROLLINGCOEFFICIENT * mass * GRAVITY * Math.cos(theta);
 			gravityForce = mass * GRAVITY * Math.sin(theta);
 
 			engineForce = power / (speed + 0.00001);
@@ -222,6 +228,8 @@ public class TrainModel implements TrainModelInterface
 
 		// Populate train values and return them
 		DynamicTrainValues dtv = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);
+		TrainData data = new TrainData(dtv, ID, mass, numPassengers, lastStop, grade, power, commandedTemperature, leftDoor, rightDoor, lights);
+		gui.updateGUI(data);
 		return dtv;
 	}
 
@@ -366,5 +374,35 @@ class Position
 	{
 		this.distance = distance;
 		this.lastStop = lastStop;
+	}
+}
+
+class TrainData
+{
+	public final DynamicTrainValues dtv;
+	public final int ID;
+	public final double mass;
+	public final int passengers;
+	public final String lastStop;
+	public final double grade;
+	public final double power;
+	public final double commandedTemperature;
+	public final boolean leftDoor;
+	public final boolean rightDoor;
+	public final boolean lights;
+
+	public TrainData(DynamicTrainValues dtv, int ID, double mass, int passengers, String lastStop, double grade, double power, double commandedTemperature, boolean leftDoor, boolean rightDoor, boolean lights)
+	{
+		this.dtv = dtv;
+		this.ID = ID;
+		this.mass = mass;
+		this.passengers = passengers;
+		this.lastStop = lastStop;
+		this.grade = grade;
+		this.power = power;
+		this.commandedTemperature = commandedTemperature;
+		this.leftDoor = leftDoor;
+		this.rightDoor = rightDoor;
+		this.lights = lights;
 	}
 }
