@@ -1,19 +1,30 @@
 
 public class Train {
-TrackModel trackM;
+Track trackM;
 int trainID;
 SimClock sm;
 TrainController tc;
 TrainModel trainM;
-	public Train (TrackModel trackM, int trainID, SimClock sm){
+boolean wannaRun = true;
+	public Train (Track trackM, int trainID, SimClock sm){
 		tc = new TrainController(sm);
 		trainM = new TrainModel(trainID, trackM, tc, sm);
 		tc.initTrainModel(trainM);
 		new Thread(){
 			public void run(){
+				while(wannaRun){
 				tc.tick();
-				Thread.sleep((long)tc.ts.SampleRate);
+				try {
+					Thread.sleep((long)tc.ts.SampleRate);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			  }
 			}
 		}.start();
+	}
+	public void kill(){
+		wannaRun = false;
 	}
 }

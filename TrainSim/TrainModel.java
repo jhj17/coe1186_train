@@ -77,7 +77,7 @@ public class TrainModel implements TrainModelInterface
 	private long lastUpdate = 0;
 	
 	TrainController controller;
-	TrackModel track;
+	Track track;
 	
 	SimClock clock;
 	
@@ -91,7 +91,7 @@ public class TrainModel implements TrainModelInterface
 	//double getFrictionCoefficient
 	//string getBeacon()
 
-	public TrainModel(int ID, TrackModel track, TrainController controller, SimClock clock)
+	public TrainModel(int ID, Track track, TrainController controller, SimClock clock)
 	{
 		this.ID = ID;
 		this.track = track;
@@ -110,8 +110,8 @@ public class TrainModel implements TrainModelInterface
 		
 		Block curBlock = track.getBlock(ID);
 		
-		commandedSpeed = curBlock.getCommandedSpeed();
-		authority = curBlock.getAuthority();
+		commandedSpeed = curBlock.getTrainCommandedSpeed(ID);
+		authority = curBlock.getTrainAuthority(ID);
 		
 		String beacon = curBlock.getBeacon();
 		if (!beacon.isEmpty())
@@ -120,7 +120,7 @@ public class TrainModel implements TrainModelInterface
 		}
 		
 		//double grade = (Call to get grade from track)
-		double grade = curBlock.getGrade();
+		double grade = curBlock.getGrade(ID);
 
 		// Radians
 		double theta = Math.atan2(grade, 100);
@@ -173,7 +173,7 @@ public class TrainModel implements TrainModelInterface
 		// Else do the power calculation
 		else if(!eBrake && !brake)
 		{
-			frictionForce = curBlock.getFrictionCoefficient() * mass * GRAVITY * Math.cos(theta);
+			frictionForce = curBlock.getFrictionCoefficient(ID) * mass * GRAVITY * Math.cos(theta);
 			gravityForce = mass * GRAVITY * Math.sin(theta);
 
 			engineForce = power / (speed + 0.00001);
