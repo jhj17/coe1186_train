@@ -27,6 +27,8 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -35,7 +37,8 @@ import javax.swing.JComboBox;
 
 public class TrackControllerWrapper {
 
-	//TrackModel track;
+	Track track;
+	public boolean running = false;
 	
 	private JFrame frmTrackController;
 	private JTextField plcProgramPathTextbox;
@@ -66,10 +69,10 @@ public class TrackControllerWrapper {
 	private final int greenTc4Blocks[] = {128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,
 			148,149,150,27,28,29,30};
 
-	private final int redTc1Blocks[] = {};
-	private final int redTc2Blocks[] = {};
+	private final int redTc1Blocks[] = {1};
+	private final int redTc2Blocks[] = {2};
 
-	public boolean plcLoaded = false;
+	public boolean plcLoaded = true;
 	
 	// defined block status values
 	public final byte BLOCK_OPEN = 0;
@@ -83,14 +86,15 @@ public class TrackControllerWrapper {
 	/**
 	 * Create the application.
 	 */
-	public TrackControllerWrapper() {
-		// @TODO: public TrackControllerWrapper(TrackModel track)
-
+	public TrackControllerWrapper(Track track) {
+		this.track = track;
+		
 		initialize();
 		loadTrackModel();
 		populateDefaultDisplay();
 
 		// after loading data, make GUI visible
+		running = true;
 		this.frmTrackController.setVisible(true);
 	}
 
@@ -110,6 +114,16 @@ public class TrackControllerWrapper {
 
 		redLineTrackControllers.add(new TrackController("red", 0, redTc1Blocks));
 		redLineTrackControllers.add(new TrackController("red", 1, redTc2Blocks));
+		
+		// TODO: loaded plc through GUI
+		// set default plc program for track controllers - only for demo
+		greenLineTrackControllers.get(0).initPLC("testPLC.plc");
+		greenLineTrackControllers.get(1).initPLC("testPLC.plc");
+		greenLineTrackControllers.get(2).initPLC("testPLC.plc");
+		greenLineTrackControllers.get(3).initPLC("testPLC.plc");
+		
+		redLineTrackControllers.get(0).initPLC("testPLC.plc");
+		redLineTrackControllers.get(1).initPLC("testPLC.plc");
 	}
 
 	/**
@@ -117,13 +131,37 @@ public class TrackControllerWrapper {
 	 */
 	private void populateDefaultDisplay() {
 		// add track controller IDs to combo box - default set to green line view
-		tcComboBox.addItem(0);
-		tcComboBox.addItem(1);
-		tcComboBox.addItem(2);
-		tcComboBox.addItem(3);
+		updateComboBox();
 
 		// default controller to view is ID = 0, populate list boxes
 		updateListBoxes();
+		
+		// update plc program file
+		plcProgramPathTextbox.setText(greenLineTrackControllers.get(0).plcFile);
+	}
+	
+	/**
+	 * Function to update the track controller id combo box
+	 */
+	private void updateComboBox() {
+		try {
+			tcComboBox.removeAllItems();
+			if(changeViewSlider.getValue() == 0) {
+				/* View is set to Red Line */
+				tcComboBox.addItem(0);
+				tcComboBox.addItem(1);
+			}
+			else {
+				/* View is set to Green Line */
+				tcComboBox.addItem(0);
+				tcComboBox.addItem(1);
+				tcComboBox.addItem(2);
+				tcComboBox.addItem(3);
+			}
+		}
+		catch(Exception e) {
+			//e.printStackTrace();
+		}
 	}
 
 	/**
@@ -138,40 +176,76 @@ public class TrackControllerWrapper {
 		try {
 			if(changeViewSlider.getValue() == 0) {
 				/* View is set to Red Line */
+				if(redTc1Blocks != null && redTc2Blocks != null){
+					if(tcComboBox.getSelectedIndex() == 0) {
+						// update plc program file
+						plcProgramPathTextbox.setText(redLineTrackControllers.get(0).plcFile);
+						
+						for(int id : redTc1Blocks) {
+							// Add block to list box
+							blockModel.addElement(Integer.toString(id));
+							
+							// TODO: check if block contains railway and/or switch to add to respective list box
+						}
+					}
+					else if(tcComboBox.getSelectedIndex() == 1) {
+						// update plc program file
+						plcProgramPathTextbox.setText(redLineTrackControllers.get(1).plcFile);
+						
+						for(int id : redTc2Blocks) {
+							// Add block to list box
+							blockModel.addElement(Integer.toString(id));
+							
+							// TODO: check if block contains railway and/or switch to add to respective list box
+						}
+					}
+				}
 			}
 			else {
 				/* View is set to Green Line */
 				if(greenTc1Blocks != null && greenTc2Blocks != null && greenTc3Blocks != null && greenTc4Blocks != null){
 					if(tcComboBox.getSelectedIndex() == 0) {
+						// update plc program file
+						plcProgramPathTextbox.setText(greenLineTrackControllers.get(0).plcFile);
+						
 						for(int id : greenTc1Blocks) {
 							// Add block to list box
 							blockModel.addElement(Integer.toString(id));
 							
-							// @TODO: check if block contains railway and/or switch to add to respective list box
+							// TODO: check if block contains railway and/or switch to add to respective list box
 						}
 					}
 					else if(tcComboBox.getSelectedIndex() == 1) {
+						// update plc program file
+						plcProgramPathTextbox.setText(greenLineTrackControllers.get(1).plcFile);
+						
 						for(int id : greenTc2Blocks) {
 							// Add block to list box
 							blockModel.addElement(Integer.toString(id));
 							
-							// @TODO: check if block contains railway and/or switch to add to respective list box
+							// TODO: check if block contains railway and/or switch to add to respective list box
 						}
 					}
 					else if(tcComboBox.getSelectedIndex() == 2) {
+						// update plc program file
+						plcProgramPathTextbox.setText(greenLineTrackControllers.get(2).plcFile);
+						
 						for(int id : greenTc3Blocks) {
 							// Add block to list box
 							blockModel.addElement(Integer.toString(id));
 							
-							// @TODO: check if block contains railway and/or switch to add to respective list box
+							// TODO: check if block contains railway and/or switch to add to respective list box
 						}					
 					}
 					else if(tcComboBox.getSelectedIndex() == 3) {
+						// update plc program file
+						plcProgramPathTextbox.setText(greenLineTrackControllers.get(3).plcFile);
+						
 						for(int id : greenTc4Blocks) {
 							// Add block to list box
 							blockModel.addElement(Integer.toString(id));
 							
-							// @TODO: check if block contains railway and/or switch to add to respective list box
+							// TODO: check if block contains railway and/or switch to add to respective list box
 						}
 					}
 				}
@@ -193,12 +267,19 @@ public class TrackControllerWrapper {
 		frmTrackController.setPreferredSize(new Dimension(676, 630));
 		frmTrackController.pack();
 		frmTrackController.setLocationRelativeTo(null);
+		frmTrackController.addWindowListener(new WindowAdapter() {
+		    public void WindowClosing(WindowEvent e) {
+		        running = false;
+		        frmTrackController.dispose();
+		    }
+		});
 		frmTrackController.setVisible(true);
 
 		changeViewSlider = new JSlider();
 		changeViewSlider.setBounds(307, 11, 28, 23);
 		changeViewSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
+				updateComboBox();
 				// update boxes
 				updateListBoxes();
 			}
@@ -436,8 +517,11 @@ public class TrackControllerWrapper {
 	 * @return boolean value if message could be verified or not
 	 */
 	public boolean newProceedMsg(String msg) {
-		String delimeter = "|";
+		String delimeter = ",";
 		String[] msgContents;
+		
+		Block currBlock;
+		Block destBlock;
 
 		msgContents = msg.split(delimeter);
 		String line = msgContents[0];
@@ -456,13 +540,42 @@ public class TrackControllerWrapper {
 					Arrays.asList(redTc1Blocks).contains(nextBlock) &&
 					Arrays.asList(redTc1Blocks).contains(destinationBlock)) {
 				// targeted blocks will be in track controller 1
+				currBlock = track.getBlock(currentBlock,"red");
+				destBlock = track.getBlock(destinationBlock,"red");
+				returnResult = redLineTrackControllers.get(0).plc.verifyProceed(currBlock.getNext(), destBlock);
 				
 			}
 			else if(Arrays.asList(redTc2Blocks).contains(currentBlock) &&
 					Arrays.asList(redTc2Blocks).contains(nextBlock) &&
 					Arrays.asList(redTc2Blocks).contains(destinationBlock)) {
 				// targeted blocks will be in track controller 2
+				currBlock = track.getBlock(currentBlock,"red");
+				destBlock = track.getBlock(destinationBlock,"red");
+				returnResult = redLineTrackControllers.get(1).plc.verifyProceed(currBlock.getNext(), destBlock);
 				
+			}
+			else {
+				currBlock = track.getBlock(currentBlock,"red");
+				destBlock = track.getBlock(destinationBlock,"red");
+				returnResult = redLineTrackControllers.get(1).plc.verifyProceed(currBlock.getNext(), destBlock);
+			}
+			
+			if(returnResult) {
+				// send block suggested speed and authority
+				
+				track.commandAuthority("red", suggestedAuthority, nextBlock);
+				track.commandSpeed("red", suggestedSpeed, nextBlock);
+				
+				// check if track needs to switch the switch to get to the destination block
+				if(currBlock.getNext().isSwitch()) {
+					
+				}
+				
+			}
+			else {
+				// send block speed and authority of 0
+				track.commandAuthority("red", 0, nextBlock);
+				track.commandSpeed("red", 0, nextBlock);
 			}
 		}
 		else {
@@ -471,46 +584,56 @@ public class TrackControllerWrapper {
 					Arrays.asList(greenTc1Blocks).contains(nextBlock) &&
 					Arrays.asList(greenTc1Blocks).contains(destinationBlock)) {
 				// targeted blocks will be in track controller 1
-				//Block currBlock = track.getBlock(currentBlock,"green");
-				//Block destBlock = track.getBlock(destinationBlock,"green");
-				//returnResult = greenLineTrackControllers.get(0).plc.verifyProceed(currBlock.getNext(), destBlock);
-				/*
-				if(returnResult) {
-					// send block suggested speed and authority
-					
-					track.commandAuthority("green", suggestedAuthority, nextBlock);
-					track.commandSpeed("green", suggestedSpeed, nextBlock);
-					
-					// check if track needs to switch the switch to get to the destination block
-					if(currBlock.getNext().hasSwitch()) {
-						
-					}
-					
-				}
-				else {
-					// send block speed and authority of 0
-					//track.commandAuthority("green", 0, nextBlock);
-					//track.commandSpeed("green", 0, nextBlock);
-				}
-				*/
+				currBlock = track.getBlock(currentBlock,"green");
+				destBlock = track.getBlock(destinationBlock,"green");
+				returnResult = greenLineTrackControllers.get(0).plc.verifyProceed(currBlock.getNext(), destBlock);
 			}
 			else if(Arrays.asList(greenTc2Blocks).contains(currentBlock) &&
 					Arrays.asList(greenTc2Blocks).contains(nextBlock) &&
 					Arrays.asList(greenTc2Blocks).contains(destinationBlock)) {
 				// targeted blocks will be in track controller 2
-				
+				currBlock = track.getBlock(currentBlock,"green");
+				destBlock = track.getBlock(destinationBlock,"green");
+				returnResult = greenLineTrackControllers.get(1).plc.verifyProceed(currBlock.getNext(), destBlock);
 			}
 			else if(Arrays.asList(greenTc3Blocks).contains(currentBlock) &&
 					Arrays.asList(greenTc3Blocks).contains(nextBlock) &&
 					Arrays.asList(greenTc3Blocks).contains(destinationBlock)) {
 				// targeted blocks will be in track controller 3
-				
+				currBlock = track.getBlock(currentBlock,"green");
+				destBlock = track.getBlock(destinationBlock,"green");
+				returnResult = greenLineTrackControllers.get(3).plc.verifyProceed(currBlock.getNext(), destBlock);
 			}
 			else if(Arrays.asList(greenTc4Blocks).contains(currentBlock) &&
 					Arrays.asList(greenTc4Blocks).contains(nextBlock) &&
 					Arrays.asList(greenTc4Blocks).contains(destinationBlock)) {
 				// targeted blocks will be in track controller 4
+				currBlock = track.getBlock(currentBlock,"green");
+				destBlock = track.getBlock(destinationBlock,"green");
+				returnResult = greenLineTrackControllers.get(3).plc.verifyProceed(currBlock.getNext(), destBlock);
+			}
+			else {
+				currBlock = track.getBlock(currentBlock,"green");
+				destBlock = track.getBlock(destinationBlock,"green");
+				returnResult = greenLineTrackControllers.get(3).plc.verifyProceed(currBlock.getNext(), destBlock);
+			}
+			
+			if(returnResult) {
+				// send block suggested speed and authority
 				
+				track.commandAuthority("green", suggestedAuthority, nextBlock);
+				track.commandSpeed("green", suggestedSpeed, nextBlock);
+				
+				// check if track needs to switch the switch to get to the destination block
+				if(currBlock.getNext().isSwitch()) {
+					
+				}
+				
+			}
+			else {
+				// send block speed and authority of 0
+				track.commandAuthority("green", 0, nextBlock);
+				track.commandSpeed("green", 0, nextBlock);
 			}
 		}
 
@@ -564,12 +687,12 @@ public class TrackControllerWrapper {
 	public byte getBlockStatus(String line, int blockID) {
 		// based on the track line and the requested block, select the appropriate track controller
 		byte returnStatus = BLOCK_OPEN;
-		/*
+		
 		Block requestedBlock = track.getBlock(blockID,line);
-		if(requestedBlock.getBlockOccupied()) {
+		if(requestedBlock.isBlockOccupied()) {
 			returnStatus = BLOCK_OCCUPIED;
 		}
-		*/
+		
 		return returnStatus;
 	}
 
