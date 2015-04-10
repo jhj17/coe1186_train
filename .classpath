@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="MovingBlockOverlayProto"/>
+	<classpathentry kind="src" path="TrackControllerProto/trackControllerProto/src"/>
+	<classpathentry kind="src" path="TrackModel"/>
+	<classpathentry kind="src" path="Train"/>
+	<classpathentry kind="src" path="TrainSim"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

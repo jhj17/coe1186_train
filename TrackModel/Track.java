@@ -1,25 +1,19 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
 public class Track implements TrackInterface {
 
-	Block firstRedBlock = null;
-	Block firstGreenBlock = null;
-	Block redFromYard = null;
-	Block greenFromYard = null;
-	
-	ArrayList<Block> allRedBlocks;
-	ArrayList<Block> allGreenBlocks;
-
-	double coeffFriction;
-	int weather;
-	ArrayList<Switch> redSwitches;
-	ArrayList<Switch> greenSwitches;
+	private Block redFromYard = null;
+	private Block greenFromYard = null;
+	private ArrayList<Block> allRedBlocks;
+	private ArrayList<Block> allGreenBlocks;
+	private double coeffFriction;
+	private int weather;
+	private ArrayList<Switch> redSwitches;
+	private ArrayList<Switch> greenSwitches;
 	
 	public Track() throws IOException
 	{
