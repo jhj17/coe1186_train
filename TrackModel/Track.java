@@ -10,49 +10,35 @@ public class Track implements TrackInterface {
 	private Block greenFromYard = null;
 	private ArrayList<Block> allRedBlocks;
 	private ArrayList<Block> allGreenBlocks;
-	private double coeffFriction;
-	private int weather;
 	private ArrayList<Switch> redSwitches;
 	private ArrayList<Switch> greenSwitches;
-	
+	private double coeffFriction;
+	private int weather;
+
 	public Track() throws IOException
 	{
-		loadTrack("redLineFix.csv");	
-		loadTrack("greenLineFix.csv");	
+		//loadTrack("REDFINAL.csv");	
+		loadTrack("GREENFINAL.csv");	
 
 	}
-	
-	@Override
+
 	public void loadTrack(String csvIn) throws IOException {
-		// TODO Auto-generated method stub
-		//String inFile = "redLine.csv";
+
 		String inFile = csvIn;
 		BufferedReader reader = new BufferedReader(new FileReader(inFile));
 		
 		String splitStrings[];
-		
-		//	reader.readLine(); if including the first line in the csv 
-		Block currentBlock = null;
-		String directionTracker = "";
 		ArrayList<Switch> currentSwitches = null;
 		ArrayList<Block >currentAll = null;
+		Block currentBlock = null;
 
 		while(reader.ready()) //read until end of file 
 		{
-			String blockString = reader.readLine();
-			splitStrings = new String[12];
-			String[] inStrings = blockString.split(",");
-
-			for(int i = 0; i<inStrings.length; i++)
-			{
-				splitStrings[i] = inStrings[i];
-				
-			}
+			String[] splitStrings = reader.readLine().split(",");
 			
-			if(firstRedBlock == null && splitStrings[0].equals("Red")) //if first block and red line 
+			if(currentBlock == null && splitStrings[0].equals("red")) //if first block and red line 
 			{
-				firstRedBlock = new Block(splitStrings, currentBlock);  // instantiate firstBlock
-				currentBlock = firstRedBlock;
+				currentBlock = new Block(splitStrings, currentBlock);  // instantiate firstBlock
 				
 				redSwitches = new ArrayList<Switch>(); //instantiate set of switches
 				currentSwitches = redSwitches;
@@ -61,10 +47,9 @@ public class Track implements TrackInterface {
 				currentAll = allRedBlocks;
 			}
 			
-			else if(firstGreenBlock == null && splitStrings[0].equals("Green")) //same for green blocks 
+			else if(currentBlock == null && splitStrings[0].equals("green")) //same for green blocks 
 			{
-				firstGreenBlock = new Block(splitStrings, currentBlock);
-				currentBlock = firstGreenBlock;
+				currentBlock = new Block(splitStrings, currentBlock);
 
 				greenSwitches = new ArrayList<Switch>();
 				currentSwitches = greenSwitches;
@@ -73,10 +58,12 @@ public class Track implements TrackInterface {
 				currentAll = allGreenBlocks;
 			}
 			
-			else //if not the first, go through and make the list. 
+
+//<------------------------FIX STARTING HERE ----------------------->
+			else //if not the first, go through and make the list.  
 			{
-				currentBlock.setNext2(new Block(splitStrings, currentBlock));
-				currentBlock = currentBlock.getNext2();				
+				//currentBlock.setNext2(new Block(splitStrings, currentBlock));
+				//currentBlock = currentBlock.getNext2();				
 			}
 
 			currentAll.add(currentBlock); //add currentBlock to the list 
