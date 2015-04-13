@@ -17,7 +17,7 @@ public class Track implements TrackInterface {
 
 	public Track() throws IOException
 	{
-		//loadTrack("REDFINAL.csv");	
+		loadTrack("REDFINAL.csv");	
 		loadTrack("GREENFINAL.csv");	
 
 	}
@@ -34,10 +34,7 @@ public class Track implements TrackInterface {
 		while(reader.ready()) //read until end of file 
 		{
 			splitStrings = reader.readLine().split(",");
-
-			System.out.println(Arrays.toString(splitStrings));
-
-			
+			//System.out.println(Arrays.toString(splitStrings));			
 			if(currentBlock == null && splitStrings[0].equals("red")) //if first block and red line 
 			{
 				currentSwitches = redSwitches;//instantiate set of switches
@@ -50,21 +47,27 @@ public class Track implements TrackInterface {
 				currentAll = allGreenBlocks;
 			}
 
-			currentBlock = new Block(splitStrings, currentBlock);  // instantiate firstBlock				
-			currentAll.add(currentBlock);
+			currentBlock = new Block(splitStrings, currentBlock);  // instantiate block				
+			currentAll.add(currentBlock); // add block to list for easy lookup
+
+			switchMaker(splitStrings,currentBlock,currentSwitches); //connect all switch blocks and put them into ArrayList
 		}
 
-		printList(allGreenBlocks);
+		for(Switch thisSwitch: currentSwitches)
+		{
+			thisSwitch.setup();
+		}
+
+		//printBlockList(currentAll);
+		//printSwitchList(currentSwitches);
+
+
 
 //<-----------------------FIX STARTING HERE ----------------------->
 
 			/*
 
 			
-			if(splitStrings[10] != null && !splitStrings[10].equals("")) //create joined switch blocks 
-			{
-				switchMaker(splitStrings, currentBlock, currentSwitches);
-			}
 			
 			if(splitStrings[6].equals("YARD")) // to create the yard blocks... e.g. the real starting blocks 
 			{
@@ -85,20 +88,25 @@ public class Track implements TrackInterface {
 			allSwitches.adjustConnections();	
 		}
 		
-		for(Block allBlocks: currentAll) //print all final blocks and associations 
-		{
-			allBlocks.printBlock();
-			
-		}
-		
-		printAllSwitches(currentSwitches); //print all switches 
-
-
 		*/
 		
 	}
 
-public void printList(ArrayList<Block> printList)
+
+public void printSwitchList(ArrayList<Switch> printList)
+{
+	System.out.println();
+	for(Switch currentSwitch: printList)
+	{
+		System.out.println(currentSwitch.getSwitchNumber());
+		System.out.println("Switch: " + currentSwitch.getSwitchBlock().getSection() + currentSwitch.getSwitchBlock().getBlockNumber());
+		System.out.println("Position1: " + currentSwitch.getPosition1Block().getSection() + currentSwitch.getPosition1Block().getBlockNumber());
+		System.out.println("Position2: " + currentSwitch.getPosition2Block().getSection() + currentSwitch.getPosition2Block().getBlockNumber());
+		System.out.println();
+	}
+
+}
+public void printBlockList(ArrayList<Block> printList)
 {
 
 	System.out.println();
@@ -172,30 +180,29 @@ public void printList(ArrayList<Block> printList)
 
 	private void switchMaker(String[] splitStrings, Block currentBlock,
 			ArrayList<Switch> currentSwitches) {
-		//System.out.println("Switch group");
-		System.out.println(splitStrings[10]);
-		String[] switchStrings = splitStrings[10].split(" ");
-		System.out.println(Arrays.toString(switchStrings));
-		int switchNumber = Integer.parseInt(switchStrings[1]);
-		
-		int switchPosition = -1;
-		System.out.println(currentSwitches);
-		for(int i = 0; i<currentSwitches.size();i++)
-		{
-			if(currentSwitches.get(i).getSwitchNumber() == switchNumber)
+
+		if(splitStrings[11].length()>0)
 			{
-				switchPosition = i;
-			}	
-		}
-		
-		if(switchPosition == -1)
-		{
-			currentSwitches.add(new Switch(currentBlock, switchNumber));	
-		}
-		else
-		{	
-			currentSwitches.get(switchPosition).addBlock(currentBlock);
-		}
+				boolean newSwitch = true;
+				Switch existingSwitch = null;
+				for(Switch checkSwitches: currentSwitches)
+				{
+					if(checkSwitches.getSwitchNumber().equals(splitStrings[11]))
+					{
+						existingSwitch = checkSwitches;
+						newSwitch = false;
+					}
+				}
+
+				if(newSwitch)
+				{
+					currentSwitches.add(new Switch(currentBlock));
+				}
+				else
+				{
+					existingSwitch.addBlock(currentBlock);
+				}
+			}
 
 	}
 
@@ -253,7 +260,7 @@ public void printList(ArrayList<Block> printList)
 		
 	}
 	private void allBlockSwitchToggler(int blockNumber, ArrayList<Switch> x) {
-		for(Switch temp: x)
+		/*for(Switch temp: x)
 		{
 			for(Block switchBlocks: temp.getSwitchBlocks())
 			{
@@ -264,6 +271,7 @@ public void printList(ArrayList<Block> printList)
 				}	
 			}
 		}
+		*/
 	}
 
 	@Override

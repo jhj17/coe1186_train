@@ -18,6 +18,7 @@ public class Block implements BlockInterface {
 	String switchNumber; //***
 	int direction;
 	String crossing; //***
+	String switchType;
 
 
 //String infrastructure
@@ -82,6 +83,8 @@ public Block(String[] splitStrings, Block lastCreated) {
 	arrow=splitStrings[12]; //head no longer needed ???
 	direction = Integer.parseInt(splitStrings[13]);
 	crossing = splitStrings[14];
+	switchType = splitStrings[15];
+
 	
 
 	if(lastCreated == null)
@@ -181,8 +184,25 @@ public Block(String[] splitStrings, Block lastCreated) {
 		return section;
 		
 	}
+
+	public String getSwitchNumber()
+	{
+
+		return switchNumber;
+	}
 	
+	public String getSwitchBlock()
+	{
+		return switchBlock;
+	}
 		
+
+
+	public String getSwitchType()
+	{
+
+		return switchType;
+	}		
 	public void placeTrain(int train, double distanceMoved)
 	{
 		
