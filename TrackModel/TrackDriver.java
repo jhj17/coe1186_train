@@ -12,9 +12,9 @@ public class TrackDriver {
 		// TODO Auto-generated method stub
 		
 		Track trackTester = new Track();
-		//Track trackTester = new Track("greenLineFix.csv");
 
-	//	trackTester.jeffTrack();
+		
+/*
 		trackTester.displayTrack();
 		
 		trackTester.placeTrain("Green", 10);

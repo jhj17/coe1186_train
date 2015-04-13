@@ -9,22 +9,30 @@ public class Block implements BlockInterface {
 	double blockLength;
 	double grade;
 	int speedLimit;
-	String infrastructure;
+	String station; //***
+	String switchBlock; //***
+	String underground; //***
 	double elevation;
 	double cumElevation;
-	int directionBlock;
 	String arrow;
+	String switchNumber; //***
+	int direction;
+	String crossing; //***
+
+
+//String infrastructure
+// ... to yard ... 
+
+	Block next;
+	Block previous;
+
+//
 	String stationName;
 	double friction = 0.001;
-	
-	Block next1;
-	Block next2;
 
-	ArrayList<Block> switchNext1;
-	ArrayList<Block> switchNext2;
-	
+	//ArrayList<Block> switchNext1;
+	//ArrayList<Block> switchNext2;
 	int seen = 0;
-
 	
 	//..User configurable attributes..
 	//boolean brokenBlock;
@@ -40,17 +48,10 @@ public class Block implements BlockInterface {
 	boolean crossingOccurence;
 	double commandedAuthority = 0;
 	double commandedSpeed;
-	
-	
-	
 	double distanceTraveled;
-
 	boolean lightsGreenTrueRedFalse;
 	boolean blockClosed;
-
-
 	boolean beacon;
-	
 /*
 	beaconPosition: double
 	
@@ -63,15 +64,7 @@ public class Block implements BlockInterface {
 	
 	*/
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	public Block(String[] splitStrings, Block currentBlock) {
+public Block(String[] splitStrings, Block lastCreated) {
 		// TODO Auto-generated constructor stub
 	
 	line = splitStrings[0];
@@ -80,9 +73,53 @@ public class Block implements BlockInterface {
 	blockLength = Double.parseDouble(splitStrings[3]);
 	grade = Double.parseDouble(splitStrings[4]);
 	speedLimit = Integer.parseInt(splitStrings[5]);
-	infrastructure = splitStrings[6];
+	station = splitStrings[6];
+	switchBlock = splitStrings[7];
+	underground = splitStrings[8];
+	elevation = Double.parseDouble(splitStrings[9]);
+	cumElevation = Double.parseDouble(splitStrings[10]);
+	switchNumber = splitStrings[11];
+	arrow=splitStrings[12]; //head no longer needed ???
+	direction = Integer.parseInt(splitStrings[13]);
+	crossing = splitStrings[14];
 	
-	
+
+	if(lastCreated == null)
+	{
+
+	}
+	else if(direction == 1 || direction == 2) //set the path 
+	{
+		next = lastCreated;
+		
+		if(next.getDirection() == -1)
+		{
+			next.setNext(this);
+		}
+
+		next.setPrevious(this);
+	}
+	else if(direction == -1)
+	{
+		
+		previous = lastCreated;
+
+		if(previous.getDirection() == 2)
+		{
+			previous.setPrevious(this);
+		}
+		else{
+			previous.setNext(this);
+		}
+		
+	}
+
+
+//switches
+//stations
+//crossings
+
+/*
 	if(infrastructure != null && infrastructure.length()>0)
 	{
 		String[] infrastructureArray;
@@ -106,58 +143,43 @@ public class Block implements BlockInterface {
 	}
 	//if types of infrastructures... make station/crossing 
 	
-	elevation = Double.parseDouble(splitStrings[8]);
-	cumElevation = Double.parseDouble(splitStrings[9]);
-	
-	
-	if(splitStrings[11] == null)
-	{
-		arrow = "mid";
-		
-	}
-	else
-	{
-		arrow = splitStrings[11];
-
-	}
-	
-	// change this when direction has been determined 
-	directionBlock = 0;
-
-	
 	
 	//make a switch.......
 	
-	setNext1(currentBlock);
-	
+	*/
 
 	}
+
+	public void setNext(Block nextBlock)
+	{
+
+		next = nextBlock;
+	}
+
+	public void setPrevious(Block previousBlock)
+	{
+
+		previous = previousBlock;
+	}
+
+
+
+	public Block getNext() {
+	// TODO Auto-generated method stub
+		return next;
+	}
+	
+	public Block getPrevious() {
+		// TODO Auto-generated method stub
+		return previous;
+	}
+
 
 	public String getSection()
 	{
 		
 		return section;
 		
-	}
-	public void addSwitchBlock1(Block switchBlock)
-	{
-		
-		if(switchNext1 == null)
-		{
-			switchNext1 = new ArrayList<Block>();
-		}
-		
-		switchNext1.add(switchBlock);
-	}
-	
-	public void addSwitchBlock2(Block switchBlock)
-	{
-		if(switchNext2 == null)
-		{
-			switchNext2 = new ArrayList<Block>();
-		}
-		
-		switchNext2.add(switchBlock);
 	}
 	
 		
@@ -204,38 +226,11 @@ public class Block implements BlockInterface {
 	public void printBlock()
 	{
 		
-		if(this.getNext1()!= null && this.getNext2()!= null)
-		{
-			System.out.println(line + " " + section + " " + blockNumber + " " + "direct. " + directionBlock + " next1 " + this.getNext1().getSection() + " next2 " + this.getNext2().getSection());
-
-		}
-		else if(this.getNext1()!= null)
-		{
-			System.out.println(line + " " + section + " " + blockNumber + " " + "direct. " + directionBlock + " next1 " + this.getNext1().getSection() + " next2 " + this.getNext2());
-
-			
-		}
 		
-		else if(this.getNext2()!= null)
-		{
-			System.out.println(line + " " + section + " " + blockNumber + " " + "direct. " + directionBlock + " next1 " + this.getNext1() + " next2 " + this.getNext2().getSection());
-
-			
-		}
-		
-		else
-		{
-			
-			System.out.println(line + " " + section + " " + blockNumber + " " + "direct. " + directionBlock + " next1 " + this.getNext1() + " next2 " + this.getNext2());
-
-		}
-		
-
-//		blockLength = Integer.parseInt(splitStrings[3]);
+	//	blockLength = Integer.parseInt(splitStrings[3]);
 	//	grade = Double.parseDouble(splitStrings[4]);
-		//speedLimit = Integer.parseInt(splitStrings[5]);
+	//  speedLimit = Integer.parseInt(splitStrings[5]);
 	//	infrastructure = splitStrings[6];
-		
 		
 	}
 	
@@ -243,79 +238,18 @@ public class Block implements BlockInterface {
 	public void printSwitch()
 	{
 		
-		this.printBlock();
 		
-		if(switchNext1 != null)
-		{
-			System.out.print("next1: ");
-			for(int i=0;i<switchNext1.size();i++)
-			{
-				System.out.print(switchNext1.get(i).getSection() + " " + switchNext1.get(i).getBlockNumber() + ", ");
-			}
-			System.out.println();
-
-
-		}
-		if(switchNext2 != null)
-		{
-			System.out.print("next2: ");
-			for(int i=0;i<switchNext2.size();i++)
-			{
-				System.out.print(switchNext2.get(i).getSection() + " " + switchNext2.get(i).getBlockNumber() + ", ");
-			}
-			System.out.println();
-
-		}
+		
 		
 
 		
 	}
-	public String getDirectionArrow()
-	{
-		return directionBlock + arrow;
-	}
-	
-	public String getArrow()
-	{
-		
-		return arrow;
-	}
+
 	
 	public int getDirection()
 	{
 		
-		return directionBlock;
-	}
-	
-	public void setDirection(int direction)
-	{
-		
-		directionBlock = direction;
-	}
-
-	
-	public void setNext2(Block next2Block)
-	{
-		
-		next2 = next2Block;
-	}
-	
-	public void setNext1(Block next1Block)
-	{
-		
-		next1 = next1Block;
-	}
-	
-	public Block getNext2()
-	{
-		
-		return next2;
-	}
-	
-	public Block getNext1()
-	{
-		
-		return next1;
+		return direction;
 	}
 	
 	public boolean getBeacon()
@@ -371,66 +305,6 @@ public class Block implements BlockInterface {
 		return grade;
 	}
 
-
-	public Block getNext() {
-		// TODO Auto-generated method stub
-		
-		if(this.getDirection() == 1)
-		{
-			
-			seen = 1;
-			return this.getNext1();
-			
-		}
-		else
-		{
-			
-			seen = 1;
-			
-			
-			if(this.getNext1()==null)
-			{
-				
-				return this.getNext2();
-			}
-			
-			if(this.getNext2() == null)
-			{
-				
-				return this.getNext1();
-			}
-			
-			// this is a bit suspect
-			if(this.getNext1().getSeen() == 0 && this.getNext2().getSeen() == 0) // both unseen, which to choose? 
-			{
-
-				if(this.getSection().equals(this.getNext1().getSection())) // the one in the same section 
-				{
-					return this.getNext1();
-					
-				}
-				else
-				{
-					return this.getNext2();
-				}
-				
-			}
-			else if(this.getNext1().getSeen() == 0)
-			{
-				this.getNext2().setSeen(0);
-				return this.getNext1();
-			}
-			else
-			{
-				this.getNext1().setSeen(0);
-				return this.getNext2();
-			}
-			
-			
-		}
-			
-	}
-
 	
 	private void setSeen(int i) {
 		// TODO Auto-generated method stub
@@ -447,13 +321,6 @@ public class Block implements BlockInterface {
 	
 	
 
-	
-	
-	@Override
-	public BlockInterface getPrevious() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	
 	public double getBlockLength() {
@@ -477,7 +344,7 @@ public class Block implements BlockInterface {
 
 	public int getBlockDirection() {
 		// TODO Auto-generated method stub
-		return directionBlock;
+		return direction;
 	}
 
 	@Override
@@ -492,17 +359,8 @@ public class Block implements BlockInterface {
 		return blockNumber;
 	}
 
-	public ArrayList<Block> getSwitchBlocks1() {
-		// TODO Auto-generated method stub
-		return switchNext1;
-	}
 	
-	public ArrayList<Block> getSwitchBlocks2() {
-		// TODO Auto-generated method stub
-		return switchNext1;
-		
-	}
-	
+
 	public void closeBlock()
 	{
 		

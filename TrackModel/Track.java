@@ -8,10 +8,10 @@ public class Track implements TrackInterface {
 
 	private Block redFromYard = null;
 	private Block greenFromYard = null;
-	private ArrayList<Block> allRedBlocks;
-	private ArrayList<Block> allGreenBlocks;
-	private ArrayList<Switch> redSwitches;
-	private ArrayList<Switch> greenSwitches;
+	private ArrayList<Block> allRedBlocks = new ArrayList<Block>();
+	private ArrayList<Block> allGreenBlocks = new ArrayList<Block>();
+	private ArrayList<Switch> redSwitches = new ArrayList<Switch>();
+	private ArrayList<Switch> greenSwitches = new ArrayList<Switch>();
 	private double coeffFriction;
 	private int weather;
 
@@ -26,7 +26,6 @@ public class Track implements TrackInterface {
 
 		String inFile = csvIn;
 		BufferedReader reader = new BufferedReader(new FileReader(inFile));
-		
 		String splitStrings[];
 		ArrayList<Switch> currentSwitches = null;
 		ArrayList<Block >currentAll = null;
@@ -34,39 +33,33 @@ public class Track implements TrackInterface {
 
 		while(reader.ready()) //read until end of file 
 		{
-			String[] splitStrings = reader.readLine().split(",");
+			splitStrings = reader.readLine().split(",");
+
+			System.out.println(Arrays.toString(splitStrings));
+
 			
 			if(currentBlock == null && splitStrings[0].equals("red")) //if first block and red line 
 			{
-				currentBlock = new Block(splitStrings, currentBlock);  // instantiate firstBlock
-				
-				redSwitches = new ArrayList<Switch>(); //instantiate set of switches
-				currentSwitches = redSwitches;
-				
-				allRedBlocks = new ArrayList<Block>(); //instantiate array to hold all blocks 
-				currentAll = allRedBlocks;
+				currentSwitches = redSwitches;//instantiate set of switches
+				currentAll = allRedBlocks; //instantiate array to hold all blocks 
 			}
 			
 			else if(currentBlock == null && splitStrings[0].equals("green")) //same for green blocks 
 			{
-				currentBlock = new Block(splitStrings, currentBlock);
-
-				greenSwitches = new ArrayList<Switch>();
 				currentSwitches = greenSwitches;
-
-				allGreenBlocks = new ArrayList<Block>();
 				currentAll = allGreenBlocks;
 			}
-			
 
-//<------------------------FIX STARTING HERE ----------------------->
-			else //if not the first, go through and make the list.  
-			{
-				//currentBlock.setNext2(new Block(splitStrings, currentBlock));
-				//currentBlock = currentBlock.getNext2();				
-			}
+			currentBlock = new Block(splitStrings, currentBlock);  // instantiate firstBlock				
+			currentAll.add(currentBlock);
+		}
 
-			currentAll.add(currentBlock); //add currentBlock to the list 
+		printList(allGreenBlocks);
+
+//<-----------------------FIX STARTING HERE ----------------------->
+
+			/*
+
 			
 			if(splitStrings[10] != null && !splitStrings[10].equals("")) //create joined switch blocks 
 			{
@@ -86,10 +79,6 @@ public class Track implements TrackInterface {
 			}
 		}
 
-		for(Block allBlocks: currentAll) // correct the directionality of blocks 
-		{
-			directionTracker = directionCorrection(allBlocks, directionTracker);
-		}
 
 		for(Switch allSwitches: currentSwitches) //correct switch connections based on directionality 
 		{
@@ -103,8 +92,46 @@ public class Track implements TrackInterface {
 		}
 		
 		printAllSwitches(currentSwitches); //print all switches 
+
+
+		*/
 		
 	}
+
+public void printList(ArrayList<Block> printList)
+{
+
+	System.out.println();
+	Block next;
+	Block previous;
+	for(Block block: printList)
+	{
+		next = block.getNext();
+
+		previous = block.getPrevious();
+		System.out.print(block.getSection() + block.getBlockNumber()); 
+		System.out.print("next: ");
+		if(next != null)
+		{
+			System.out.print(next.getSection() + next.getBlockNumber() + " "); 
+		}	
+		else{
+			System.out.print(next + " ");
+		}
+
+		System.out.print("previous: ");
+		if(previous != null)
+		{
+			System.out.print(previous.getSection() + previous.getBlockNumber() + " "); 
+		}	
+		else{
+			System.out.print(previous + " ");
+		}
+
+		System.out.println();
+	}
+
+}
 
 	public ArrayList<String> getRoute(String line, String destination)
 	{
@@ -139,7 +166,7 @@ public class Track implements TrackInterface {
 	private void printAllSwitches(ArrayList<Switch> currentSwitches) {
 		for(Switch temp: currentSwitches)
 		{
-			temp.printBlocks();	
+			//temp.printBlocks();	
 		}
 	}
 
@@ -170,65 +197,6 @@ public class Track implements TrackInterface {
 			currentSwitches.get(switchPosition).addBlock(currentBlock);
 		}
 
-	}
-
-	private String directionCorrection(Block curBlock, String tracker) {
-		String arrow = curBlock.getArrow();
-		String directionTracker = tracker;
-		
-		if(arrow.equals("Head"))
-		{
-			directionTracker = directionTracker + "H";	
-		}
-		else if(arrow.equals("Tail"))
-		{
-			directionTracker = directionTracker + "T";
-		}
-		else if(arrow.equals("Head/Head"))
-		{
-			directionTracker = "HH";	
-		}
-		else if(arrow.equals("Tail/Head"))
-		{
-			directionTracker = "TH";
-		}
-
-		if(directionTracker.length() == 2) //if there are two ends 
-		{
-			if(directionTracker.equals("HH"))
-			{
-				while(curBlock != null && curBlock.getDirection() == 0) // if two sided, set all directions to 2 
-				{
-					curBlock.setDirection(2);
-					curBlock = curBlock.getNext1();
-				}
-			}
-			else if(directionTracker.equals("TH")) //correct next for 1-sided that were formed backwards 
-			{	
-				while(curBlock != null && curBlock.getDirection() == 0) 				//switch directions 1 & 2
-				{
-					Block temp = curBlock.getNext1();
-					curBlock.setNext1(curBlock.getNext2());
-					curBlock.setNext2(temp);
-					curBlock.setDirection(1);
-					curBlock = curBlock.getNext2();	
-				}
-					
-			}
-			else if(directionTracker.equals("HT")) // if 1-sided and formed as expected, leave it 
-			{
-				while(curBlock != null && curBlock.getDirection() == 0)
-				{
-					
-					curBlock.setDirection(1);
-					curBlock = curBlock.getNext1();	
-				}	
-			}
-
-			directionTracker = ""; // set back to empty string for next arrow set 
-		}
-		
-		return directionTracker;
 	}
 
 	@Override

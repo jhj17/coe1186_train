@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Switch implements SwitchInterface {
 
-	
+
 	ArrayList<Block> switchBlocks;
 	
 	//switchState: boolean
@@ -32,7 +32,7 @@ public class Switch implements SwitchInterface {
 	@Override
 	public void toggleSwitch() {
 		// TODO Auto-generated method stub
-
+/*
 		// for all blocks in the switch 
 		for(Block setupSwitch: switchBlocks)
 		{
@@ -74,6 +74,7 @@ public class Switch implements SwitchInterface {
 			}
 			
 		}
+		*/
 
 	}
 
@@ -102,7 +103,7 @@ public class Switch implements SwitchInterface {
 
 	public void adjustConnections() {
 		// TODO Auto-generated method stub
-		
+		/*
 
 		for(Block blocks: switchBlocks)
 		{
@@ -267,8 +268,8 @@ public class Switch implements SwitchInterface {
 					}	
 				*/
 				
-			}
-		}
+//			}
+//		}
 		
 		
 		
@@ -284,7 +285,7 @@ public class Switch implements SwitchInterface {
 	private int whichNext(Block blocks) {
 		// TODO Auto-generated method stub
 		
-		System.out.println(blocks.getSection());
+		/*System.out.println(blocks.getSection());
 		blocks.printBlock();
 		if(blocks.getNext1() == null)
 		{
@@ -316,5 +317,6 @@ public class Switch implements SwitchInterface {
 		}
 		System.out.println();
 	}
-
+*/		return 0; 
+	}
 }
