@@ -17,7 +17,7 @@ public class Track implements TrackInterface {
 
 	public Track() throws IOException
 	{
-		loadTrack("REDFINAL.csv");	
+		//loadTrack("REDFINAL.csv");	
 		loadTrack("GREENFINAL.csv");	
 
 	}
@@ -58,7 +58,7 @@ public class Track implements TrackInterface {
 			thisSwitch.setup();
 		}
 
-		//printBlockList(currentAll);
+		printBlockList(currentAll);
 		//printSwitchList(currentSwitches);
 
 
