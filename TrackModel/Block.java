@@ -203,6 +203,14 @@ public Block(String[] splitStrings, Block lastCreated) {
 
 		return switchType;
 	}		
+
+
+	public String getArrow()
+	{
+
+		return arrow;
+	}
+
 	public void placeTrain(int train, double distanceMoved)
 	{
 		

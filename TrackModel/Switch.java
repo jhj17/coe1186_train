@@ -31,6 +31,9 @@ public class Switch implements SwitchInterface {
 			position1 = blockIn;
 		else
 			position2 = blockIn;
+
+		if(switchBlock != null && position1!=null && position2!=null)
+			setup();
 	}
 
 	public String getSwitchNumber()
@@ -61,7 +64,8 @@ public class Switch implements SwitchInterface {
 			sourceBlock.setNext(targetBlock);
 
 	}
-	public void setup()
+	
+	private void setup()
 	{
 
 		//3 cases... 3-section junction, 2-section junction with switch before, 2-section junction with switch after
@@ -69,7 +73,15 @@ public class Switch implements SwitchInterface {
 		//^^^ THIS IS THE TAIL/HEAD CASE... SHOULD BE EASILY FIXED USING TAIL/HEAD CHECK
 		if(switchBlock.getSwitchType().equals("-"))
 		{
-			setOutOfSection(switchBlock, position1);
+			if((position1.getDirection() == 1 || position1.getDirection() == -1)&& position1.getArrow().equals("HEAD"))
+			{
+				setOutOfSection(switchBlock, null);
+			}
+			else
+			{
+				setOutOfSection(switchBlock, position1);
+			}
+
 			setOutOfSection(position1, switchBlock);
 			setOutOfSection(position2, null);
 		}
@@ -80,17 +92,32 @@ public class Switch implements SwitchInterface {
 		else if(switchBlock.getSwitchType().equals("AFTER")) //mid-section switch is after fork
 
 		{
-			
-			/*if(position1.getSection().equals(switchBlock.getSection())) // if in section
+			if(switchBlock.getDirection()==-1)
 			{
+				switchBlock.setPrevious(position1);
+				if(position1.getSection().equals(switchBlock.getSection()))
+				{
+					position1.setNext(switchBlock);
+				}
+				else
+				{
+					setOutOfSection(position1, switchBlock);
+				}
 
-				//getNext()... is always of lower position based on the way this is created. 
-			} 
-			else
-			{
+				if(position2.getSection().equals(switchBlock.getSection()))
+				{
+					position2.setNext(null);
+				}
+				else
+				{
+					setOutOfSection(position2, null);
 
-				//make the same type of connection change, but with the other block... 
-			}*/
+				}
+			}
+
+
+
+
 		}
 
 
@@ -99,6 +126,10 @@ public class Switch implements SwitchInterface {
 	@Override
 	public void toggleSwitch() {
 		// TODO Auto-generated method stub
+		Block temp = position1;
+		position1 = position2;
+		position2 = temp;
+		setup();
 	}
 
 	@Override

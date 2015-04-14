@@ -17,8 +17,8 @@ public class Track implements TrackInterface {
 
 	public Track() throws IOException
 	{
-		//loadTrack("REDFINAL.csv");	
-		loadTrack("GREENFINAL.csv");	
+		loadTrack("REDFINALV2.csv");	
+		//loadTrack("GREENFINALV2.csv");	
 
 	}
 
@@ -53,13 +53,21 @@ public class Track implements TrackInterface {
 			switchMaker(splitStrings,currentBlock,currentSwitches); //connect all switch blocks and put them into ArrayList
 		}
 
-		for(Switch thisSwitch: currentSwitches)
+		printBlockList(currentAll);
+		System.out.println();
+		printSwitchList(currentSwitches);
+
+		//TEST TOGGLE
+		System.out.println("toggling all switches");
+
+		for(Switch togTest: currentSwitches)
 		{
-			thisSwitch.setup();
+			togTest.toggleSwitch();
 		}
 
-		printBlockList(currentAll);
-		//printSwitchList(currentSwitches);
+		printSwitchList(currentSwitches);
+
+
 
 
 
@@ -100,25 +108,25 @@ public void printSwitchList(ArrayList<Switch> printList)
 	{
 		System.out.println(currentSwitch.getSwitchNumber());
 		System.out.println("Switch: " + currentSwitch.getSwitchBlock().getSection() + currentSwitch.getSwitchBlock().getBlockNumber());
+		printBlockConnections(currentSwitch.getSwitchBlock());
 		System.out.println("Position1: " + currentSwitch.getPosition1Block().getSection() + currentSwitch.getPosition1Block().getBlockNumber());
+		printBlockConnections(currentSwitch.getPosition1Block());
 		System.out.println("Position2: " + currentSwitch.getPosition2Block().getSection() + currentSwitch.getPosition2Block().getBlockNumber());
+		printBlockConnections(currentSwitch.getPosition2Block());
 		System.out.println();
+		//printBlockConnections()
+
 	}
-
 }
-public void printBlockList(ArrayList<Block> printList)
+
+public void printBlockConnections(Block block)
 {
-
-	System.out.println();
-	Block next;
-	Block previous;
-	for(Block block: printList)
-	{
+		Block next;
+		Block previous;
 		next = block.getNext();
-
 		previous = block.getPrevious();
 		System.out.print(block.getSection() + block.getBlockNumber()); 
-		System.out.print("next: ");
+		System.out.print(" next: ");
 		if(next != null)
 		{
 			System.out.print(next.getSection() + next.getBlockNumber() + " "); 
@@ -135,8 +143,16 @@ public void printBlockList(ArrayList<Block> printList)
 		else{
 			System.out.print(previous + " ");
 		}
-
 		System.out.println();
+}
+public void printBlockList(ArrayList<Block> printList)
+{
+
+	System.out.println();
+	for(Block block: printList)
+	{
+		printBlockConnections(block);
+
 	}
 
 }
