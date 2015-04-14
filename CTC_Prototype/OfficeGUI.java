@@ -16,6 +16,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.custom.ScrolledComposite;
 
 
 public class OfficeGUI {
@@ -39,7 +40,9 @@ public class OfficeGUI {
 	private Text textStatus;
 	Router rt;
 	Scheduler s;
+	private Track tk;
 	public static double authority;
+	public static int index;
 
 	/**
 	 * Launch the application.
@@ -232,12 +235,19 @@ public class OfficeGUI {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				rt = new Router();
+				try {
+					tk = new Track();
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
 				if(btnFixedBlock.getSelection() == true)
 				{
 					if(comboLine.getText().equals("Green"))
 					{
 						try {
-							rt.getRouteFB(trainID.getText(), comboStationsGreen.getText(), comboLine.getText());
+							rt.getRouteFB(tk, trainID.getText(), comboStationsGreen.getText(), comboLine.getText());
+							authority = rt.getFullAuthority();
+							System.out.println("Full Authority: " +  authority);
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
@@ -245,7 +255,9 @@ public class OfficeGUI {
 					else if(comboLine.getText().equals("Red"))
 					{
 						try {
-							rt.getRouteFB(trainID.getText(), comboStationsRed.getText(), comboLine.getText());
+							rt.getRouteFB(tk, trainID.getText(), comboStationsRed.getText(), comboLine.getText());
+							authority = rt.getFullAuthority();
+							System.out.println("Full Authority: " +  authority);
 						} catch (IOException e1) {
 							e1.printStackTrace();
 						}
@@ -267,13 +279,15 @@ public class OfficeGUI {
 		
 		textRouting = new Text(shell, SWT.MULTI | SWT.BORDER | SWT.WRAP);
 		textRouting.setBounds(594, 199, 297, 142);
+		textRouting.setText("Proceed Msgs: \n");
 		
 		Button btnDispatch = new Button(shell, SWT.NONE);
 		btnDispatch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				authority = rt.getFullAuthority();
-				String msg = rt.createMsg(0, authority);
+				String msg = rt.createProceedMsg(index, comboLine.getText());
+				textRouting.append(msg + "\n");
+				
 				//send message to the track controller 
 				//append that message to the text box
 			}

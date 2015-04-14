@@ -9,18 +9,18 @@ public class Router
 	private double authority;
 	public Router()
 	{
-		this.line = line;
+		
 	}
-	public void getRouteFB(/*Track tr,*/ String trainID, String destination, String line) throws IOException
+	public void getRouteFB(Track tr, String trainID, String destination, String line) throws IOException
 	{
 		
 		int trainInt = Integer.parseInt(trainID);
-		//blockInfo = tr.getRoute(line, destination);
+		System.out.println("Train Int: " + trainInt + " Line: " + line);
+		blockInfo = tr.getRoute(line, destination);
 		for(int i = 0; i < blockInfo.size(); i++)
 		{
 			System.out.println(blockInfo.get(i));
 			String[] infoSplit = blockInfo.get(i).split(",");
-			//System.out.println("Info Split Length: " + infoSplit.length);
 			for(int k = 0; k < infoSplit.length; k++)
 			{
 				blockIDs.add(infoSplit[0]);
@@ -41,20 +41,21 @@ public class Router
 		double aut = 0;
 		for(int i = 0; i < theAuthorities.size(); i++)
 			authority = authority + Double.parseDouble(theAuthorities.get(i));
+		aut = authority;
 		return aut;
 	}
-	public String createMsg(int index, double aut)
+	public String createProceedMsg(int index, String line)
 	{
 		int indexB = index+1;
 		int indexC = indexB+1;
 		//String msg = new String();
 		//System.out.println("Full Authority: " + aut);
 		
-		aut = aut - Double.parseDouble(theAuthorities.get(index));
+		authority = authority - Double.parseDouble(theAuthorities.get(index));
 		
 		StringBuffer msg = new StringBuffer(line);
 		msg.append(","  + blockIDs.get(index) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexC) 
-				+ "," + theSpeeds.get(index) + "," + theAuthorities.get(index));
+				+ "," + theSpeeds.get(index) + "," + authority);
 			
 		
 		return msg.toString();
