@@ -18,10 +18,9 @@ public class Track implements TrackInterface {
 	public Track() throws IOException
 	{
 		loadTrack("REDFINALV2.csv");	
-		//loadTrack("GREENFINALV2.csv");	
+		loadTrack("GREENFINALV2.csv");	
 
 	}
-
 	public void loadTrack(String csvIn) throws IOException {
 
 		String inFile = csvIn;
@@ -53,20 +52,14 @@ public class Track implements TrackInterface {
 			switchMaker(splitStrings,currentBlock,currentSwitches); //connect all switch blocks and put them into ArrayList
 		}
 
-		printBlockList(currentAll);
-		System.out.println();
-		printSwitchList(currentSwitches);
-
-		//TEST TOGGLE
-		System.out.println("toggling all switches");
-
-		for(Switch togTest: currentSwitches)
+		for(Switch setupSwitch: currentSwitches)
 		{
-			togTest.toggleSwitch();
+			setupSwitch.setup();
 		}
 
-		printSwitchList(currentSwitches);
-
+		//printSwitchList(currentSwitches);
+		printBlockList(currentAll);
+		System.out.println();
 
 
 
@@ -404,27 +397,6 @@ public void printBlockList(ArrayList<Block> printList)
 		}
 	}
 	
-	public void jeffTrack() {
-		// TODO Auto-generated method stub
-		if(allRedBlocks!=null)
-		{
-			for(Block redBlocks: allRedBlocks)
-			{
-				System.out.println("here");
-				System.out.println(redBlocks.getBlockNumber());
-				System.out.println("Num:"+redBlocks.getBlockNumber() + " next Num:" + redBlocks.getNext().getBlockNumber());
-			}
-		}
-
-		if(allGreenBlocks!=null)
-		{
-			for(Block greenBlocks: allGreenBlocks)
-			{
-				System.out.println("Num:"+greenBlocks.getBlockNumber() + " next Num:" + greenBlocks.getNext().getBlockNumber());
-			}
-		}
-	}
-
 	@Override
 	public void displayBlock(int blockNumber) {
 		// TODO Auto-generated method stub

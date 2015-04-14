@@ -11,6 +11,7 @@ public class Switch implements SwitchInterface {
 	Block position1 = null;
 	Block position2 = null;
 	Block switchBlock = null;
+	int setupCount = 0;
 	//nextBlock: blocK ?
 	//switchBroken: boolean; 
 	
@@ -32,8 +33,8 @@ public class Switch implements SwitchInterface {
 		else
 			position2 = blockIn;
 
-		if(switchBlock != null && position1!=null && position2!=null)
-			setup();
+		/*if(switchBlock != null && position1!=null && position2!=null)
+			setup();*/
 	}
 
 	public String getSwitchNumber()
@@ -65,12 +66,9 @@ public class Switch implements SwitchInterface {
 
 	}
 	
-	private void setup()
+	public void setup()
 	{
 
-		//3 cases... 3-section junction, 2-section junction with switch before, 2-section junction with switch after
-		//KNOWN BUGS:: ISSUE FOR SINGLE SECTION BLOCKS... EITHER SIDE WILL BE OUT OF SECTION
-		//^^^ THIS IS THE TAIL/HEAD CASE... SHOULD BE EASILY FIXED USING TAIL/HEAD CHECK
 		if(switchBlock.getSwitchType().equals("-"))
 		{
 			if((position1.getDirection() == 1 || position1.getDirection() == -1)&& position1.getArrow().equals("HEAD"))
@@ -87,40 +85,56 @@ public class Switch implements SwitchInterface {
 		}
 		else if(switchBlock.getSwitchType().equals("BEFORE"))
 		{
-
+			switchBlock.setPrevious(position1);
+			if(position1.getSection().equals(switchBlock.getSection()))// if same section
+			{
+				position1.setNext(switchBlock);
+				setOutOfSection(position2, null);
+			}
+			else //not same section
+			{
+				setOutOfSection(position1,switchBlock);
+				position2.setNext(null);
+			}
 		}
 		else if(switchBlock.getSwitchType().equals("AFTER")) //mid-section switch is after fork
-
 		{
+
 			if(switchBlock.getDirection()==-1)
 			{
 				switchBlock.setPrevious(position1);
 				if(position1.getSection().equals(switchBlock.getSection()))
 				{
 					position1.setNext(switchBlock);
+					setOutOfSection(position2, null);
 				}
 				else
 				{
 					setOutOfSection(position1, switchBlock);
-				}
-
-				if(position2.getSection().equals(switchBlock.getSection()))
-				{
 					position2.setNext(null);
+				}
+			}
+			else
+			{
+				switchBlock.setNext(position1);
+				if(position1.getSection().equals(switchBlock.getSection()))
+				{
+					position1.setPrevious(switchBlock);
+					setOutOfSection(position2,null);
 				}
 				else
 				{
-					setOutOfSection(position2, null);
-
+					setOutOfSection(position1, switchBlock);
+					position2.setPrevious(null);	
 				}
 			}
-
-
-
-
 		}
 
-
+		if(setupCount<2)
+		{	
+			setupCount++;
+			toggleSwitch();
+		}
 	}
 
 	@Override
