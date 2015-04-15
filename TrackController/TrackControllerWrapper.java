@@ -523,7 +523,7 @@ public class TrackControllerWrapper {
 		TrackController trackController;
 
 		msgContents = msg.split(delimeter);
-		String line = msgContents[0];
+		String line = msgContents[0].toLowerCase();
 		int currentBlock = Integer.parseInt(msgContents[1]);
 		int nextBlock = Integer.parseInt(msgContents[2]);
 		int destinationBlock = Integer.parseInt(msgContents[3]);
@@ -674,13 +674,13 @@ public class TrackControllerWrapper {
 	 * @return
 	 */
 	public boolean newMaintMsg(String msg) {
-		String delimeter = "|";
+		String delimeter = ",";
 		String[] msgContents;
 
 		msgContents = msg.split(delimeter);
-		String line = msgContents[0];
+		String line = msgContents[0].toLowerCase();
 		int currentBlock = Integer.parseInt(msgContents[1]);
-		String maintStatus = msgContents[2];
+		String maintStatus = msgContents[2].toLowerCase();
 
 		// based on the track line and current block, decide which track controller to request
 		if(line.equals("red")) {
@@ -732,13 +732,13 @@ public class TrackControllerWrapper {
 		int selectedBlock = 0;
 
 		selectedTC = (int) tcComboBox.getSelectedItem();
-		selectedBlock = blocksListbox.getSelectedIndex();
+		selectedBlock = Integer.parseInt(blocksListbox.getSelectedValue());
 
 		if(changeViewSlider.getValue() == 0) {
 
 		}
 		else {
-
+			track.breakBlock(selectedBlock);
 		}
 	}
 
