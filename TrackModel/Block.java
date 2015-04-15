@@ -3,37 +3,36 @@ import java.util.ArrayList;
 
 public class Block implements BlockInterface {
 
-	String line;
-	String section;
-	int blockNumber;
-	double blockLength;
-	double grade;
-	int speedLimit;
-	String station; //***
-	String switchBlock; //***
-	String underground; //***
-	double elevation;
-	double cumElevation;
-	String arrow;
-	String switchNumber; //***
-	int direction;
-	String crossing; //***
-	String switchType;
+	private String line;
+	private String section;
+	private int blockNumber;
+	private double blockLength;
+	private double grade;
+	private int speedLimit;
+	private String station; //***
+	private String switchBlock; //***
+	private String underground; //***
+	private double elevation;
+	private double cumElevation;
+	private String arrow;
+	private String switchNumber; //***
+	private int direction;
+	private String crossing; //***
+	private String switchType;
 
-
-//String infrastructure
-// ... to yard ... 
-
-	Block next;
-	Block previous;
-
+	private boolean toYard = false;
+	private boolean fromYard = false;
+	private Block next;
+	private Block previous;
+	private int seen = 0;
 //
+	private Switch switcher = null;
+
 	String stationName;
 	double friction = 0.001;
 
 	//ArrayList<Block> switchNext1;
 	//ArrayList<Block> switchNext2;
-	int seen = 0;
 	
 	//..User configurable attributes..
 	//boolean brokenBlock;
@@ -60,7 +59,6 @@ public class Block implements BlockInterface {
 	
 	Crossing crossing = null;
 	Station station = null; 
-	Switch switch = null;
 	
 	
 	*/
@@ -86,6 +84,14 @@ public Block(String[] splitStrings, Block lastCreated) {
 	switchType = splitStrings[15];
 
 	
+	if(station.equals("TO YARD") || station.equals("TO YARD/FROM YARD"))
+	{
+		toYard = true;
+	}
+	if(station.equals("FROM YARD") || station.equals("TO YARD/FROM YARD"))
+	{
+		fromYard = true;
+	}
 
 	if(lastCreated == null)
 	{
@@ -94,63 +100,26 @@ public Block(String[] splitStrings, Block lastCreated) {
 	else if(direction == 1 || direction == 2) //set the path 
 	{
 		next = lastCreated;
-		
+
 		if(next.getDirection() == -1)
-		{
 			next.setNext(this);
-		}
 
 		next.setPrevious(this);
 	}
 	else if(direction == -1)
 	{
-		
 		previous = lastCreated;
 
 		if(previous.getDirection() == 2)
-		{
 			previous.setPrevious(this);
-		}
-		else{
+		else
 			previous.setNext(this);
-		}
-		
 	}
 
 
 //switches
 //stations
 //crossings
-
-/*
-	if(infrastructure != null && infrastructure.length()>0)
-	{
-		String[] infrastructureArray;
-		if(infrastructure.substring(0,2).equals("ST"))
-		{
-			
-			infrastructureArray = infrastructure.split(";");
-			stationName = infrastructureArray[1];
-			//System.out.println(this.getSection() + " testtt" + this.stationName);
-		}
-		
-		
-		
-	}
-	 	
-	
-	if(splitStrings[7]!= null && splitStrings[7].equals("B"))
-	{
-
-		beacon = true;
-	}
-	//if types of infrastructures... make station/crossing 
-	
-	
-	//make a switch.......
-	
-	*/
-
 	}
 
 	public void setNext(Block nextBlock)
@@ -165,8 +134,18 @@ public Block(String[] splitStrings, Block lastCreated) {
 		previous = previousBlock;
 	}
 
+	public void setSwitch(Switch aSwitch)
+	{
+		switcher = aSwitch;
+	}
 
-
+	public void toggleSwitch()
+	{
+		if(switcher != null)
+		{
+			switcher.toggleSwitch();
+		}
+	}
 	public Block getNext() {
 	// TODO Auto-generated method stub
 		return next;
@@ -196,7 +175,45 @@ public Block(String[] splitStrings, Block lastCreated) {
 		return switchBlock;
 	}
 		
+	private	void setSeen(int i)
+	{
+		seen = i;
+	}
+	public Block traverse()
+	{
+		if(this.getPrevious().getSeen() == 1)
+			this.getPrevious().setSeen(0);
 
+		else if(this.getNext().getSeen() == 1)
+			this.getNext().setSeen(0);
+
+		seen = 1;
+		if(direction == 1 || direction == -1)
+			return this.getNext();
+		
+		else
+		{
+			if(this.getPrevious() != null && this.getPrevious().getSeen() == 1)
+			{
+				if(this.getNext() == null && this.switcher != null)
+				{
+					this.toggleSwitch();
+				}
+
+				return this.getNext();
+			}
+			else if(this.getNext() != null && this.getNext().getSeen() == 1);
+			{
+				if(this.getPrevious() == null && this.switcher !=null)
+				{
+					this.toggleSwitch();
+				}
+
+				return this.getPrevious();
+			}
+		}
+
+	}
 
 	public String getSwitchType()
 	{
@@ -333,12 +350,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 		return grade;
 	}
 
-	
-	private void setSeen(int i) {
-		// TODO Auto-generated method stub
-		seen = i;
-		
-	}
 
 	private int getSeen() {
 		// TODO Auto-generated method stub

@@ -4,14 +4,15 @@ import java.util.ArrayList;
 public class Switch implements SwitchInterface {
 
 
-	ArrayList<Block> switchBlocks;
+	private ArrayList<Block> switchBlocks;
+	
+	private String switchNumber;
+	private Block switchedBlock = null;
+	private Block unSwitchedBlock = null;
+	private Block switchBlock = null;
+	private int setupCount = 0;
 	
 	//switchState: boolean
-	String switchNumber;
-	Block position1 = null;
-	Block position2 = null;
-	Block switchBlock = null;
-	int setupCount = 0;
 	//nextBlock: blocK ?
 	//switchBroken: boolean; 
 	
@@ -24,17 +25,12 @@ public class Switch implements SwitchInterface {
 
 	public void addBlock(Block blockIn)
 	{
-		//System.out.println(switchNumber + "in: " + blockIn.getSection() + blockIn.getBlockNumber());
-		
 		if(blockIn.getSwitchBlock().length()>0)
 			switchBlock = blockIn;
-		else if(position1 == null)
-			position1 = blockIn;
+		else if(switchedBlock == null)
+			switchedBlock = blockIn;
 		else
-			position2 = blockIn;
-
-		/*if(switchBlock != null && position1!=null && position2!=null)
-			setup();*/
+			unSwitchedBlock = blockIn;
 	}
 
 	public String getSwitchNumber()
@@ -46,14 +42,14 @@ public class Switch implements SwitchInterface {
 		return switchBlock;
 	}
 
-	public Block getPosition1Block()
+	public Block getswitchedBlockBlock()
 	{
-		return position1;
+		return switchedBlock;
 	}
 
-	public Block getPosition2Block()
+	public Block getunSwitchedBlockBlock()
 	{
-		return position2;
+		return unSwitchedBlock;
 	}
 
 	private void setOutOfSection(Block sourceBlock, Block targetBlock)
@@ -71,30 +67,30 @@ public class Switch implements SwitchInterface {
 
 		if(switchBlock.getSwitchType().equals("-"))
 		{
-			if((position1.getDirection() == 1 || position1.getDirection() == -1)&& position1.getArrow().equals("HEAD"))
+			if((switchedBlock.getDirection() == 1 || switchedBlock.getDirection() == -1)&& switchedBlock.getArrow().equals("HEAD"))
 			{
 				setOutOfSection(switchBlock, null);
 			}
 			else
 			{
-				setOutOfSection(switchBlock, position1);
+				setOutOfSection(switchBlock, switchedBlock);
 			}
 
-			setOutOfSection(position1, switchBlock);
-			setOutOfSection(position2, null);
+			setOutOfSection(switchedBlock, switchBlock);
+			setOutOfSection(unSwitchedBlock, null);
 		}
 		else if(switchBlock.getSwitchType().equals("BEFORE"))
 		{
-			switchBlock.setPrevious(position1);
-			if(position1.getSection().equals(switchBlock.getSection()))// if same section
+			switchBlock.setPrevious(switchedBlock);
+			if(switchedBlock.getSection().equals(switchBlock.getSection()))// if same section
 			{
-				position1.setNext(switchBlock);
-				setOutOfSection(position2, null);
+				switchedBlock.setNext(switchBlock);
+				setOutOfSection(unSwitchedBlock, null);
 			}
 			else //not same section
 			{
-				setOutOfSection(position1,switchBlock);
-				position2.setNext(null);
+				setOutOfSection(switchedBlock,switchBlock);
+				unSwitchedBlock.setNext(null);
 			}
 		}
 		else if(switchBlock.getSwitchType().equals("AFTER")) //mid-section switch is after fork
@@ -102,30 +98,30 @@ public class Switch implements SwitchInterface {
 
 			if(switchBlock.getDirection()==-1)
 			{
-				switchBlock.setPrevious(position1);
-				if(position1.getSection().equals(switchBlock.getSection()))
+				switchBlock.setPrevious(switchedBlock);
+				if(switchedBlock.getSection().equals(switchBlock.getSection()))
 				{
-					position1.setNext(switchBlock);
-					setOutOfSection(position2, null);
+					switchedBlock.setNext(switchBlock);
+					setOutOfSection(unSwitchedBlock, null);
 				}
 				else
 				{
-					setOutOfSection(position1, switchBlock);
-					position2.setNext(null);
+					setOutOfSection(switchedBlock, switchBlock);
+					unSwitchedBlock.setNext(null);
 				}
 			}
 			else
 			{
-				switchBlock.setNext(position1);
-				if(position1.getSection().equals(switchBlock.getSection()))
+				switchBlock.setNext(switchedBlock);
+				if(switchedBlock.getSection().equals(switchBlock.getSection()))
 				{
-					position1.setPrevious(switchBlock);
-					setOutOfSection(position2,null);
+					switchedBlock.setPrevious(switchBlock);
+					setOutOfSection(unSwitchedBlock,null);
 				}
 				else
 				{
-					setOutOfSection(position1, switchBlock);
-					position2.setPrevious(null);	
+					setOutOfSection(switchedBlock, switchBlock);
+					unSwitchedBlock.setPrevious(null);	
 				}
 			}
 		}
@@ -140,9 +136,9 @@ public class Switch implements SwitchInterface {
 	@Override
 	public void toggleSwitch() {
 		// TODO Auto-generated method stub
-		Block temp = position1;
-		position1 = position2;
-		position2 = temp;
+		Block temp = switchedBlock;
+		switchedBlock = unSwitchedBlock;
+		unSwitchedBlock = temp;
 		setup();
 	}
 

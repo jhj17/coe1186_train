@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 public class Track implements TrackInterface {
 
-	private Block redFromYard = null;
-	private Block greenFromYard = null;
-	private ArrayList<Block> allRedBlocks = new ArrayList<Block>();
-	private ArrayList<Block> allGreenBlocks = new ArrayList<Block>();
+	private Block redYard = null;
+	private Block greenYard = null;
+	private ArrayList<Block> redBlocks = new ArrayList<Block>();
+	private ArrayList<Block> greenBlocks = new ArrayList<Block>();
 	private ArrayList<Switch> redSwitches = new ArrayList<Switch>();
 	private ArrayList<Switch> greenSwitches = new ArrayList<Switch>();
 	private double coeffFriction;
@@ -29,6 +29,7 @@ public class Track implements TrackInterface {
 		ArrayList<Switch> currentSwitches = null;
 		ArrayList<Block >currentAll = null;
 		Block currentBlock = null;
+		Block currentYard = null;
 
 		while(reader.ready()) //read until end of file 
 		{
@@ -37,60 +38,48 @@ public class Track implements TrackInterface {
 			if(currentBlock == null && splitStrings[0].equals("red")) //if first block and red line 
 			{
 				currentSwitches = redSwitches;//instantiate set of switches
-				currentAll = allRedBlocks; //instantiate array to hold all blocks 
+				currentAll = redBlocks; //instantiate array to hold all blocks 
 			}
 			
 			else if(currentBlock == null && splitStrings[0].equals("green")) //same for green blocks 
 			{
 				currentSwitches = greenSwitches;
-				currentAll = allGreenBlocks;
+				currentAll = greenBlocks;
 			}
 
 			currentBlock = new Block(splitStrings, currentBlock);  // instantiate block				
 			currentAll.add(currentBlock); // add block to list for easy lookup
 
 			switchMaker(splitStrings,currentBlock,currentSwitches); //connect all switch blocks and put them into ArrayList
+			if(splitStrings[6].equals("FROM YARD") || splitStrings[6].equals("TO YARD/FROM YARD"))
+			{
+				if(splitStrings[0].equals("green"))
+					greenYard = currentBlock;
+				else
+					redYard = currentBlock;
+			}
 		}
-
-		for(Switch setupSwitch: currentSwitches)
+		for(Switch setupSwitch: currentSwitches) //setup switch connections 
 		{
 			setupSwitch.setup();
 		}
 
-		//printSwitchList(currentSwitches);
+
 		printBlockList(currentAll);
+
 		System.out.println();
-
-
-
-
-//<-----------------------FIX STARTING HERE ----------------------->
-
-			/*
-
-			
-			
-			if(splitStrings[6].equals("YARD")) // to create the yard blocks... e.g. the real starting blocks 
-			{
-				if(splitStrings[0].equals("Red"))
-				{
-					redFromYard = currentBlock;
-				}
-				else
-				{
-					greenFromYard = currentBlock;
-				}
-			}
-		}
-
-
-		for(Switch allSwitches: currentSwitches) //correct switch connections based on directionality 
+		Block traverseBlock = greenYard;
+		if(traverseBlock != null)
+			System.out.println(traverseBlock.getSection()+traverseBlock.getBlockNumber());
+		while(traverseBlock !=null)
 		{
-			allSwitches.adjustConnections();	
+			System.out.println(traverseBlock.getSection() + traverseBlock.getBlockNumber());
+			System.out.println("trav" + traverseBlock.traverse().getSection() + traverseBlock.traverse().getBlockNumber());
+			traverseBlock = traverseBlock.traverse();
 		}
-		
-		*/
-		
+		//printSwitchList(currentSwitches);
+		//System.out.println();
+		//System.out.println("Yard: " + currentYard.getSection() + currentYard.getBlockNumber());		
 	}
 
 
@@ -102,10 +91,10 @@ public void printSwitchList(ArrayList<Switch> printList)
 		System.out.println(currentSwitch.getSwitchNumber());
 		System.out.println("Switch: " + currentSwitch.getSwitchBlock().getSection() + currentSwitch.getSwitchBlock().getBlockNumber());
 		printBlockConnections(currentSwitch.getSwitchBlock());
-		System.out.println("Position1: " + currentSwitch.getPosition1Block().getSection() + currentSwitch.getPosition1Block().getBlockNumber());
-		printBlockConnections(currentSwitch.getPosition1Block());
-		System.out.println("Position2: " + currentSwitch.getPosition2Block().getSection() + currentSwitch.getPosition2Block().getBlockNumber());
-		printBlockConnections(currentSwitch.getPosition2Block());
+		System.out.println("switchedBlock: " + currentSwitch.getswitchedBlockBlock().getSection() + currentSwitch.getswitchedBlockBlock().getBlockNumber());
+		printBlockConnections(currentSwitch.getswitchedBlockBlock());
+		System.out.println("unSwitchedBlock: " + currentSwitch.getunSwitchedBlockBlock().getSection() + currentSwitch.getunSwitchedBlockBlock().getBlockNumber());
+		printBlockConnections(currentSwitch.getunSwitchedBlockBlock());
 		System.out.println();
 		//printBlockConnections()
 
@@ -121,23 +110,19 @@ public void printBlockConnections(Block block)
 		System.out.print(block.getSection() + block.getBlockNumber()); 
 		System.out.print(" next: ");
 		if(next != null)
-		{
 			System.out.print(next.getSection() + next.getBlockNumber() + " "); 
-		}	
-		else{
+		else
 			System.out.print(next + " ");
-		}
 
 		System.out.print("previous: ");
 		if(previous != null)
-		{
 			System.out.print(previous.getSection() + previous.getBlockNumber() + " "); 
-		}	
-		else{
+		else
 			System.out.print(previous + " ");
-		}
+
 		System.out.println();
 }
+
 public void printBlockList(ArrayList<Block> printList)
 {
 
@@ -145,7 +130,6 @@ public void printBlockList(ArrayList<Block> printList)
 	for(Block block: printList)
 	{
 		printBlockConnections(block);
-
 	}
 
 }
@@ -156,11 +140,11 @@ public void printBlockList(ArrayList<Block> printList)
 		ArrayList<Block >allBlocks; //begin with right blocks 
 		if(line.equals("Red"))
 		{
-			allBlocks = allRedBlocks;
+			allBlocks = redBlocks;
 		}
 		else
 		{
-			allBlocks = allGreenBlocks;
+			allBlocks = greenBlocks;
 		}
 		
 		toggleSwitch("Green", 1); //HARD CODED-CHEATSY THING. 
@@ -248,39 +232,13 @@ public void printBlockList(ArrayList<Block> printList)
 	public Block toggleSwitch(String line, int blockNumber) {
 		// TODO Auto-generated method stub
 
-		ArrayList<Switch> x;
-
-		if(line.equals("Red"))
+		/*for(Switch setupSwitch: currentSwitches) //setup switch connections 
 		{
-			x = redSwitches;
-			allBlockSwitchToggler(blockNumber, x);
-			
-		}
-		else
-		{
-			if(line.equals("Green"))
-			{
-				x = greenSwitches;
-				allBlockSwitchToggler(blockNumber, x);				
-			}
-		}
+			setupSwitch.setup();
+		}*/
 		
 		return null;
 		
-	}
-	private void allBlockSwitchToggler(int blockNumber, ArrayList<Switch> x) {
-		/*for(Switch temp: x)
-		{
-			for(Block switchBlocks: temp.getSwitchBlocks())
-			{
-				if(switchBlocks.getBlockNumber() == blockNumber)
-				{
-					temp.toggleSwitch();
-					displayTrack();
-				}	
-			}
-		}
-		*/
 	}
 
 	@Override
@@ -318,12 +276,12 @@ public void printBlockList(ArrayList<Block> printList)
 	{	
 		if(line.equals("Red"))
 		{
-			redFromYard.placeTrain(trainID,0);
+			redYard.placeTrain(trainID,0);
 		}
 		else
 		{
-			greenFromYard.placeTrain(trainID,0);
-			//System.out.println("1 " +greenFromYard.getNext1() + " 2 "+ greenFromYard.getNext2());
+			greenYard.placeTrain(trainID,0);
+			//System.out.println("1 " +greenYard.getNext1() + " 2 "+ greenYard.getNext2());
 		}
 	}
 	
@@ -339,11 +297,11 @@ public void printBlockList(ArrayList<Block> printList)
 		Block currentBlock;
 		if(line.equals("Red"))
 		{
-			return allRedBlocks.get(blockNumber-1);
+			return redBlocks.get(blockNumber-1);
 		}
 		else 
 		{
-			return allGreenBlocks.get(blockNumber-1);
+			return greenBlocks.get(blockNumber-1);
 		}
 	}
 	
@@ -351,9 +309,9 @@ public void printBlockList(ArrayList<Block> printList)
 	public Block getTrainBlock(int TrainID) {
 		// TODO Auto-generated method stub
 		
-		if(allRedBlocks != null)
+		if(redBlocks != null)
 		{
-			for(Block reds: allRedBlocks)
+			for(Block reds: redBlocks)
 			{
 				if(reds.getTrainID() == TrainID)
 				{
@@ -362,9 +320,9 @@ public void printBlockList(ArrayList<Block> printList)
 			}
 		}
 
-		if(allGreenBlocks != null)
+		if(greenBlocks != null)
 		{
-			for(Block greens: allGreenBlocks)
+			for(Block greens: greenBlocks)
 			{
 				if(greens.getTrainID() == TrainID)
 				{
@@ -379,19 +337,19 @@ public void printBlockList(ArrayList<Block> printList)
 	@Override
 	public void displayTrack() {
 		// TODO Auto-generated method stub
-		if(allRedBlocks!=null)
+		if(redBlocks!=null)
 		{
-			for(Block redBlocks: allRedBlocks)
+			for(Block reddies: redBlocks)
 			{
-				redBlocks.printBlock();
+				reddies.printBlock();
 			}
 		}
-		if(allGreenBlocks != null)
+		if(greenBlocks != null)
 		{
 			
-			for(Block greenBlocks: allGreenBlocks)
+			for(Block greenies: greenBlocks)
 			{
-				greenBlocks.printBlock();
+				greenies.printBlock();
 				
 			}
 		}
