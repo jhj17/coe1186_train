@@ -78,31 +78,27 @@ public class TrainModel implements TrainModelInterface
 
 	private TrainModelGUI gui;
 	
+	MBO mbo;
 	TrainController controller;
 	Track track;
 	
 	SimClock clock;
-	
-	//Block getBlock(int ID)
-	
-	//Block Methods:
-	
-	//double getGrade()
-	//double getTrainAuthority
-	//double getTrainCommandedSpeed
-	//double getFrictionCoefficient
-	//string getBeacon()
 
-	public TrainModel(int ID, Track track, TrainController controller, SimClock clock)
+	//Data
+	DynamicTrainValues DTV;
+	TrainData TD;
+
+	public TrainModel(int ID, Track track, TrainController controller, SimClock clock, MBO mbo)
 	{
 		this.ID = ID;
 		this.track = track;
 		this.controller = controller;
+		this.mbo = mbo;
 		this.clock = clock;
 		gui = new TrainModelGUI();
-		DynamicTrainValues initialDTV = new DynamicTrainValues(0,0,0,0,0,temperature);
-		TrainData initialData = new TrainData(initialDTV, ID, mass, numPassengers, lastStop, 0, 0, commandedTemperature, leftDoor, rightDoor, lights);
-		gui.updateGUI(initialData);
+		DTV = new DynamicTrainValues(0,0,0,0,0,temperature);
+		TD = new TrainData(DTV, ID, mass, numPassengers, lastStop, 0, 0, commandedTemperature, leftDoor, rightDoor, lights);
+		gui.updateGUI(TD);
 	}
 
 	public DynamicTrainValues updateSamples(double power)
@@ -118,6 +114,19 @@ public class TrainModel implements TrainModelInterface
 		
 		commandedSpeed = curBlock.getTrainCommandedSpeed(ID);
 		authority = curBlock.getTrainAuthority(ID);
+
+		mboSpeed = mbo.getSpeed(ID);
+		mboAuthority = mbo.getAuthority(ID);
+
+		if (mboSpeed > 0)
+		{
+			commandedSpeed = mboSpeed;
+		}
+
+		if (mboAuthority > 0)
+		{
+			authority = mboAuthority;
+		}
 		
 		String beacon = curBlock.getBeacon();
 		if (!beacon.isEmpty())
@@ -229,10 +238,11 @@ public class TrainModel implements TrainModelInterface
 		}
 
 		// Populate train values and return them
-		DynamicTrainValues dtv = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);
-		TrainData data = new TrainData(dtv, ID, mass, numPassengers, lastStop, grade, power, commandedTemperature, leftDoor, rightDoor, lights);
-		gui.updateGUI(data);
-		return dtv;
+		DTV = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);
+		TD = new TrainData(DTV, ID, mass, numPassengers, lastStop, grade, power, commandedTemperature, leftDoor, rightDoor, lights);
+		gui.updateGUI(TD);
+		mbo.setPosition(this.getPosition(), ID);
+		return DTV;
 	}
 
 	// Setters
