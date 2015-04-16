@@ -68,21 +68,14 @@ public class Switch implements SwitchInterface {
 	public void setup()
 	{
 
-		if(switchBlock.getSwitchType().equals("-"))
+		if(switchBlock.getSwitchType().equals("-")) //normal 3-way junction case.  3 sepearate section blocks
 		{
-			if((switchedBlock.getDirection() == 1 || switchedBlock.getDirection() == -1) && switchedBlock.getArrow().equals("HEAD"))
-			{
-				setOutOfSection(switchBlock, null);
-			}
-			else
-			{
-				setOutOfSection(switchBlock, switchedBlock);
-			}
 
+			setOutOfSection(switchBlock, switchedBlock);
 			setOutOfSection(switchedBlock, switchBlock);
 			setOutOfSection(unSwitchedBlock, null);
 		}
-		else if(switchBlock.getSwitchType().equals("BEFORE"))
+		else if(switchBlock.getSwitchType().equals("BEFORE"))  //actual switch is before its attachments 
 		{
 			switchBlock.setPrevious(switchedBlock);
 			if(switchedBlock.getSection().equals(switchBlock.getSection()))// if same section
@@ -99,9 +92,11 @@ public class Switch implements SwitchInterface {
 		else if(switchBlock.getSwitchType().equals("AFTER")) //mid-section switch is after fork
 		{
 
-			if(switchBlock.getDirection()==-1)
+
+			if(switchBlock.getDirection()==-1) //if backwards 1-way 
 			{
 				switchBlock.setPrevious(switchedBlock);
+				
 				if(switchedBlock.getSection().equals(switchBlock.getSection()))
 				{
 					switchedBlock.setNext(switchBlock);
@@ -112,6 +107,7 @@ public class Switch implements SwitchInterface {
 					setOutOfSection(switchedBlock, switchBlock);
 					unSwitchedBlock.setNext(null);
 				}
+
 			}
 			else
 			{
@@ -127,6 +123,7 @@ public class Switch implements SwitchInterface {
 					unSwitchedBlock.setPrevious(null);	
 				}
 			}
+
 		}
 
 		if(setupCount<2)

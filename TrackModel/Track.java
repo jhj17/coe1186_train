@@ -59,14 +59,14 @@ public class Track implements TrackInterface {
 					redYard = currentBlock;
 			}
 		}
+
+		//printSwitchList(currentSwitches);
 		for(Switch setupSwitch: currentSwitches) //setup switch connections 
 		{
 			setupSwitch.setup();
 		}
 
-
-
-	printBlockList(currentAll);
+		/*printBlockList(currentAll);
 
 		for(Switch setupSwitch: currentSwitches) //setup switch connections 
 		{
@@ -75,10 +75,31 @@ public class Track implements TrackInterface {
 
 		printBlockList(currentAll);
 
+				printBlockList(currentAll);
+		
+		for(Switch setupSwitch: currentSwitches) //setup switch connections 
+		{
+			setupSwitch.toggleSwitch();
+		}
 
+		printBlockList(currentAll);
+		printSwitchList(currentSwitches);
+
+
+				printBlockList(currentAll);
+		
+		for(Switch setupSwitch: currentSwitches) //setup switch connections 
+		{
+			setupSwitch.toggleSwitch();
+		}
+
+		printBlockList(currentAll);
+
+		printSwitchList(currentSwitches);
+*/
 
 		System.out.println();
-		Block traverseBlock = redYard;
+		Block traverseBlock = greenYard;
 		Block lastTraverse = null;
 		if(traverseBlock != null)
 			System.out.println(traverseBlock.getSection()+traverseBlock.getBlockNumber());
@@ -93,11 +114,9 @@ public class Track implements TrackInterface {
 			{
 				//System.out.println("toggling");
 				traverseBlock.toggleSwitch();
-				//printBlockList(currentAll);
 			}
 		}
 		
-
 		
 		//System.out.println();
 		//System.out.println("Yard: " + currentYard.getSection() + currentYard.getBlockNumber());		
