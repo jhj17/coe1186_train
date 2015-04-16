@@ -141,10 +141,9 @@ public Block(String[] splitStrings, Block lastCreated) {
 
 	public void toggleSwitch()
 	{
-		if(switcher != null)
-		{
-			switcher.toggleSwitch();
-		}
+
+		switcher.toggleSwitch();
+
 	}
 	public Block getNext() {
 	// TODO Auto-generated method stub
@@ -181,37 +180,80 @@ public Block(String[] splitStrings, Block lastCreated) {
 	}
 	public Block traverse()
 	{
-		if(this.getPrevious().getSeen() == 1)
-			this.getPrevious().setSeen(0);
-
-		else if(this.getNext().getSeen() == 1)
-			this.getNext().setSeen(0);
-
+		Block returnBlock = null;
 		seen = 1;
+		//System.out.println(this.getSection() + this.getBlockNumber());
+		//System.out.println(this.getNext());
+		//System.out.println(this.getPrevious());
+		boolean zeroNext = false;
+		boolean zeroPrevious = false;
+
 		if(direction == 1 || direction == -1)
-			return this.getNext();
-		
-		else
 		{
-			if(this.getPrevious() != null && this.getPrevious().getSeen() == 1)
-			{
-				if(this.getNext() == null && this.switcher != null)
-				{
-					this.toggleSwitch();
-				}
 
-				return this.getNext();
+			if(this.getNext() == null)
+			{
+				returnBlock = this;
+
 			}
-			else if(this.getNext() != null && this.getNext().getSeen() == 1);
+			else
 			{
-				if(this.getPrevious() == null && this.switcher !=null)
-				{
-					this.toggleSwitch();
-				}
+				returnBlock = this.getNext();
+			}
 
-				return this.getPrevious();
+			if(this.getPrevious()!= null)
+			{
+				this.getPrevious().setSeen(0);
 			}
 		}
+
+		else
+		{
+			if(this.station.equals("TO YARD/FROM YARD"))
+			{
+				returnBlock = this.getNext();
+			}
+			else if(this.getNext() == null)
+			{
+				returnBlock = this;
+			}
+			else if(this.getPrevious() == null)
+			{
+				returnBlock = this;
+			}
+			else if(this.getNext().getSeen() == 1)
+			{
+				returnBlock = this.getPrevious();
+				zeroNext = true;
+			}
+			else if(this.getPrevious().getSeen() == 1)
+			{
+				returnBlock = this.getNext();
+				zeroPrevious = true;
+
+			}
+
+			if(returnBlock != null && this.getArrow().equals("Head") && returnBlock.getArrow().equals("Head") && (returnBlock.getDirection() == 1 || returnBlock.getDirection() == -1)) //going wrong way on 1-way case
+			{
+				returnBlock = this;
+				zeroPrevious = false;
+				zeroNext = false;
+			}
+		}
+
+
+		if(zeroPrevious)
+		{
+			this.getPrevious().setSeen(0);
+		}
+
+		if(zeroNext)
+		{
+			this.getNext().setSeen(0);
+		}
+		//System.out.println(this.getSection() + this.getBlockNumber());
+
+		return returnBlock;
 
 	}
 
