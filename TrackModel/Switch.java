@@ -25,6 +25,9 @@ public class Switch implements SwitchInterface {
 
 	public void addBlock(Block blockIn)
 	{
+
+		blockIn.setSwitch(this);
+
 		if(blockIn.getSwitchBlock().length()>0)
 			switchBlock = blockIn;
 		else if(switchedBlock == null)
@@ -67,7 +70,7 @@ public class Switch implements SwitchInterface {
 
 		if(switchBlock.getSwitchType().equals("-"))
 		{
-			if((switchedBlock.getDirection() == 1 || switchedBlock.getDirection() == -1)&& switchedBlock.getArrow().equals("HEAD"))
+			if((switchedBlock.getDirection() == 1 || switchedBlock.getDirection() == -1) && switchedBlock.getArrow().equals("HEAD"))
 			{
 				setOutOfSection(switchBlock, null);
 			}
@@ -136,6 +139,7 @@ public class Switch implements SwitchInterface {
 	@Override
 	public void toggleSwitch() {
 		// TODO Auto-generated method stub
+		//System.out.println("Toggling " + switchNumber);
 		Block temp = switchedBlock;
 		switchedBlock = unSwitchedBlock;
 		unSwitchedBlock = temp;
