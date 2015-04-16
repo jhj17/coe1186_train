@@ -1,5 +1,5 @@
 /**
-* MovingBlockOverlayGUI.java
+* MovingBlockOverlayMainGUI.java
 *
 * @author John Abraham
 *
@@ -64,7 +64,7 @@ public class MovingBlockOverlayMainGUI {
 		startInput 		     = new JTextField("00:00", 4);
 		startLabel           = new JLabel("Start Schedule at Time:");
 
-		trainScheduleButton = new JButton("Set Train Schedule");
+		trainScheduleButton = new JButton("Set Time Table");
 		operatorScheduleButton = new JButton("Set Operator Schedule");
 		gernerateScheduleButton = new JButton("Generate Schedule");
 
