@@ -38,11 +38,15 @@ public class OfficeGUI {
 	private Text textTime;
 	private Text textBlockStatus;
 	private Text textStatus;
-	Router rt;
-	Scheduler s;
+	private Router rt;
+	private Scheduler s;
 	private Track tk;
+	private TrackControllerTest tct;
 	public static double authority;
-	public static int index;
+	public static int index, indexSched = 0;
+	private Text textOpenCloseLine;
+	private Text textStatusLine;
+	public static ArrayList<String> trainIDs = new ArrayList<String>();
 
 	/**
 	 * Launch the application.
@@ -98,11 +102,11 @@ public class OfficeGUI {
 		shell.setText("SWT Application");
 		
 		Label lblSchedule = new Label(shell, SWT.NONE);
-		lblSchedule.setBounds(173, 10, 97, 15);
+		lblSchedule.setBounds(159, 32, 97, 15);
 		lblSchedule.setText("       Schedule");
 		
 		btnFixedBlock = new Button(shell, SWT.RADIO);
-		btnFixedBlock.setBounds(58, 31, 90, 16);
+		btnFixedBlock.setBounds(58, 51, 90, 16);
 		btnFixedBlock.setText("Fixed Block");
 		btnFixedBlock.setSelection(true);
 		btnFixedBlock.addSelectionListener(new SelectionAdapter(){
@@ -111,6 +115,8 @@ public class OfficeGUI {
 			{
 				if(btnFixedBlock.getSelection() == true)
 					btnRequestSchedule.setEnabled(false);
+					trainID.setEnabled(true);
+					comboLine.setEnabled(true);
 			}
 		});
 		
@@ -124,37 +130,43 @@ public class OfficeGUI {
 					btnRequestSchedule.setEnabled(true);
 			}
 		});
-		btnMbo.setBounds(198, 31, 55, 16);
+		btnMbo.setBounds(193, 53, 55, 16);
 		btnMbo.setText("MBO ");
 		
 		trainID = new Text(shell, SWT.BORDER);
 		trainID.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		trainID.setBounds(52, 74, 75, 21);
+		trainID.setBounds(58, 94, 75, 21);
 		
 		Label lblTrain = new Label(shell, SWT.NONE);
-		lblTrain.setBounds(74, 53, 40, 15);
+		lblTrain.setBounds(80, 73, 40, 15);
 		lblTrain.setText("Train");
 		
 		comboLine = new Combo(shell, SWT.NONE);
-		comboLine.setBounds(174, 74, 79, 21);
+		comboLine.setBounds(177, 95, 79, 21);
 		comboLine.add("Red");
 		comboLine.add("Green");
 		
 		Label lblLine = new Label(shell, SWT.NONE);
-		lblLine.setBounds(198, 53, 55, 15);
+		lblLine.setBounds(193, 75, 55, 15);
 		lblLine.setText("Line");
 		
 		btnLoadStations = new Button(shell, SWT.NONE);
-		btnLoadStations.setBounds(58, 101, 90, 25);
+		btnLoadStations.setBounds(58, 121, 90, 25);
 		btnLoadStations.setText("Load Stations");
 		btnLoadStations.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				System.out.println("ComboLine.getText() " + comboLine.getText());
 				if(comboLine.getText().equals("Green"))
+				{
 					comboStationsGreen.setVisible(true);
+					comboStationsRed.setVisible(false);
+				}
 				else if(comboLine.getText().equals("Red"))
+				{
 					comboStationsRed.setVisible(true);
+					comboStationsGreen.setVisible(false);
+				}
 				
 			}
 			
@@ -162,7 +174,7 @@ public class OfficeGUI {
 		
 		
 		Label lblStations = new Label(shell, SWT.NONE);
-		lblStations.setBounds(309, 53, 55, 15);
+		lblStations.setBounds(297, 75, 55, 15);
 		lblStations.setText("Stations");
 		
 		btnRequestSchedule = new Button(shell, SWT.NONE);
@@ -173,7 +185,7 @@ public class OfficeGUI {
 				//do all configuration here
 			}
 		});
-		btnRequestSchedule.setBounds(299, 27, 105, 25);
+		btnRequestSchedule.setBounds(276, 47, 105, 25);
 		btnRequestSchedule.setText("Request Schedule");
 		btnRequestSchedule.setEnabled(false);
 		
@@ -191,28 +203,29 @@ public class OfficeGUI {
 				{
 					sched = s.createScheduleFB(comboStationsRed.getText(), comboLine.getText(), trainID.getText());
 				}
-				
-				tableTrain[0] = new TableItem(table, SWT.NONE, 0);
-				tableTrain[0].setText(sched);
+				trainIDs.add(trainID.getText());
+				tableTrain[indexSched] = new TableItem(table, SWT.NONE, 0);
+				tableTrain[indexSched].setText(sched);
+				indexSched++;
 				// create train
 			}
 		});
-		btnSchedule.setBounds(178, 101, 75, 25);
+		btnSchedule.setBounds(177, 124, 75, 25);
 		btnSchedule.setText("Schedule");
 		
 		comboStationsRed = new Combo(shell, SWT.NONE);
-		comboStationsRed.setBounds(302, 74, 91, 23);
+		comboStationsRed.setBounds(276, 95, 91, 23);
 		comboStationsRed.setVisible(false);
 		//comboStationsRed.setVisible(true);
 		for(int i = 0; i < redLine.size(); i++)
 				comboStationsRed.add(redLine.get(i));
 		
 		comboStationsGreen = new Combo(shell, SWT.NONE);
-		comboStationsGreen.setBounds(302, 74, 91, 23);
+		comboStationsGreen.setBounds(276, 94, 91, 23);
 		comboStationsGreen.setVisible(false);
 		
 		table = new Table(shell, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setBounds(10, 132, 434, 388);
+		table.setBounds(10, 152, 434, 388);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
@@ -267,9 +280,11 @@ public class OfficeGUI {
 				{
 					//route each one from source to destination
 				}
+				// create train
+				
 			}
 		});
-		btnRoute.setBounds(289, 101, 75, 25);
+		btnRoute.setBounds(286, 124, 75, 25);
 		btnRoute.setText("Route");
 		
 		Label lblDispatchMessages = new Label(shell, SWT.NONE);
@@ -285,11 +300,14 @@ public class OfficeGUI {
 		btnDispatch.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				String msg = rt.createProceedMsg(index, comboLine.getText());
-				textRouting.append(msg + "\n");
-				
 				//send message to the track controller 
 				//append that message to the text box
+				tct = new TrackControllerTest();
+				String msg = rt.createProceedMsg(index, comboLine.getText());
+				textRouting.append(msg + "\n");
+				tct.newProceedMsg(msg);
+				index++;
+				
 			}
 		});
 		btnDispatch.setBounds(808, 347, 75, 25);
@@ -300,10 +318,10 @@ public class OfficeGUI {
 		lblCloseTrack.setText("Open/Close Track");
 		
 		textBlock = new Text(shell, SWT.BORDER);
-		textBlock.setBounds(506, 404, 49, 21);
+		textBlock.setBounds(506, 416, 49, 21);
 		
 		Label lblBlock = new Label(shell, SWT.NONE);
-		lblBlock.setBounds(460, 407, 40, 15);
+		lblBlock.setBounds(506, 400, 40, 15);
 		lblBlock.setText("   Block");
 		
 		Button btnOpen = new Button(shell, SWT.NONE);
@@ -311,10 +329,13 @@ public class OfficeGUI {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				//send message that block is opened 
+				String msgOpen = rt.createOpenCloseMsg(textOpenClose.getText(), textBlock.getText(), "open");
+				textOpenClose.append(msgOpen + "\n");
+				tct.newMaintMsg(msgOpen);
 				//append that message to text area 
 			}
 		});
-		btnOpen.setBounds(561, 402, 75, 25);
+		btnOpen.setBounds(493, 572, 75, 25);
 		btnOpen.setText("Open");
 		
 		Button btnClose = new Button(shell, SWT.NONE);
@@ -322,20 +343,29 @@ public class OfficeGUI {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				//send message that block is closed 
+				String msgClose = rt.createOpenCloseMsg(textOpenClose.getText(), textBlock.getText(), "close");
+				textOpenClose.append(msgClose + "\n");
+				tct.newMaintMsg(msgClose);
+				//append that message to text area 
 				//append that message to text area
 			}
 		});
-		btnClose.setBounds(642, 402, 75, 25);
+		btnClose.setBounds(616, 572, 75, 25);
 		btnClose.setText("Close ");
 		
 		textOpenClose = new Text(shell, SWT.MULTI | SWT.BORDER | SWT.WRAP);
-		textOpenClose.setBounds(454, 431, 277, 123);
+		textOpenClose.setBounds(461, 443, 277, 123);
+		textOpenClose.setText("Open/Close Messages: \n");
 		
 		Button btnShowBeacan = new Button(shell, SWT.NONE);
 		btnShowBeacan.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				//send message to track controller to tell train to show beacan 
+				//append to routing list
+				int blockID = rt.getLastBlock();
+				tct.showBeacon(comboLine.getText(), blockID);
+				textRouting.append("Line: " + comboLine.getText() + " Block ID: " + blockID + " Show Beacan\n");
 			}
 		});
 		btnShowBeacan.setBounds(596, 347, 75, 25);
@@ -357,29 +387,46 @@ public class OfficeGUI {
 		lblRouting.setText("Routing ");
 		
 		Label lblBlockStatus = new Label(shell, SWT.NONE);
-		lblBlockStatus.setBounds(879, 383, 75, 15);
+		lblBlockStatus.setBounds(862, 383, 75, 15);
 		lblBlockStatus.setText("Block Status");
 		
 		Label lblBlock_1 = new Label(shell, SWT.NONE);
-		lblBlock_1.setBounds(802, 407, 29, 15);
+		lblBlock_1.setBounds(795, 419, 29, 15);
 		lblBlock_1.setText("Block");
 		
 		textBlockStatus = new Text(shell, SWT.BORDER);
-		textBlockStatus.setBounds(838, 404, 40, 21);
+		textBlockStatus.setBounds(830, 416, 40, 21);
 		
 		textStatus = new Text(shell, SWT.MULTI | SWT.BORDER | SWT.WRAP);
-		textStatus.setBounds(766, 431, 271, 123);
+		textStatus.setBounds(766, 443, 271, 123);
 		
 		Button btnGetStatus = new Button(shell, SWT.NONE);
 		btnGetStatus.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				//get the status of block from Track Controller
-				//append that message to text area
+				
+				byte stat = tct.getBlockStatus(textStatusLine.getText(), Integer.parseInt(textBlockStatus.getText()));
+				if(stat == 1)
+					textStatus.append("Line: " +  textStatusLine.getText() + "Block: " + textBlockStatus.getText() + " Occupied.");
 			}
 		});
-		btnGetStatus.setBounds(918, 400, 75, 25);
+		btnGetStatus.setBounds(950, 572, 75, 25);
 		btnGetStatus.setText("Get Status");
+		
+		textOpenCloseLine = new Text(shell, SWT.BORDER);
+		textOpenCloseLine.setBounds(615, 416, 76, 21);
+		
+		Label lblLine_1 = new Label(shell, SWT.NONE);
+		lblLine_1.setBounds(634, 400, 55, 15);
+		lblLine_1.setText("Line");
+		
+		textStatusLine = new Text(shell, SWT.BORDER);
+		textStatusLine.setBounds(933, 416, 76, 21);
+		
+		Label lblLine_2 = new Label(shell, SWT.NONE);
+		lblLine_2.setBounds(892, 419, 40, 15);
+		lblLine_2.setText("Line");
 		for(int i = 0; i < greenLine.size(); i++)
 			comboStationsGreen.add(greenLine.get(i));
 

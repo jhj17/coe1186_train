@@ -61,6 +61,18 @@ public class Router
 		return msg.toString();
 		//return null;
 	}
+	public String createOpenCloseMsg(String line, String blockID, String maint)
+	{
+		StringBuffer msg = new StringBuffer(line);
+		msg.append("," + blockID + "," + maint);
+		return msg.toString();
+		
+	}
+	public int getLastBlock()
+	{
+		int lastBlock = Integer.parseInt(blockIDs.get(blockIDs.size()-1));
+		return lastBlock;
+	}
 	public void printStatus(/*TrackControllerWrapper tcw,*/ int ind, String trainID)
 	{
 		int j = 0;
