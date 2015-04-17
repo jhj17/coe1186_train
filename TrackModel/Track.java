@@ -345,15 +345,29 @@ public void printBlockList(ArrayList<Block> printList)
 	public Block getBlock(int blockNumber, String line) {
 		// TODO Auto-generated method stub
 		
-		Block currentBlock;
-		if(line.equals("Red"))
+		Block returnBlock = null;
+		if(line.equals("red"))
 		{
-			return redBlocks.get(blockNumber-1);
+			for(Block currentBlock: redBlocks)
+			{
+				if(currentBlock.getBlockNumber() == blockNumber)
+				{
+					returnBlock = currentBlock;
+				}
+			}
 		}
 		else 
 		{
-			return greenBlocks.get(blockNumber-1);
+			for(Block currentBlock: greenBlocks)
+			{
+				if(currentBlock.getBlockNumber() == blockNumber)
+				{
+					returnBlock = currentBlock;
+				}
+			}
 		}
+
+		return returnBlock;
 	}
 	
 	@Override

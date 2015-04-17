@@ -33,11 +33,11 @@ public class Block implements BlockInterface {
 	String stationName;
 	double friction = 0.001;
 
-	//ArrayList<Block> switchNext1;
-	//ArrayList<Block> switchNext2;
-	
+
 	//..User configurable attributes..
-	//boolean brokenBlock;
+	private boolean brokenBlock = false;
+	private boolean closedBlock = false;
+
 	//boolean brokenCircuit;
 	
 	//Usage attributes
@@ -45,14 +45,13 @@ public class Block implements BlockInterface {
 	
 //	..Usage attributes..
 
-	int trainID;
-	boolean blockOccupied;
+	private int trainID = 0;
+	private boolean blockOccupied = false;
 	boolean crossingOccurence;
 	double commandedAuthority = 0;
 	double commandedSpeed;
 	double distanceTraveled;
 	boolean lightsGreenTrueRedFalse;
-	boolean blockClosed;
 	boolean beacon;
 /*
 	beaconPosition: double
@@ -204,9 +203,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 	{
 		Block returnBlock = null;
 		seen = 1;
-		//System.out.println(this.getSection() + this.getBlockNumber());
-		//System.out.println(this.getNext());
-		//System.out.println(this.getPrevious());
 		boolean zeroNext = false;
 		boolean zeroPrevious = false;
 
@@ -284,11 +280,8 @@ public Block(String[] splitStrings, Block lastCreated) {
 
 	public String getSwitchType()
 	{
-
 		return switchType;
 	}		
-
-
 	public String getArrow()
 	{
 
@@ -420,21 +413,10 @@ public Block traverseTrain(int train)
 
 	}
 
-
-
-
-
-
-
-
 	public void printBlock()
 	{
 		
-		
-	//	blockLength = Integer.parseInt(splitStrings[3]);
-	//	grade = Double.parseDouble(splitStrings[4]);
-	//  speedLimit = Integer.parseInt(splitStrings[5]);
-	//	infrastructure = splitStrings[6];
+
 		
 	}
 	
@@ -463,8 +445,12 @@ public Block traverseTrain(int train)
 	}
 	@Override
 	public boolean isSwitch() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		if(switchNumber.length()>0)
+			return true;
+		else
+			return false;
+
 	}
 
 	@Override
@@ -562,7 +548,7 @@ public Block traverseTrain(int train)
 	public void closeBlock()
 	{
 		
-		blockClosed = true;
+		closedBlock = true;
 	}
 
 	public int getTrainID() {
@@ -588,6 +574,21 @@ public Block traverseTrain(int train)
 	public int getSpeedLimit() {
 		// TODO Auto-generated method stub
 		return speedLimit;
+	}
+
+	public String toString()
+	{
+		return this.getSection() + "\t" + this.getBlockNumber() + "\t" + this.isBlockOccupied() + "\t" + this.isBroken() + "\t" +this.isClosed();
+	}
+
+	public boolean isBroken()
+	{
+		return brokenBlock;
+	}
+
+	public boolean isClosed()
+	{
+		return closedBlock;
 	}
 
 }

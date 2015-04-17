@@ -37,4 +37,38 @@ ArrayList<String> route = trackTester.getRoute("green","PIONEER\'94);\
 ArrayList<String> route = trackTester.getRoute("red","SHADYSIDE");\
 \
 trackTester.placeTrain("green", 1);\
-trackTester.placeTrain("red", 5);}
+trackTester.placeTrain("red", 5);\
+\
+\
+
+\i0 WAYSIDE CONTROLLER METHODS:\
+\
+\
+Track methods: \
+public Block getBlock(int blockNumber, String line) \
+\
+
+\b Block methods:\
+
+\b0 public boolean isSwitch() \
+\
+public Block traverse() \'97> EQUIVALENT TO GETNEXT METHOD.\
+^
+\i returns the next block if there is one and itself if there is no correct next block. \
+\
+
+\i0 public String toString() \
+prints: Section, number, occupied (boolean), broken (boolean), maintenance/closed (boolean)\
+\
+public boolean isBroken()\
+public boolean isClosed()\
+public boolean isBlockOccupied() \{\
+public void toggleSwitch()\
+\
+
+\i \
+\
+\
+\
+\
+}

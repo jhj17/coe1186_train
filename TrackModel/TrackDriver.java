@@ -12,6 +12,13 @@ public class TrackDriver {
 		// TODO Auto-generated method stub
 		
 		Track trackTester = new Track();
+
+		Block get1 = trackTester.getBlock(27, "red");
+		Block get2 = trackTester.getBlock(28,"red");
+		System.out.println(get1.toString() + " switch: " + get2.isSwitch());
+		System.out.println(get2.toString() + " switch: " + get2.isSwitch());
+
+//TEST GETTING ROUTE FOR CTC
 		//trackTester.getRoute("green","PIONEER");
 	/*	trackTester.getRoute("green","EDGEBROOK");
 		trackTester.getRoute("green","BLANK");
@@ -19,7 +26,7 @@ public class TrackDriver {
 		trackTester.getRoute("green","SOUTH BANK");
 */
 
-
+/*
 		System.out.println(trackTester.getRoute("red","SHADYSIDE").toString());
 		System.out.println(trackTester.getRoute("red","SWISSVILLE").toString());
 
@@ -29,7 +36,7 @@ public class TrackDriver {
 		trackTester.placeTrain("green", 1);
 		trackTester.placeTrain("red", 5);
 
-
+*/
 
 //TESTING PLACE OTHER TRAINS. 
 		//trackTester.placeTrain("green", 2);
