@@ -101,7 +101,7 @@ public class CTCGUI {
 	protected void createContents() {
 		shell = new Shell();
 		shell.setSize(1063, 659);
-		shell.setText("SWT Application");
+		shell.setText("CTC System");
 		
 		Label lblSchedule = new Label(shell, SWT.NONE);
 		lblSchedule.setBounds(159, 32, 97, 15);
@@ -490,8 +490,16 @@ public class CTCGUI {
 		lblTrain_1.setText("Train");
 		
 		Button btnTransitSystem = new Button(shell, SWT.NONE);
+		btnTransitSystem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				TransitSystem trackLayout = new TransitSystem();
+				trackLayout.open();
+			}
+		});
 		btnTransitSystem.setBounds(80, 572, 201, 25);
 		btnTransitSystem.setText("Transit System");
+		
 		for(int i = 0; i < greenLine.size(); i++)
 			comboStationsGreen.add(greenLine.get(i));
 
