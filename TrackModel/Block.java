@@ -238,8 +238,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 				{
 					returnBlock = this;
 				}
-				System.out.println("got here");
-				System.out.println(returnBlock);
 			}
 			else if(this.getNext() == null)
 			{

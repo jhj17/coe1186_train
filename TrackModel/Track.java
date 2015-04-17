@@ -192,12 +192,16 @@ public void printBlockList(ArrayList<Block> printList)
 		String routeBlocks;
 		for(Block path: pathBlocks)
 		{
-			routeBlocks = path.getSection() +path.getBlockNumber();
+			routeBlocks = path.getBlockNumber() + "," + path.getSection() + "," + path.getBlockLength() + "," + path.getSpeedLimit();
 			pathBlockStrings.add(routeBlocks);
 		}
 
-		System.out.println(pathBlockStrings.toString());
-		return null;
+		//System.out.println(pathBlockStrings.toString());
+		return pathBlockStrings;
+
+
+		//"blockNumber, section, blockLength, speed limit" in each string, separated by commas.
+
 
 	}
 	private void printAllSwitches(ArrayList<Switch> currentSwitches) {
@@ -318,7 +322,6 @@ public void printBlockList(ArrayList<Block> printList)
 
 	public void placeTrain(String line, int trainID )
 	{	
-		System.out.println("placing train");
 		Block trainBlock = null;
 		if(line.equals("red"))
 		{
@@ -330,9 +333,6 @@ public void printBlockList(ArrayList<Block> printList)
 		}
 
 			trainBlocks.add(trainBlock);
-
-		System.out.println(trainBlocks.toString());
-
 	}
 	
 	/*public Block getBlock(int TrainID)

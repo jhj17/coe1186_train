@@ -20,7 +20,9 @@ public class TrackDriver {
 */
 
 
-		trackTester.getRoute("red","SHADYSIDE");
+		System.out.println(trackTester.getRoute("red","SHADYSIDE").toString());
+		System.out.println(trackTester.getRoute("red","SWISSVILLE").toString());
+
 		trackTester.getRoute("red","HERRON AVE");
 		trackTester.getRoute("red","SWISSVILLE");
 

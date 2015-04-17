@@ -28,4 +28,13 @@ do NOT use ID = 0\
 \b public void placeTrain(String line, int trainID )\
 
 \b0 \
-}
+
+\i\b overall example usage:\
+
+\b0 Track trackTester = new Track();\
+\
+ArrayList<String> route = trackTester.getRoute("green","PIONEER\'94);\
+ArrayList<String> route = trackTester.getRoute("red","SHADYSIDE");\
+\
+trackTester.placeTrain("green", 1);\
+trackTester.placeTrain("red", 5);}
