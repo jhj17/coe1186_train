@@ -67,7 +67,6 @@ public class Track implements TrackInterface {
 		{
 			setupSwitch.setup();
 		}
-	printBlockList(currentAll);
 
 //TEST CURRENT BLOCKS AS WELL AS SWITCH TOGGLING. 
 		/*printBlockList(currentAll);
@@ -80,10 +79,10 @@ public class Track implements TrackInterface {
 */
 
 //TEST FOR PROPER ROUTING! 
-		printSwitchList(currentSwitches);
+		//printSwitchList(currentSwitches);
 
 
-		System.out.println();
+		/*System.out.println();
 		Block traverseBlock = redYard;
 		Block lastTraverse = null;
 		if(traverseBlock != null)
@@ -101,7 +100,7 @@ public class Track implements TrackInterface {
 				traverseBlock.toggleSwitch();
 			}
 		}
-
+*/
 
 		//store all current train blocks 
 	}
@@ -159,33 +158,47 @@ public void printBlockList(ArrayList<Block> printList)
 
 	public ArrayList<String> getRoute(String line, String destination)
 	{
-		
-		ArrayList<Block >allBlocks; //begin with right blocks 
-		if(line.equals("Red"))
-		{
-			allBlocks = redBlocks;
-		}
+		ArrayList<Block> pathBlocks = new ArrayList<Block>();
+		ArrayList<String> pathBlockStrings = new ArrayList<String>();
+		Block currentBlock = null;
+		if(line.equals("red"))
+			currentBlock = redYard;
 		else
+			currentBlock = greenYard;
+
+		pathBlocks.add(currentBlock);
+		while(!currentBlock.getStation().equals(destination))
 		{
-			allBlocks = greenBlocks;
-		}
-		
-		toggleSwitch("Green", 1); //HARD CODED-CHEATSY THING. 
-		
-		ArrayList<String> path = new ArrayList<String>(); //Store the path 
-		for(int i = 0; i<allBlocks.size();i++)
-		{
-			Block currentBlock = allBlocks.get(i);
-			System.out.println(allBlocks.get(i).getSection());
-			path.add(currentBlock.getBlockNumber() + "|" + currentBlock.getBlockLength() + "|" + currentBlock.getSpeedLimit());
-	
-			if(allBlocks.get(i).stationName != null && (allBlocks.get(i).stationName).equals(" " + destination))
+			Block lastTraverse = currentBlock;
+//			System.out.println(currentBlock.getSection() + currentBlock.getBlockNumber() + " " + currentBlock.getStation());
+
+			currentBlock = currentBlock.traverse();
+
+
+			if(lastTraverse == currentBlock)
 			{
-				//System.out.println("found it!");
-				return path;
+				currentBlock.toggleSwitch();
 			}
-		}		
-		return path;
+			else
+			{
+					pathBlocks.add(currentBlock);
+			}
+		}
+
+		currentBlock.traverse();
+		currentBlock.setSeen(0);
+
+
+		String routeBlocks;
+		for(Block path: pathBlocks)
+		{
+			routeBlocks = path.getSection() +path.getBlockNumber();
+			pathBlockStrings.add(routeBlocks);
+		}
+
+		System.out.println(pathBlockStrings.toString());
+		return null;
+
 	}
 	private void printAllSwitches(ArrayList<Switch> currentSwitches) {
 		for(Switch temp: currentSwitches)
@@ -261,7 +274,6 @@ public void printBlockList(ArrayList<Block> printList)
 		
 		return null;
 	}
-
 	@Override
 	public boolean closeBlock(String line, int blockNumber) {
 		// TODO Auto-generated method stub
@@ -277,7 +289,6 @@ public void printBlockList(ArrayList<Block> printList)
 		getBlock(blockNumber, line).setCommandedSpeed(commandedSpeed);
 		
 	}
-
 	@Override
 	public boolean toggleRedGreen(String line, int blockNumber) {
 		// TODO Auto-generated method stub
@@ -295,7 +306,6 @@ public void printBlockList(ArrayList<Block> printList)
 				{
 					trainBlocks.remove(i);
 					trainBlocks.add(nextBlock);
-
 				}
 				//printBlockList(trainBlocks);
 				return;

@@ -12,20 +12,38 @@ public class TrackDriver {
 		// TODO Auto-generated method stub
 		
 		Track trackTester = new Track();
+		//trackTester.getRoute("green","PIONEER");
+	/*	trackTester.getRoute("green","EDGEBROOK");
+		trackTester.getRoute("green","BLANK");
+		trackTester.getRoute("green","WHITED");
+		trackTester.getRoute("green","SOUTH BANK");
+*/
+
+
+		trackTester.getRoute("red","SHADYSIDE");
+		trackTester.getRoute("red","HERRON AVE");
+		trackTester.getRoute("red","SWISSVILLE");
+
+
+
 		trackTester.placeTrain("green", 1);
 		trackTester.placeTrain("red", 5);
 
+
+
+//TESTING PLACE OTHER TRAINS. 
 		//trackTester.placeTrain("green", 2);
 		//trackTester.placeTrain("green", 3);
 		//trackTester.placeTrain("green", 4);
-
 		//trackTester.placeTrain("Red", 15);
 
-		for(int i = 0;i<1000;i++)
+//TESTING TRAIN TRAVERSAL. 
+		/*for(int i = 0;i<1000;i++)
 		{
-			trackTester.updateDistance(1,100);
+			trackTester.updateDistance(5,100);
 			//trackTester.updateDistance(TrainID, distance)
 		}
+		*/
 
 		/*
 		trackTester.toggleSwitch("Green", 153);
@@ -83,3 +101,6 @@ public class TrackDriver {
 	}
 
 }
+
+
+

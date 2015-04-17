@@ -19,7 +19,9 @@ public class Block implements BlockInterface {
 	private int direction;
 	private String crossing; //***
 	private String switchType;
+	private String stationSide;
 //
+
 	private boolean toYard = false;
 	private boolean fromYard = false;
 	private Block next;
@@ -93,6 +95,13 @@ public Block(String[] splitStrings, Block lastCreated) {
 		fromYard = true;
 	}
 
+	if(toYard == false && fromYard == false && station.length()>0)
+	{
+		String[] stationStuff = station.split("-");
+		station = stationStuff[0];
+		stationSide = stationStuff[1];
+	}
+
 	if(lastCreated == null)
 	{
 
@@ -141,9 +150,8 @@ public Block(String[] splitStrings, Block lastCreated) {
 
 	public void toggleSwitch()
 	{
-
-		switcher.toggleSwitch();
-
+		if(switcher!=null)
+			switcher.toggleSwitch();
 	}
 	public Block getNext() {
 	// TODO Auto-generated method stub
@@ -162,6 +170,15 @@ public Block(String[] splitStrings, Block lastCreated) {
 		return section;
 		
 	}
+	public String getStation()
+	{
+		return station;
+	}
+
+	public String getStationSide()
+	{
+		return stationSide;
+	}
 
 	public String getSwitchNumber()
 	{
@@ -174,7 +191,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 		return switchBlock;
 	}
 		
-	private	void setSeen(int i)
+	public void setSeen(int i)
 	{
 		seen = i;
 	}
@@ -302,8 +319,8 @@ public Block(String[] splitStrings, Block lastCreated) {
 			distanceTraveled = 0;
 			newDist = newDist - blockLength;
 			//((Block) this.getNext()).placeTrain(trainID, newDist); <----------- traversal move 
-			currentBlock = this.traverse();
-			if(temp == currentBlock)
+			currentBlock = this.traverseTrain(trainID); 
+			if(temp == currentBlock) //THIS IS THE JOB OF THE WAYSIDE... DO NOT ACTUALLY IMPLEMENT
 			{
 				currentBlock.toggleSwitch();
 				currentBlock = currentBlock.traverseTrain(trainID);
