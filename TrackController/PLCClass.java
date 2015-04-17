@@ -70,6 +70,8 @@ public class PLCClass {
 		JexlContext context = new MapContext();
 		context.set("b1_occupied", nextBlock.isBlockOccupied());
 		context.set("b2_occupied", destinationBlock.isBlockOccupied());
+		context.set("b1_broken", nextBlock.isBroken());
+		context.set("b2_broken", destinationBlock.isBroken());
 
 		// evaluate expression with variables
 		boolean result = (boolean) e.evaluate(context);
