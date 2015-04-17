@@ -20,31 +20,6 @@ import java.util.ArrayList;
 public class MovingBlockOverlayMainGUI {
 
 	private static boolean mboMode;
-	private static MBO mbo = new MBO(mboMode);
-	private static Scheduler scheduler = new Scheduler();
-
-	/*****Communication with the CTC: setMBOMode(), and getSchedule()*/
-	public void setMBOMode(boolean mboMode) {
-		this.mboMode = mboMode;
-	}
-
-	public ArrayList<String> getSchedule() {
-		return scheduler.getSchedule();
-	}
-
-	/*****Communication with Train Model: getSpeed(), getAuthority()*/
-	public double getSpeed(int trainID) {
-		return mbo.calculateSuggestedSpeed();
-	}
-
-	public double getAuthority(int trainID) {
-		return mbo.calculateSuggestedAuthority();
-	}
-
-	public double setPosition(double position, int id) {
-		return 0;
-	}
-
 
 	public static void main(String[] args) {
 
@@ -53,7 +28,7 @@ public class MovingBlockOverlayMainGUI {
 		JScrollPane jScrollPane, oPjScrollPane;
 		JTextField startInput;
 		JLabel startLabel;
-		JButton trainScheduleButton, operatorScheduleButton, gernerateScheduleButton;
+		JButton trainScheduleButton, operatorScheduleButton, gernerateScheduleButton, trainsStatusButton;
 		JPanel topPanel, centerPanel, southPanel;
 		String timeToDispatch;
 
@@ -66,10 +41,12 @@ public class MovingBlockOverlayMainGUI {
 
 		trainScheduleButton = new JButton("Set Time Table");
 		operatorScheduleButton = new JButton("Set Operator Schedule");
+		trainsStatusButton = new JButton("Train Status");
 		gernerateScheduleButton = new JButton("Generate Schedule");
 
 		trainScheduleButton.setEnabled(true);
 		operatorScheduleButton.setEnabled(true);
+		trainsStatusButton.setEnabled(true);
 		gernerateScheduleButton.setEnabled(false);
 
 		String columnNames[]  = {"Train ID", "Line", "Station", "Total Time to Station w/ Dwell (min)"};
@@ -104,12 +81,13 @@ public class MovingBlockOverlayMainGUI {
 		JPanel southButtonsPanel = new JPanel(new FlowLayout());
 
 		/**North of buttonsPanel**/
-		centerButtonsPanel.add(startLabel);
-		centerButtonsPanel.add(startInput);
-
-		/**Center of buttonsPanel**/
 		northButtonsPanel.add(trainScheduleButton);
 		northButtonsPanel.add(operatorScheduleButton);
+		northButtonsPanel.add(trainsStatusButton);
+
+		/**Center of buttonsPanel**/
+		centerButtonsPanel.add(startLabel);
+		centerButtonsPanel.add(startInput);
 
 		/**South of buttonsPanel**/
 		southButtonsPanel.add(gernerateScheduleButton);
@@ -120,7 +98,6 @@ public class MovingBlockOverlayMainGUI {
 
 		topPanel.add(buttonsPanel);
 		topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		topPanel.setBackground(Color.RED);
 		centerPanel.add(jScrollPane, BorderLayout.CENTER);
 		southPanel.add(oPjScrollPane, BorderLayout.SOUTH);
 
@@ -178,5 +155,9 @@ public class MovingBlockOverlayMainGUI {
 
 			}
 		});
+	}
+
+	public void setMBOMode(boolean mboMode) {
+			this.mboMode = mboMode;
 	}
 }

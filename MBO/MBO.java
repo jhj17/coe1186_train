@@ -7,19 +7,11 @@
 
 public class MBO{
 
-	private boolean mboMode;
-
-	/*
-	* Contructor
-	*/
-	public MBO(boolean mboMode) {
-		this.mboMode = mboMode;
-	}
-
 	/*
 	* Calculates the safe speed based on a given train and next train's locations. 
+	* Get train location from TrainModel objects container using trainID.
 	*/
-	public double calculateSuggestedSpeed() {
+	public double getSpeed(int trainID) {
 		if(mboMode)
 			return -1;
 		else {
@@ -30,9 +22,9 @@ public class MBO{
 	}
 
 	/*
-	* Calculates the safe authority based on a given train's speed.
+	* Calculates the safe authority based on a given train's suggested speed.
 	*/
-	public double calculateSuggestedAuthority() {
+	public double getAuthority(int trainID) {
 		if(mboMode)
 			return -1;
 		else {

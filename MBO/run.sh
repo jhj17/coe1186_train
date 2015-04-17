@@ -1,0 +1,2 @@
+javac MovingBlockOverlayMainGUI.java
+java MovingBlockOverlayMainGUI

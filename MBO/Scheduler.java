@@ -11,7 +11,6 @@ public class Scheduler{
 
 	private ArrayList<String> schedule = new ArrayList<String>();
 
-
 	/**
 	* Start creating schedule after necessary information is provided
 	* 1. station
@@ -23,10 +22,9 @@ public class Scheduler{
 
 
 
-
 	}
 
- 	public ArrayList<String> getSchedule() {
+	public ArrayList<String> getSchedule() {
 		schedule.add("");
 		return schedule;
 	}
