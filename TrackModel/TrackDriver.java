@@ -26,8 +26,6 @@ public class TrackDriver {
 		trackTester.getRoute("red","HERRON AVE");
 		trackTester.getRoute("red","SWISSVILLE");
 
-
-
 		trackTester.placeTrain("green", 1);
 		trackTester.placeTrain("red", 5);
 
