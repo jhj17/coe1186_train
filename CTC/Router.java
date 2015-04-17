@@ -9,10 +9,12 @@ public class Router
 	private String line;
 	private double authority;
 	private String train;
-	public Router(String t, String line)
+	private TrackControllerWrapper tcw;
+	public Router(String t, String line, TrackControllerWrapper tcw)
 	{
 		train = t;
 		this.line = line;
+		this.tcw = tcw;
 	}
 	public Router()
 	{
@@ -28,25 +30,28 @@ public class Router
 	}
 	public void getRouteFB(Track tr, String trainID, String destination) throws IOException
 	{
-		
+		String lineLowerCase = line.toLowerCase();
 		int trainInt = Integer.parseInt(trainID);
 		System.out.println("Train Int: " + trainInt + " Line: " + line);
-		blockInfo = tr.getRoute(line, destination);
+		blockInfo = tr.getRoute(lineLowerCase, destination);
 		for(int i = 0; i < blockInfo.size(); i++)
 		{
 			System.out.println(blockInfo.get(i));
 			String[] infoSplit = blockInfo.get(i).split(",");
-			for(int k = 0; k < infoSplit.length; k++)
+			blockIDs.add(infoSplit[0]);
+			sectionIDs.add(infoSplit[1]);
+			theAuthorities.add(infoSplit[2]);
+			theSpeeds.add(infoSplit[3]);
+		}
+		tr.placeTrain(line, trainInt);
+		for(int i =0; i < blockIDs.size(); i++)
+		{
+			int blockInt = Integer.parseInt(blockIDs.get(i));
+			if(tcw.getBlockStatus(line, blockInt) == 1);
 			{
-				blockIDs.add(infoSplit[0]);
-				sectionIDs.add(infoSplit[1]);
-				theAuthorities.add(infoSplit[2]);
-				theSpeeds.add(infoSplit[3]);
+				createProceedMsgFB(line, i);
 			}
 		}
-		//tr.placeTrain(line, trainInt);
-	
-
 	}
 	public void getRouteMBO()
 	{
@@ -64,19 +69,30 @@ public class Router
 	{
 		int indexB = index+1;
 		int indexC = indexB+1;
-		//String msg = new String();
-		//System.out.println("Full Authority: " + aut);
 		int minSpeed = Math.min(Integer.parseInt(theSpeeds.get(index)), Integer.parseInt(theSpeeds.get(indexB)));
-		
 		authority = authority - Double.parseDouble(theAuthorities.get(index));
-		System.out.println("Train: " + train + " Line: " + l);
 		StringBuffer msg = new StringBuffer(l);
-		msg.append(","  + blockIDs.get(index) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexC) 
-				+ "," + minSpeed + "," + authority);
-			
+		if(indexC == blockIDs.size() - 1)
+		{
+			tcw.showBeacon(l, Integer.parseInt(blockInfo.get(index)));
+		}
 		
+		if(index == blockIDs.size()-2)
+		{
+			msg.append(","  + blockIDs.get(index) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexB) 
+				+ "," + minSpeed + "," + (int)authority);
+		}
+		else if(index == blockIDs.size()-1)
+		{
+			msg.append(","  + blockIDs.get(index) + "," + blockIDs.get(index) +  "," + blockIDs.get(index) 
+					+ "," + theSpeeds.get(index) + "," + (int)(authority/2));
+		}
+		else
+		{
+			msg.append(","  + blockIDs.get(index) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexB) 
+					+ "," + minSpeed + "," + (int)authority);
+		}
 		return msg.toString();
-		//return null;
 	}
 	public String createProceedMsgMBO(String l, int index)
 	{

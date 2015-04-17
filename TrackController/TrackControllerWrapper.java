@@ -532,6 +532,8 @@ public class TrackControllerWrapper {
 		
 		boolean returnResult = true;
 
+		// TODO: check suggested speed for -1 to show that its in MBO mode
+		
 		// based on the track line and current block, decide which track controller to request
 		if(line.equals("red")) {
 			// track controller part of the red line
@@ -565,32 +567,32 @@ public class TrackControllerWrapper {
 					
 					if(returnResult) {
 						// toggle switch for the next block
-						//if(nxtBlock.getNext().getBlockNumber() != destBlock.getBlockNumber()) {
+						if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
 							// need to toggle switch
-							//track.toggleSwitch("red", nextBlock);
-						//}
+							nxtBlock.toggleSwitch();
+						}
 						
 						// send block suggested speed and authority
-						track.commandAuthority("red", suggestedAuthority, nextBlock);
-						track.commandSpeed("red", suggestedSpeed, nextBlock);
+						track.commandAuthority("red", suggestedAuthority, currentBlock);
+						track.commandSpeed("red", suggestedSpeed, currentBlock);
 					}
 					else {
 						// send block speed and authority of 0
-						track.commandAuthority("red", 0, nextBlock);
-						track.commandSpeed("red", 0, nextBlock);
+						track.commandAuthority("red", 70, currentBlock);
+						track.commandSpeed("red", 0, currentBlock);
 					}
 				}
 				else {
 					// send block suggested speed and authority
-					track.commandAuthority("red", suggestedAuthority, nextBlock);
-					track.commandSpeed("red", suggestedSpeed, nextBlock);
+					track.commandAuthority("red", suggestedAuthority, currentBlock);
+					track.commandSpeed("red", suggestedSpeed, currentBlock);
 				}
 				
 			}
 			else {
 				// send block speed and authority of 0
-				track.commandAuthority("red", 0, nextBlock);
-				track.commandSpeed("red", 0, nextBlock);
+				track.commandAuthority("red", 70, currentBlock);
+				track.commandSpeed("red", 0, currentBlock);
 			}
 		}
 		else {
@@ -636,32 +638,32 @@ public class TrackControllerWrapper {
 					
 					if(returnResult) {
 						// toggle switch for the next block
-						//if(nxtBlock.getNext().getBlockNumber() != destBlock.getBlockNumber()) {
+						if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
 							// need to toggle switch
-							//track.toggleSwitch("green", nextBlock);
-						//}
+							nxtBlock.toggleSwitch();
+						}
 						
 						// send block suggested speed and authority
-						track.commandAuthority("green", suggestedAuthority, nextBlock);
-						track.commandSpeed("green", suggestedSpeed, nextBlock);
+						track.commandAuthority("green", suggestedAuthority, currentBlock);
+						track.commandSpeed("green", suggestedSpeed, currentBlock);
 					}
 					else {
 						// send block speed and authority of 0
-						track.commandAuthority("green", 0, nextBlock);
-						track.commandSpeed("green", 0, nextBlock);
+						track.commandAuthority("green", 70, currentBlock);
+						track.commandSpeed("green", 0, currentBlock);
 					}
 				}
 				else {
 					// next block is not a switch so just pass suggested speed and authority
-					track.commandAuthority("green", suggestedAuthority, nextBlock);
-					track.commandSpeed("green", suggestedSpeed, nextBlock);
+					track.commandAuthority("green", suggestedAuthority, currentBlock);
+					track.commandSpeed("green", suggestedSpeed, currentBlock);
 				}
 				
 			}
 			else {
 				// send block speed and authority of 0
-				track.commandAuthority("green", 0, nextBlock);
-				track.commandSpeed("green", 0, nextBlock);
+				track.commandAuthority("green", 70, currentBlock);
+				track.commandSpeed("green", 0, currentBlock);
 			}
 		}
 
