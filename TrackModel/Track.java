@@ -21,7 +21,6 @@ public class Track implements TrackInterface {
 	{
 		loadTrack("REDFINALV2.csv");	
 		loadTrack("GREENFINALV2.csv");	
-
 	}
 	public void loadTrack(String csvIn) throws IOException {
 
@@ -271,10 +270,7 @@ public void printBlockList(ArrayList<Block> printList)
 	public Block toggleSwitch(String line, int blockNumber) {
 		// TODO Auto-generated method stub
 
-		/*for(Switch setupSwitch: currentSwitches) //setup switch connections 
-		{
-			setupSwitch.setup();
-		}*/
+		//now block level
 		
 		return null;
 	}
@@ -289,7 +285,6 @@ public void printBlockList(ArrayList<Block> printList)
 	@Override
 	public void commandSpeed(String line, double commandedSpeed, int blockNumber) {
 		// TODO Auto-generated method stub
-
 		getBlock(blockNumber, line).setCommandedSpeed(commandedSpeed);
 		
 	}
@@ -402,22 +397,7 @@ public void printBlockList(ArrayList<Block> printList)
 	@Override
 	public void displayTrack() {
 		// TODO Auto-generated method stub
-		if(redBlocks!=null)
-		{
-			for(Block reddies: redBlocks)
-			{
-				reddies.printBlock();
-			}
-		}
-		if(greenBlocks != null)
-		{
-			
-			for(Block greenies: greenBlocks)
-			{
-				greenies.printBlock();
-				
-			}
-		}
+		//
 	}
 	
 	@Override

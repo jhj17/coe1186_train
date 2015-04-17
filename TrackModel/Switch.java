@@ -11,12 +11,11 @@ public class Switch implements SwitchInterface {
 	private Block unSwitchedBlock = null;
 	private Block switchBlock = null;
 	private int setupCount = 0;
-	
+	private boolean brokenSwitch = false;
+
 	//switchState: boolean
 	//nextBlock: blocK ?
-	//switchBroken: boolean; 
-	
-	
+		
 	public Switch(Block blockIn)
 	{
 		switchNumber = blockIn.getSwitchNumber();
@@ -96,7 +95,7 @@ public class Switch implements SwitchInterface {
 			if(switchBlock.getDirection()==-1) //if backwards 1-way 
 			{
 				switchBlock.setPrevious(switchedBlock);
-				
+
 				if(switchedBlock.getSection().equals(switchBlock.getSection()))
 				{
 					switchedBlock.setNext(switchBlock);
@@ -154,9 +153,11 @@ public class Switch implements SwitchInterface {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	public void adjustConnections() {
-		// TODO Auto-generated method stub
-	
+	public String toString()
+	{
+		if(brokenSwitch)
+			return switchedBlock.getLine() + "\t" + switchNumber + "\t" + brokenSwitch;
+		else
+			return switchedBlock.getLine() + "\t" + switchNumber + "\t" + switchedBlock.getSection() + switchedBlock.getBlockNumber();
 	}
 }

@@ -51,10 +51,10 @@ public interface BlockInterface {
 		 * 
 		 * returns: quantity asked for 
 		 */
-		public double getTrainCommandedSpeed(int TrainID);
-		public double getTrainAuthority(int TrainID);
-		public double getFrictionCoefficient(int TrainID);
-		public double getGrade(int TrainID);
+		public double getTrainCommandedSpeed();
+		public double getTrainAuthority();
+		public double getFrictionCoefficient();
+		public double getGrade();
 
 		
 		/*

@@ -13,10 +13,43 @@ public class TrackDriver {
 		
 		Track trackTester = new Track();
 
+
+/*
 		Block get1 = trackTester.getBlock(27, "red");
 		Block get2 = trackTester.getBlock(28,"red");
 		System.out.println(get1.toString() + " switch: " + get2.isSwitch());
 		System.out.println(get2.toString() + " switch: " + get2.isSwitch());
+
+		System.out.println(trackTester.getRoute("red","SHADYSIDE").toString());
+
+
+
+
+		trackTester.commandAuthority("red", 15, 27);
+		trackTester.commandSpeed("red", 20, 27);
+
+		System.out.println(get1.toString() + " authority: " + get1.getTrainAuthority());
+		System.out.println();
+
+
+		System.out.println(get1.toString() + " speed: " + get1.getTrainCommandedSpeed());
+
+*/
+
+// TESTING SWITCH TO STRING! 
+
+		/*if(get1.isSwitch())
+		{
+			System.out.println(get1.getSwitch().toString());
+		}
+
+		if(get2.isSwitch())
+		{
+			System.out.println(get2.getSwitch().toString());
+		}
+*/
+
+//		trackTester.getRoute("green","PIONEER");
 
 //TEST GETTING ROUTE FOR CTC
 		//trackTester.getRoute("green","PIONEER");

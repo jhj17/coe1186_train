@@ -21,7 +21,6 @@ public class Block implements BlockInterface {
 	private String switchType;
 	private String stationSide;
 //
-
 	private boolean toYard = false;
 	private boolean fromYard = false;
 	private Block next;
@@ -49,8 +48,8 @@ public class Block implements BlockInterface {
 	private boolean blockOccupied = false;
 	boolean crossingOccurence;
 	double commandedAuthority = 0;
-	double commandedSpeed;
-	double distanceTraveled;
+	double commandedSpeed = 0;
+	double distanceTraveled = 0;
 	boolean lightsGreenTrueRedFalse;
 	boolean beacon;
 /*
@@ -136,6 +135,11 @@ public Block(String[] splitStrings, Block lastCreated) {
 		next = nextBlock;
 	}
 
+	public String getLine()
+	{
+		return line;
+	}
+
 	public void setPrevious(Block previousBlock)
 	{
 
@@ -183,6 +187,11 @@ public Block(String[] splitStrings, Block lastCreated) {
 	{
 
 		return switchNumber;
+	}
+
+	public Switch getSwitch()
+	{
+		return switcher;
 	}
 	
 	public String getSwitchBlock()
@@ -466,31 +475,30 @@ public Block traverseTrain(int train)
 	}
 
 
-	public double getTrainCommandedSpeed(int TrainID) {
+	public double getTrainCommandedSpeed() {
 		// TODO Auto-generated method stub
 		return commandedSpeed;
 	}
 
 
-	public double getTrainAuthority(int TrainID) {
+	public double getTrainAuthority() {
 		// TODO Auto-generated method stub
 		return commandedAuthority;
 	}
 	
 	public void setAuthority(double authority)
 	{
-		
 		commandedAuthority = authority;
 	}
 
 	@Override
-	public double getFrictionCoefficient(int TrainID) {
+	public double getFrictionCoefficient() {
 		// TODO Auto-generated method stub
 		return friction;
 	}
 
 
-	public double getGrade(int TrainID) {
+	public double getGrade() {
 		// TODO Auto-generated method stub
 		return grade;
 	}
@@ -547,8 +555,13 @@ public Block traverseTrain(int train)
 
 	public void closeBlock()
 	{
-		
+	
 		closedBlock = true;
+	}
+
+	public void openBlock()
+	{
+		closedBlock = false;
 	}
 
 	public int getTrainID() {
