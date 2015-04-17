@@ -41,7 +41,9 @@ public class CTCGUI {
 	public static ArrayList<Router> routers = new ArrayList<Router>();
 	private Scheduler s;
 	private Track tk;
-	private TrackControllerTest tct = new TrackControllerTest();;
+	TrackControllerWrapper tcw;
+	public ArrayList<Train> theTrains = new ArrayList<Train>();
+	//private TrackControllerTest tct = new TrackControllerTest();;
 	public static double authority;
 	public static int indexSched = 0, indexFB = 0, indMBO = 0;
 	private Text textOpenCloseLine;
@@ -49,14 +51,40 @@ public class CTCGUI {
 	public static ArrayList<String> trainIDs = new ArrayList<String>();
 	private Text textTrainRoute;
 	private Router mainRouter = new Router();
+	private boolean done;
 
+	public CTCGUI(Track tk, TrackControllerWrapper tcw) throws FileNotFoundException
+	{
+		this.tk = tk;
+		this.tcw = tcw;
+		Scanner outScan = new Scanner(new File("redLine.txt"));
+		while(outScan.hasNextLine())
+		{
+			redLine.add(outScan.nextLine());
+		}
+		outScan = new Scanner(new File("greenLine.txt"));
+		while(outScan.hasNextLine())
+		{
+			greenLine.add(outScan.nextLine());
+		}
+		for(int i =0; i < greenLine.size(); i++)
+			System.out.println(greenLine.get(i));
+		System.out.println();
+		for(int i = 0; i < redLine.size(); i++)
+			System.out.println(redLine.get(i));
+		try {
+			open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Launch the application.
 	 * @param args
 	 * @throws FileNotFoundException 
 	 */
 	@SuppressWarnings("resource")
-	public static void main(String[] args) throws FileNotFoundException {
+	/*public static void main(String[] args) throws FileNotFoundException {
 		Scanner outScan = new Scanner(new File("redLine.txt"));
 		while(outScan.hasNextLine())
 		{
@@ -78,7 +106,7 @@ public class CTCGUI {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * Open the window.
@@ -198,7 +226,7 @@ public class CTCGUI {
 				String [] sched = null;
 				s = new Scheduler();
 				System.out.println("Train ID: " + trainID.getText() + " Line: " +  comboLine.getText());
-				Router newRouter = new Router(trainID.getText(), comboLine.getText());
+				Router newRouter = new Router(trainID.getText(), comboLine.getText(), tcw);
 				if(comboLine.getText().equals("Green"))
 				{
 					sched = s.createScheduleFB(comboStationsGreen.getText(), comboLine.getText(), trainID.getText());
@@ -213,6 +241,10 @@ public class CTCGUI {
 				indexSched++;
 				routers.add(newRouter);
 				// create train
+				int idTrain = Integer.parseInt(trainID.getText());
+				Train t = new Train(tk, idTrain);
+				theTrains.add(t);
+				
 			}
 		});
 		btnSchedule.setBounds(177, 124, 75, 25);
@@ -252,11 +284,6 @@ public class CTCGUI {
 		btnRoute.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				try {
-					tk = new Track();
-				} catch (IOException e2) {
-					e2.printStackTrace();
-				}
 				if(btnFixedBlock.getSelection() == true)
 				{
 					if(comboLine.getText().equals("Green"))
@@ -333,7 +360,10 @@ public class CTCGUI {
 						{
 							String msg = routers.get(i).createProceedMsgFB(routers.get(i).getLine(), indexFB);
 							textRouting.append(msg + "\n");
-							tct.newProceedMsg(msg);
+							if(msg != null)
+								done = tcw.newProceedMsg(msg);
+							else
+								System.out.println("Can't Return Message.");
 							indexFB++;
 							break;	
 						}
@@ -347,7 +377,7 @@ public class CTCGUI {
 						{
 							String msg = routers.get(i).createProceedMsgMBO(routers.get(i).getLine(),indMBO);
 							textRouting.append(msg + "\n");
-							tct.newProceedMsg(msg);
+							tcw.newProceedMsg(msg);
 							indMBO++;
 							break;	
 						}
@@ -378,7 +408,7 @@ public class CTCGUI {
 				//send message that block is opened 
 				String msgOpen = mainRouter.createOpenCloseMsg(textBlock.getText(), textOpenCloseLine.getText(), "open");
 				textOpenClose.append(msgOpen + "\n");
-				tct.newMaintMsg(msgOpen);
+				tcw.newMaintMsg(msgOpen);
 				//append that message to text area 
 			}
 		});
@@ -393,7 +423,7 @@ public class CTCGUI {
 				//append that message to text area 
 				String msgClose = mainRouter.createOpenCloseMsg(textBlock.getText(), textOpenCloseLine.getText(), "close");
 				textOpenClose.append(msgClose + "\n");
-				tct.newMaintMsg(msgClose);
+				tcw.newMaintMsg(msgClose);
 				
 			}
 		});
@@ -415,7 +445,7 @@ public class CTCGUI {
 					if(routers.get(i).getTrainID() == i+1)
 					{
 						int blockID = routers.get(i).getLastBlock();
-						tct.showBeacon(comboLine.getText(), blockID);
+						tcw.showBeacon(comboLine.getText(), blockID);
 						textRouting.append("Line: " + routers.get(i).getLine() + " Block ID: " + blockID + " Show Beacan\n");
 						break;
 					}
@@ -460,7 +490,7 @@ public class CTCGUI {
 			public void mouseDoubleClick(MouseEvent e) {
 				//get the status of block from Track Controller
 				
-				byte stat = tct.getBlockStatus(textStatusLine.getText(), Integer.parseInt(textBlockStatus.getText()));
+				byte stat = tcw.getBlockStatus(textStatusLine.getText(), Integer.parseInt(textBlockStatus.getText()));
 				if(stat == 1)
 					textStatus.append("Line: " +  textStatusLine.getText() + "Block: " + textBlockStatus.getText() + " Occupied.\n");
 			}
