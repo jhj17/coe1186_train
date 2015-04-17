@@ -12,6 +12,8 @@ public class Track implements TrackInterface {
 	private ArrayList<Block> greenBlocks = new ArrayList<Block>();
 	private ArrayList<Switch> redSwitches = new ArrayList<Switch>();
 	private ArrayList<Switch> greenSwitches = new ArrayList<Switch>();
+	private	ArrayList<Block> trainBlocks = new ArrayList<Block>();
+
 	private double coeffFriction;
 	private int weather;
 
@@ -65,41 +67,24 @@ public class Track implements TrackInterface {
 		{
 			setupSwitch.setup();
 		}
+	printBlockList(currentAll);
 
+//TEST CURRENT BLOCKS AS WELL AS SWITCH TOGGLING. 
 		/*printBlockList(currentAll);
 
 		for(Switch setupSwitch: currentSwitches) //setup switch connections 
 		{
 			setupSwitch.toggleSwitch();
 		}
-
 		printBlockList(currentAll);
-
-				printBlockList(currentAll);
-		
-		for(Switch setupSwitch: currentSwitches) //setup switch connections 
-		{
-			setupSwitch.toggleSwitch();
-		}
-
-		printBlockList(currentAll);
-		printSwitchList(currentSwitches);
-
-
-				printBlockList(currentAll);
-		
-		for(Switch setupSwitch: currentSwitches) //setup switch connections 
-		{
-			setupSwitch.toggleSwitch();
-		}
-
-		printBlockList(currentAll);
-
-		printSwitchList(currentSwitches);
 */
 
+//TEST FOR PROPER ROUTING! 
+		printSwitchList(currentSwitches);
+
+
 		System.out.println();
-		Block traverseBlock = greenYard;
+		Block traverseBlock = redYard;
 		Block lastTraverse = null;
 		if(traverseBlock != null)
 			System.out.println(traverseBlock.getSection()+traverseBlock.getBlockNumber());
@@ -112,14 +97,13 @@ public class Track implements TrackInterface {
 			System.out.println(traverseBlock.getSection() + traverseBlock.getBlockNumber());
 			if(traverseBlock == lastTraverse)
 			{
-				//System.out.println("toggling");
+				System.out.println("toggling");
 				traverseBlock.toggleSwitch();
 			}
 		}
-		
-		
-		//System.out.println();
-		//System.out.println("Yard: " + currentYard.getSection() + currentYard.getBlockNumber());		
+
+
+		//store all current train blocks 
 	}
 
 
@@ -137,7 +121,6 @@ public void printSwitchList(ArrayList<Switch> printList)
 		printBlockConnections(currentSwitch.getunSwitchedBlockBlock());
 		System.out.println();
 		//printBlockConnections()
-
 	}
 }
 
@@ -226,7 +209,6 @@ public void printBlockList(ArrayList<Block> printList)
 						newSwitch = false;
 					}
 				}
-
 				if(newSwitch)
 				{
 					currentSwitches.add(new Switch(currentBlock));
@@ -278,7 +260,6 @@ public void printBlockList(ArrayList<Block> printList)
 		}*/
 		
 		return null;
-		
 	}
 
 	@Override
@@ -301,34 +282,54 @@ public void printBlockList(ArrayList<Block> printList)
 	public boolean toggleRedGreen(String line, int blockNumber) {
 		// TODO Auto-generated method stub
 		return getBlock(blockNumber, line).toggleRedGreen();
-
 	}
-	
 	@Override
-	public void updateDistance(int TrainID, double distance) {
-		// TODO Auto-generated method stub
-		System.out.println();
-		getTrainBlock(TrainID).moveTrain(distance);
-		
+	public void updateDistance(int trainID, double distance) {
+ 		for(int i = 0; i<trainBlocks.size();i++)
+		{
+			if(trainBlocks.get(i).getTrainID() == trainID)
+			{
+				System.out.println(trainBlocks.get(i).getSection() + trainBlocks.get(i).getBlockNumber() + " has " +trainBlocks.get(i).getTrainID());
+				Block nextBlock = trainBlocks.get(i).moveTrain(distance);
+				if(nextBlock != trainBlocks.get(i))
+				{
+					trainBlocks.remove(i);
+					trainBlocks.add(nextBlock);
+
+				}
+				//printBlockList(trainBlocks);
+				return;
+			}
+		}
+
+	//	printBlockList(greenBlocks);
+
 	}
 
 	public void placeTrain(String line, int trainID )
 	{	
-		if(line.equals("Red"))
+		System.out.println("placing train");
+		Block trainBlock = null;
+		if(line.equals("red"))
 		{
-			redYard.placeTrain(trainID,0);
+			trainBlock = redYard.placeTrain(trainID,0);
 		}
 		else
 		{
-			greenYard.placeTrain(trainID,0);
-			//System.out.println("1 " +greenYard.getNext1() + " 2 "+ greenYard.getNext2());
+			trainBlock = greenYard.placeTrain(trainID,0);
 		}
+
+			trainBlocks.add(trainBlock);
+
+		System.out.println(trainBlocks.toString());
+
 	}
 	
-	public Block getBlock(int TrainID)
+	/*public Block getBlock(int TrainID)
 	{
 		return getTrainBlock(TrainID);	
 	}
+	*/
 	
 	@Override
 	public Block getBlock(int blockNumber, String line) {

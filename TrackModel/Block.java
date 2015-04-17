@@ -19,7 +19,7 @@ public class Block implements BlockInterface {
 	private int direction;
 	private String crossing; //***
 	private String switchType;
-
+//
 	private boolean toYard = false;
 	private boolean fromYard = false;
 	private Block next;
@@ -178,6 +178,11 @@ public Block(String[] splitStrings, Block lastCreated) {
 	{
 		seen = i;
 	}
+
+	private void setTrainID(int ID)
+	{
+		trainID = ID;
+	}
 	public Block traverse()
 	{
 		Block returnBlock = null;
@@ -212,6 +217,12 @@ public Block(String[] splitStrings, Block lastCreated) {
 			if(this.station.equals("TO YARD/FROM YARD"))
 			{
 				returnBlock = this.getNext();
+				if(returnBlock == null)
+				{
+					returnBlock = this;
+				}
+				System.out.println("got here");
+				System.out.println(returnBlock);
 			}
 			else if(this.getNext() == null)
 			{
@@ -241,7 +252,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 			}
 		}
 
-
 		if(zeroPrevious)
 		{
 			this.getPrevious().setSeen(0);
@@ -270,46 +280,138 @@ public Block(String[] splitStrings, Block lastCreated) {
 		return arrow;
 	}
 
-	public void placeTrain(int train, double distanceMoved)
+	public Block placeTrain(int train, double distanceMoved)
 	{
-		
-		System.out.println("Train place " + this.section + " " + this.blockNumber);
+		//System.out.println("Train place " + this.section + " " + this.blockNumber);
 		trainID = train;
 		blockOccupied = true;
-		this.moveTrain(distanceMoved);
-		
+		return this.moveTrain(distanceMoved);	
 	}
-	
-	public double moveTrain(double moved)
+	public Block moveTrain(double moved)
 	{
 		
 		double newDist = moved + distanceTraveled;
-		System.out.println("In " + this.section + " " + this.blockNumber + " moved: " + newDist + "Length:"+ this.blockLength);
+		//System.out.println("In " + this.section + " " + this.blockNumber + " moved: " + newDist + "Length:"+ this.blockLength);
 
 		Block currentBlock = this;
-		if(newDist>blockLength)
+		if(newDist>=blockLength)
 		{
-			
+
+			Block temp = currentBlock;
 			blockOccupied = false;
 			distanceTraveled = 0;
 			newDist = newDist - blockLength;
-			((Block) this.getNext()).placeTrain(trainID, newDist);
-			trainID = 0;
-			currentBlock = (Block) this.getNext();
-
+			//((Block) this.getNext()).placeTrain(trainID, newDist); <----------- traversal move 
+			currentBlock = this.traverse();
+			if(temp == currentBlock)
+			{
+				currentBlock.toggleSwitch();
+				currentBlock = currentBlock.traverseTrain(trainID);
+				System.out.println("toggle");
+			}
+			currentBlock =currentBlock.placeTrain(trainID,newDist);
+			//trainID = 0;
 		}
 		else
 		{
-			
 			distanceTraveled = newDist;
-
 		}
 		
 		//System.out.print("Train is currently in block: " + currentBlock.getSection() + " " + currentBlock.getBlockNumber());
-		return 0.0;
+		return currentBlock;
 		
 	}
 	
+public Block traverseTrain(int train)
+	{
+		Block returnBlock = null;
+		//System.out.println(this.getSection() + this.getBlockNumber());
+		//System.out.println(this.getNext());
+		//System.out.println(this.getPrevious());
+		boolean zeroNext = false;
+		boolean zeroPrevious = false;
+
+		if(direction == 1 || direction == -1)
+		{
+
+			if(this.getNext() == null)
+			{
+				returnBlock = this;
+
+			}
+			else
+			{
+				returnBlock = this.getNext();
+			}
+
+			if(this.getPrevious()!= null)
+			{
+				zeroPrevious = true;
+			}
+		}
+
+		else
+		{
+			if(this.station.equals("TO YARD/FROM YARD"))
+			{
+				returnBlock = this.getNext();
+				if(returnBlock == null)
+				{
+					returnBlock = this;
+				}
+				System.out.println("got here");
+				System.out.println(returnBlock);
+			}
+			else if(this.getNext() == null)
+			{
+				returnBlock = this;
+			}
+			else if(this.getPrevious() == null)
+			{
+				returnBlock = this;
+			}
+			else if(this.getNext().getTrainID() == train)
+			{
+				returnBlock = this.getPrevious();
+				zeroNext = true;
+			}
+			else if(this.getPrevious().getTrainID() == train)
+			{
+				returnBlock = this.getNext();
+				zeroPrevious = true;
+
+			}
+
+			if(returnBlock != null && this.getArrow().equals("Head") && returnBlock.getArrow().equals("Head") && (returnBlock.getDirection() == 1 || returnBlock.getDirection() == -1)) //going wrong way on 1-way case
+			{
+				returnBlock = this;
+				zeroPrevious = false;
+				zeroNext = false;
+			}
+		}
+
+		if(zeroPrevious)
+		{
+			this.getPrevious().setTrainID(0);
+		}
+
+		if(zeroNext)
+		{
+			this.getNext().setTrainID(0);
+		}
+		//System.out.println(this.getSection() + this.getBlockNumber());
+
+		return returnBlock;
+
+	}
+
+
+
+
+
+
+
+
 	public void printBlock()
 	{
 		

@@ -12,21 +12,21 @@ public class TrackDriver {
 		// TODO Auto-generated method stub
 		
 		Track trackTester = new Track();
+		trackTester.placeTrain("green", 1);
+		trackTester.placeTrain("red", 5);
 
-		
-/*
-		trackTester.displayTrack();
-		
-		trackTester.placeTrain("Green", 10);
-		trackTester.placeTrain("Red", 15);
+		//trackTester.placeTrain("green", 2);
+		//trackTester.placeTrain("green", 3);
+		//trackTester.placeTrain("green", 4);
 
+		//trackTester.placeTrain("Red", 15);
 
 		for(int i = 0;i<1000;i++)
 		{
-			trackTester.updateDistance(15,50);
+			trackTester.updateDistance(1,100);
 			//trackTester.updateDistance(TrainID, distance)
 		}
-		
+
 		/*
 		trackTester.toggleSwitch("Green", 153);
 		trackTester.toggleSwitch("Green", 1);
