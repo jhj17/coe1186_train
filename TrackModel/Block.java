@@ -30,7 +30,7 @@ public class Block implements BlockInterface {
 	private Switch switcher = null;
 
 	String stationName;
-	double friction = 0.001;
+	private double friction = 0.001;
 
 
 	//..User configurable attributes..
@@ -122,7 +122,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 		else
 			previous.setNext(this);
 	}
-
 
 //switches
 //stations
@@ -422,36 +421,25 @@ public Block traverseTrain(int train)
 
 	}
 
-	public void printBlock()
-	{
 		
-
-		
-	}
-	
-	
-	public void printSwitch()
-	{
-		
-		
-		
-		
-
-		
-	}
-
-	
 	public int getDirection()
 	{
 		
 		return direction;
 	}
 	
-	public boolean getBeacon()
+	public String getBeacon()
 	{
-		
-		return beacon;
+		if(station.length()>0)
+		{
+			return station + "," + stationSide + "," + "90" + "," + "4";
+		}
+		else
+		{
+			return "";
+		}
 	}
+
 	@Override
 	public boolean isSwitch() {
 		
@@ -474,12 +462,13 @@ public Block traverseTrain(int train)
 		return false;
 	}
 
-
 	public double getTrainCommandedSpeed() {
 		// TODO Auto-generated method stub
+
+		double temp = commandedAuthority;
+		commandedAuthority = -1.0;
 		return commandedSpeed;
 	}
-
 
 	public double getTrainAuthority() {
 		// TODO Auto-generated method stub
@@ -578,10 +567,7 @@ public Block traverseTrain(int train)
 
 	public boolean toggleRedGreen() {
 		// TODO Auto-generated method stub
-		
 		return !(lightsGreenTrueRedFalse);
-		
-
 	}
 
 	public int getSpeedLimit() {

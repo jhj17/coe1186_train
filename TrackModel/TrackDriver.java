@@ -12,8 +12,35 @@ public class TrackDriver {
 		// TODO Auto-generated method stub
 		
 		Track trackTester = new Track();
+		
+
+		trackTester.placeTrain("green", 100);
+		trackTester.updateDistance(100,10000);
 
 
+		Block get1 = trackTester.getBlock(7, "red");
+		System.out.println(get1.getBeacon());
+
+
+//TEST BEACON
+
+
+
+
+//TEST TRAIN GET BLOCK
+/*
+		Block trainBlock = trackTester.getBlock(100);
+		System.out.println(trainBlock.toString());
+*/
+
+/* TEST GET BLOCK
+		trackTester.placeTrain("green", 100);
+		trackTester.updateDistance(100,10000);
+
+		Block trainBlock = trackTester.getTrainBlock(100);
+		System.out.println(trainBlock.toString());
+
+*/
 /*
 		Block get1 = trackTester.getBlock(27, "red");
 		Block get2 = trackTester.getBlock(28,"red");

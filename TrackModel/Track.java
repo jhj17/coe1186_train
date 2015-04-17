@@ -366,11 +366,9 @@ public void printBlockList(ArrayList<Block> printList)
 	}
 	
 	@Override
-	public Block getTrainBlock(int TrainID) {
+	public Block getBlock(int TrainID) {
 		// TODO Auto-generated method stub
 		
-		if(redBlocks != null)
-		{
 			for(Block reds: redBlocks)
 			{
 				if(reds.getTrainID() == TrainID)
@@ -378,10 +376,7 @@ public void printBlockList(ArrayList<Block> printList)
 					return reds;
 				}
 			}
-		}
 
-		if(greenBlocks != null)
-		{
 			for(Block greens: greenBlocks)
 			{
 				if(greens.getTrainID() == TrainID)
@@ -389,10 +384,8 @@ public void printBlockList(ArrayList<Block> printList)
 					return greens;
 				}
 			}	
-		}
 
-		
-		return null;
+			return null;
 	}
 	@Override
 	public void displayTrack() {

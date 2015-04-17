@@ -100,7 +100,7 @@ public interface TrackInterface {
 		 * 
 		 */
 		public BlockInterface getBlock(int blockNumber, String line);
-		public BlockInterface getTrainBlock(int TrainID);
+		public BlockInterface getBlock(int TrainID);
 
 
 	//	..general..
