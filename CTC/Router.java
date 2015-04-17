@@ -7,9 +7,21 @@ public class Router
 	private ArrayList<String> blockInfo, blockIDs =  new ArrayList<String>(), theAuthorities = new ArrayList<String>(), theSpeeds = new ArrayList<String>();
 	private String line;
 	private double authority;
+	private String train;
+	int ind;
+	public Router(String t, String line, int i)
+	{
+		train = t;
+		this.line = line;
+		ind = i;
+	}
 	public Router()
 	{
 		
+	}
+	public String getTrainID()
+	{
+		return train;
 	}
 	public void getRouteFB(Track tr, String trainID, String destination, String line) throws IOException
 	{
@@ -44,22 +56,33 @@ public class Router
 		aut = authority;
 		return aut;
 	}
-	public String createProceedMsg(int index, String line)
+	public String createProceedMsgFB()
 	{
-		int indexB = index+1;
+		int indexB = ind+1;
 		int indexC = indexB+1;
 		//String msg = new String();
 		//System.out.println("Full Authority: " + aut);
 		
-		authority = authority - Double.parseDouble(theAuthorities.get(index));
+		authority = authority - Double.parseDouble(theAuthorities.get(ind));
 		
 		StringBuffer msg = new StringBuffer(line);
-		msg.append(","  + blockIDs.get(index) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexC) 
-				+ "," + theSpeeds.get(index) + "," + authority);
+		msg.append(","  + blockIDs.get(ind) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexC) 
+				+ "," + theSpeeds.get(ind) + "," + authority);
 			
 		
 		return msg.toString();
 		//return null;
+	}
+	public String createProceedMsgMBO()
+	{
+		int indexB = ind+1;
+		int indexC = indexB+1;
+		
+		StringBuffer msg = new StringBuffer(line);
+		msg.append(","  + blockIDs.get(ind) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexC) 
+				+ "," + -1 + "," + -1);
+		ind++;
+		return msg.toString();
 	}
 	public String createOpenCloseMsg(String line, String blockID, String maint)
 	{

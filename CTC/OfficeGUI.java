@@ -38,15 +38,17 @@ public class OfficeGUI {
 	private Text textTime;
 	private Text textBlockStatus;
 	private Text textStatus;
-	private Router rt;
+	public static ArrayList<Router> routers = new ArrayList<Router>();
 	private Scheduler s;
 	private Track tk;
-	private TrackControllerTest tct;
+	private TrackControllerTest tct = new TrackControllerTest();;
 	public static double authority;
-	public static int index, indexSched = 0;
+	public static int indexSched = 0;
 	private Text textOpenCloseLine;
 	private Text textStatusLine;
 	public static ArrayList<String> trainIDs = new ArrayList<String>();
+	private Text textTrainRoute;
+	private Router mainRouter = new Router();
 
 	/**
 	 * Launch the application.
@@ -247,7 +249,7 @@ public class OfficeGUI {
 		btnRoute.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				rt = new Router();
+				Router newRouter = new Router(trainID.getText(), comboLine.getText(), 0);
 				try {
 					tk = new Track();
 				} catch (IOException e2) {
@@ -258,8 +260,8 @@ public class OfficeGUI {
 					if(comboLine.getText().equals("Green"))
 					{
 						try {
-							rt.getRouteFB(tk, trainID.getText(), comboStationsGreen.getText(), comboLine.getText());
-							authority = rt.getFullAuthority();
+							newRouter.getRouteFB(tk, trainID.getText(), comboStationsGreen.getText(), comboLine.getText());
+							authority = newRouter.getFullAuthority();
 							System.out.println("Full Authority: " +  authority);
 						} catch (IOException e1) {
 							e1.printStackTrace();
@@ -268,8 +270,8 @@ public class OfficeGUI {
 					else if(comboLine.getText().equals("Red"))
 					{
 						try {
-							rt.getRouteFB(tk, trainID.getText(), comboStationsRed.getText(), comboLine.getText());
-							authority = rt.getFullAuthority();
+							newRouter.getRouteFB(tk, trainID.getText(), comboStationsRed.getText(), comboLine.getText());
+							authority = newRouter.getFullAuthority();
 							System.out.println("Full Authority: " +  authority);
 						} catch (IOException e1) {
 							e1.printStackTrace();
@@ -281,6 +283,9 @@ public class OfficeGUI {
 					//route each one from source to destination
 				}
 				// create train
+				
+				//add router to array list
+				routers.add(newRouter);
 				
 			}
 		});
@@ -302,11 +307,34 @@ public class OfficeGUI {
 			public void mouseDoubleClick(MouseEvent e) {
 				//send message to the track controller 
 				//append that message to the text box
-				tct = new TrackControllerTest();
-				String msg = rt.createProceedMsg(index, comboLine.getText());
-				textRouting.append(msg + "\n");
-				tct.newProceedMsg(msg);
-				index++;
+				//find the correct router to send the right message to proceed
+				if(btnFixedBlock.getSelection() == true)
+				{
+					for(int i = 0; i < routers.size(); i++)
+					{
+						if(textTrainRoute.getText().equals(routers.get(i).getTrainID()))
+						{
+							String msg = routers.get(i).createProceedMsgFB();
+							textRouting.append(msg + "\n");
+							tct.newProceedMsg(msg);
+							break;	
+						}
+					}
+				}
+				else if(btnMbo.getSelection() == true)
+				{
+					for(int i = 0; i < routers.size(); i++)
+					{
+						if(textTrainRoute.getText().equals(routers.get(i).getTrainID()))
+						{
+							String msg = routers.get(i).createProceedMsgMBO();
+							textRouting.append(msg + "\n");
+							tct.newProceedMsg(msg);
+							break;	
+						}
+					}
+					
+				}
 				
 			}
 		});
@@ -329,7 +357,7 @@ public class OfficeGUI {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				//send message that block is opened 
-				String msgOpen = rt.createOpenCloseMsg(textOpenClose.getText(), textBlock.getText(), "open");
+				String msgOpen = mainRouter.createOpenCloseMsg(textOpenClose.getText(), textBlock.getText(), "open");
 				textOpenClose.append(msgOpen + "\n");
 				tct.newMaintMsg(msgOpen);
 				//append that message to text area 
@@ -343,7 +371,7 @@ public class OfficeGUI {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				//send message that block is closed 
-				String msgClose = rt.createOpenCloseMsg(textOpenClose.getText(), textBlock.getText(), "close");
+				String msgClose = mainRouter.createOpenCloseMsg(textOpenClose.getText(), textBlock.getText(), "close");
 				textOpenClose.append(msgClose + "\n");
 				tct.newMaintMsg(msgClose);
 				//append that message to text area 
@@ -363,12 +391,12 @@ public class OfficeGUI {
 			public void mouseDoubleClick(MouseEvent e) {
 				//send message to track controller to tell train to show beacan 
 				//append to routing list
-				int blockID = rt.getLastBlock();
+				/*int blockID = rt.getLastBlock();
 				tct.showBeacon(comboLine.getText(), blockID);
-				textRouting.append("Line: " + comboLine.getText() + " Block ID: " + blockID + " Show Beacan\n");
+				textRouting.append("Line: " + comboLine.getText() + " Block ID: " + blockID + " Show Beacan\n");*/
 			}
 		});
-		btnShowBeacan.setBounds(596, 347, 75, 25);
+		btnShowBeacan.setBounds(714, 347, 75, 25);
 		btnShowBeacan.setText("Show Beacan");
 		
 		Label lblClock = new Label(shell, SWT.NONE);
@@ -427,6 +455,17 @@ public class OfficeGUI {
 		Label lblLine_2 = new Label(shell, SWT.NONE);
 		lblLine_2.setBounds(892, 419, 40, 15);
 		lblLine_2.setText("Line");
+		
+		textTrainRoute = new Text(shell, SWT.BORDER);
+		textTrainRoute.setBounds(651, 349, 40, 21);
+		
+		Label lblTrain_1 = new Label(shell, SWT.NONE);
+		lblTrain_1.setBounds(604, 352, 40, 15);
+		lblTrain_1.setText("Train");
+		
+		Button btnTransitSystem = new Button(shell, SWT.NONE);
+		btnTransitSystem.setBounds(80, 572, 201, 25);
+		btnTransitSystem.setText("Transit System");
 		for(int i = 0; i < greenLine.size(); i++)
 			comboStationsGreen.add(greenLine.get(i));
 
