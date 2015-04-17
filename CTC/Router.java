@@ -4,26 +4,29 @@ import java.util.ArrayList;
 
 public class Router 
 {
-	private ArrayList<String> blockInfo, blockIDs =  new ArrayList<String>(), theAuthorities = new ArrayList<String>(), theSpeeds = new ArrayList<String>();
+	private ArrayList<String> blockInfo, blockIDs =  new ArrayList<String>(), theAuthorities = new ArrayList<String>();
+	private ArrayList<String> theSpeeds = new ArrayList<String>(), sectionIDs =  new ArrayList<String>();
 	private String line;
 	private double authority;
 	private String train;
-	int ind;
-	public Router(String t, String line, int i)
+	public Router(String t, String line)
 	{
 		train = t;
 		this.line = line;
-		ind = i;
 	}
 	public Router()
 	{
 		
 	}
-	public String getTrainID()
+	public int getTrainID()
 	{
-		return train;
+		return Integer.parseInt(train);
 	}
-	public void getRouteFB(Track tr, String trainID, String destination, String line) throws IOException
+	public String getLine()
+	{
+		return line;
+	}
+	public void getRouteFB(Track tr, String trainID, String destination) throws IOException
 	{
 		
 		int trainInt = Integer.parseInt(trainID);
@@ -36,8 +39,9 @@ public class Router
 			for(int k = 0; k < infoSplit.length; k++)
 			{
 				blockIDs.add(infoSplit[0]);
-				theAuthorities.add(infoSplit[1]);
-				theSpeeds.add(infoSplit[2]);
+				sectionIDs.add(infoSplit[1]);
+				theAuthorities.add(infoSplit[2]);
+				theSpeeds.add(infoSplit[3]);
 			}
 		}
 		//tr.placeTrain(line, trainInt);
@@ -56,37 +60,38 @@ public class Router
 		aut = authority;
 		return aut;
 	}
-	public String createProceedMsgFB()
+	public String createProceedMsgFB(String l, int index)
 	{
-		int indexB = ind+1;
+		int indexB = index+1;
 		int indexC = indexB+1;
 		//String msg = new String();
 		//System.out.println("Full Authority: " + aut);
+		int minSpeed = Math.min(Integer.parseInt(theSpeeds.get(index)), Integer.parseInt(theSpeeds.get(indexB)));
 		
-		authority = authority - Double.parseDouble(theAuthorities.get(ind));
-		
-		StringBuffer msg = new StringBuffer(line);
-		msg.append(","  + blockIDs.get(ind) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexC) 
-				+ "," + theSpeeds.get(ind) + "," + authority);
+		authority = authority - Double.parseDouble(theAuthorities.get(index));
+		System.out.println("Train: " + train + " Line: " + l);
+		StringBuffer msg = new StringBuffer(l);
+		msg.append(","  + blockIDs.get(index) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexC) 
+				+ "," + minSpeed + "," + authority);
 			
 		
 		return msg.toString();
 		//return null;
 	}
-	public String createProceedMsgMBO()
+	public String createProceedMsgMBO(String l, int index)
 	{
-		int indexB = ind+1;
+		int indexB = index+1;
 		int indexC = indexB+1;
 		
-		StringBuffer msg = new StringBuffer(line);
-		msg.append(","  + blockIDs.get(ind) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexC) 
+		StringBuffer msg = new StringBuffer(l);
+		msg.append(","  + blockIDs.get(index) + "," + blockIDs.get(indexB) +  "," + blockIDs.get(indexC) 
 				+ "," + -1 + "," + -1);
-		ind++;
+		index++;
 		return msg.toString();
 	}
-	public String createOpenCloseMsg(String line, String blockID, String maint)
+	public String createOpenCloseMsg(String l, String blockID, String maint)
 	{
-		StringBuffer msg = new StringBuffer(line);
+		StringBuffer msg = new StringBuffer(l);
 		msg.append("," + blockID + "," + maint);
 		return msg.toString();
 		
