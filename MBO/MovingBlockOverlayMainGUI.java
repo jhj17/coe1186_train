@@ -1,3 +1,4 @@
+
 /**
 * MovingBlockOverlayMainGUI.java
 *
@@ -8,28 +9,25 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.DefaultTableModel;
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;  
-import java.io.FileNotFoundException;
 import java.lang.*;
 import java.util.*;
 
 public class MovingBlockOverlayMainGUI {
 
 	private static boolean mboMode;
-	private static Scheduler scheduler = new Scheduler();
+	private static JFrame mainFrame;
+	private static JTable scheduleJTable, operatorScheduleJTable;
+	private static JScrollPane jScrollPane, oPjScrollPane;
+	private static JSpinner startInput;
+	private static MBOScheduler mboScheduler = new MBOScheduler();
 
 	public static void main(String[] args) {
 
-		JFrame mainFrame;
-		JTable scheduleJTable, operatorScheduleJTable;
-		JScrollPane jScrollPane, oPjScrollPane;
 		JLabel startLabel, modeOfOperationLabel, fixedBlockModeLabel, mboModeLabel;
-		JSpinner startInput;
-		JButton setTimeTableButton, operatorScheduleButton, passengerCountButton, gernerateScheduleButton;
+		JButton setTimeTableButton, passengerCountButton, gernerateScheduleButton;
 		JPanel topPanel, centerPanel, southPanel;
 		String timeToDispatch;
 
@@ -45,21 +43,18 @@ public class MovingBlockOverlayMainGUI {
 		modeOfOperationLabel = new JLabel("Mode of Operation: ");
 		fixedBlockModeLabel = new JLabel("Fixed Block");
 		fixedBlockModeLabel.setBorder(BorderFactory.createLineBorder(Color.black));
-		fixedBlockModeLabel.setBackground(Color.GREEN);
 		fixedBlockModeLabel.setOpaque(true);
 		mboModeLabel = new JLabel("MBO");
 		mboModeLabel.setBorder(BorderFactory.createLineBorder(Color.black));
 		mboModeLabel.setOpaque(true);
 
 		setTimeTableButton = new JButton("Set Time Table");
-		operatorScheduleButton = new JButton("Set Operator Schedule");
 		passengerCountButton = new JButton("Passenger Count");
 		gernerateScheduleButton = new JButton("Generate Operator and Train Schedules");
 
 		setTimeTableButton.setEnabled(true);
-		operatorScheduleButton.setEnabled(true);
 		passengerCountButton.setEnabled(true);
-		gernerateScheduleButton.setEnabled(false);
+		gernerateScheduleButton.setEnabled(true);
 
 		String columnNames[]  = {"Train ID", "Line", "Station", "Total Time to Station w/ Dwell (min)"};
 		String dataValues[][] = { { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""},
@@ -70,14 +65,16 @@ public class MovingBlockOverlayMainGUI {
 								  { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""} };
 
 		scheduleJTable = new JTable(dataValues, columnNames);
+		scheduleJTable.setEnabled(false);
 		jScrollPane = new JScrollPane(scheduleJTable);
 		jScrollPane.setPreferredSize(new Dimension(950, 391));
 
-		String opColumnNames[] = { "Operator", "Train ID", "Shift Start", "Break Start", "Break End", "Shift End"};
+		String opColumnNames[] = { "Operator Name", "Train ID", "Shift Start", "Break Start", "Break End", "Shift End"};
 		String opDataValues[][] = { { "", "", "", "", "", ""}, { "", "", "", "", "", ""}, { "", "", "", "", "", ""},
 									{ "", "", "", "", "", ""}, { "", "", "", "", "", ""}, { "", "", "", "", "", ""} };
 
 		operatorScheduleJTable = new JTable(opDataValues, opColumnNames);
+		operatorScheduleJTable.setEnabled(false);
 		oPjScrollPane = new JScrollPane(operatorScheduleJTable);
 		oPjScrollPane.setPreferredSize(new Dimension(950, 119));
 
@@ -98,7 +95,6 @@ public class MovingBlockOverlayMainGUI {
 		northButtonsPanelTop.add(fixedBlockModeLabel);
 		northButtonsPanelTop.add(mboModeLabel);
 		northButtonsPanelBottom.add(setTimeTableButton);
-		northButtonsPanelBottom.add(operatorScheduleButton);
 		northButtonsPanelBottom.add(passengerCountButton);
 		northButtonsPanel.add(northButtonsPanelTop, BorderLayout.NORTH);
 		northButtonsPanel.add(northButtonsPanelBottom, BorderLayout.SOUTH);
@@ -115,7 +111,7 @@ public class MovingBlockOverlayMainGUI {
 		buttonsPanel.add(southButtonsPanel, BorderLayout.SOUTH);
 
 		topPanel.add(buttonsPanel);
-		topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 		centerPanel.add(jScrollPane, BorderLayout.CENTER);
 		southPanel.add(oPjScrollPane, BorderLayout.SOUTH);
 
@@ -127,7 +123,8 @@ public class MovingBlockOverlayMainGUI {
 		mainFrame.add(southPanel, BorderLayout.SOUTH);
 		mainFrame.setVisible(true);
 
-		/**
+		/********************************************************************************************************
+		/********************************************************************************************************
 		* Window Listeners: listener interface for receiving window events.
 		*/
 		mainFrame.addWindowListener(new WindowAdapter() {
@@ -145,18 +142,18 @@ public class MovingBlockOverlayMainGUI {
 
 				JButton submitButton = new JButton("Submit");
 
-				String columnNames[] = { "Train ID", "Station", "Throughput (min)"};
-				String dataValues[][] = { { "", "", "" }, { "", "", "" }, { "", "", "" },
-										  { "", "", "" }, { "", "", "" }, { "", "", "" },
-										  { "", "", "" }, { "", "", "" }, { "", "", "" },
-										  { "", "", "" }, { "", "", "" }, { "", "", "" },
-										  { "", "", "" }, { "", "", "" }, { "", "", "" },
-										  { "", "", "" }, { "", "", "" }, { "", "", "" },
-										  { "", "", "" }, { "", "", "" }, { "", "", "" },
-										  { "", "", "" }, { "", "", "" }, { "", "", "" } };
+				String columnNames[] = { "Station", "Throughput (min)"};
+				String dataValues[][] = { { "", "" }, { "", "" }, { "", "" },
+										  { "", "" }, { "", "" }, { "", "" },
+										  { "", "" }, { "", "" }, { "", "" },
+										  { "", "" }, { "", "" }, { "", "" },
+										  { "", "" }, { "", "" }, { "", "" },
+										  { "", "" }, { "", "" }, { "", "" },
+										  { "", "" }, { "", "" }, { "", "" },
+										  { "", "" }, { "", "" }, { "", "" } };
 
-				JTable scheduleJTable = new JTable(dataValues, columnNames);
-				JScrollPane jScrollPane = new JScrollPane(scheduleJTable);
+				final JTable timeTable = new JTable(dataValues, columnNames);
+				JScrollPane jScrollPane = new JScrollPane(timeTable);
 				jScrollPane.setPreferredSize(new Dimension(550, 119));
 				timeTableFrame.add(jScrollPane);
 				timeTableFrame.add(submitButton);
@@ -168,43 +165,14 @@ public class MovingBlockOverlayMainGUI {
 
 				submitButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent unused) {
-						//add time table information to scheduler
+						//add time table information to mbo scheduler
+						if(timeTable.getCellEditor() != null)
+							timeTable.getCellEditor().stopCellEditing();
+						mboScheduler.setTimeTable(jTableToArrayList(timeTable));
 						timeTableFrame.dispose();
 					}
 				});
 			}
-		});
-
-		operatorScheduleButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent unused) {
-				final JFrame operatorScheduleFrame = new JFrame("Set Train Operator Schedule");
-				operatorScheduleFrame.setLayout(new FlowLayout());
-				operatorScheduleFrame.setSize(580,200);
-				JButton submitButton = new JButton("Submit");
-
-				String columnNames[] = { "Operator", "Train ID", "Shift #"};
-				String dataValues[][] = { { "", "", "" }, { "", "", "" }, { "", "", "" },
-										  { "", "", "" }, { "", "", "" }, { "", "", "" } };
-
-				JTable scheduleJTable = new JTable(dataValues, columnNames);
-				JScrollPane jScrollPane = new JScrollPane(scheduleJTable);
-				jScrollPane.setPreferredSize(new Dimension(550, 119));
-				operatorScheduleFrame.add(jScrollPane);
-				operatorScheduleFrame.add(submitButton);
-
-				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-				operatorScheduleFrame.setLocation(dim.width/2-operatorScheduleFrame.getSize().
-					width/2, dim.height/2-operatorScheduleFrame.getSize().height/2);
-				operatorScheduleFrame.setVisible(true);
-
-				submitButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent unused) {
-						//add operator information to scheduler
-						operatorScheduleFrame.dispose();
-					}
-				});
-			}
-
 		});
 
 		passengerCountButton.addActionListener(new ActionListener() {
@@ -233,11 +201,68 @@ public class MovingBlockOverlayMainGUI {
 			}
 		});
 
-		gernerateScheduleButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent unused) {
+		startInput.addChangeListener(new ChangeListener() {
+			Object lastValue;
 
+			@Override
+			public void stateChanged(ChangeEvent evt) {
+				if (lastValue != null && !startInput.getValue().equals(lastValue)) {
+					mboScheduler.setScheduleStartTime( startInput.getValue().toString() );
+				}
+				lastValue = startInput.getValue();
 			}
 		});
+
+		gernerateScheduleButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent unused) {
+				/*****Generate train schedule*****/
+				String columnNames[]  = {"Train ID", "Line", "Station", "Total Time to Station w/ Dwell (min)"};
+				String dataValues[][] = arrayListTo2DArray(mboScheduler.getTrainSchedule(), 4);
+				scheduleJTable = new JTable(dataValues, columnNames);
+				scheduleJTable.setEnabled(false);
+				jScrollPane = new JScrollPane(scheduleJTable);
+				jScrollPane.setPreferredSize(new Dimension(950, 391));
+				JPanel centerPanel = new JPanel(new FlowLayout());
+				centerPanel.add(jScrollPane, BorderLayout.CENTER);
+				mainFrame.add(centerPanel, BorderLayout.CENTER);
+
+				/*****Generate operator schedule*****/
+				String opColumnNames[] = { "Operator Name", "Train ID", "Shift Start", "Break Start", "Break End", "Shift End"};
+				String opDataValues[][] = arrayListTo2DArray(mboScheduler.getOperatorSchedule(), 6);
+				operatorScheduleJTable = new JTable(opDataValues, opColumnNames);
+				operatorScheduleJTable.setEnabled(false);
+				oPjScrollPane = new JScrollPane(operatorScheduleJTable);
+				oPjScrollPane.setPreferredSize(new Dimension(950, 119));
+				JPanel southPanel = new JPanel(new FlowLayout());
+				southPanel.add(oPjScrollPane, BorderLayout.SOUTH);
+				mainFrame.add(southPanel, BorderLayout.SOUTH);
+				mainFrame.add(centerPanel, BorderLayout.CENTER);
+
+				mainFrame.setVisible(true);
+			}
+		});
+	}
+
+	private static ArrayList<String> jTableToArrayList(JTable table) {
+		ArrayList<String> list = new ArrayList<String>();
+		for(int row = 0; row < table.getRowCount(); row++) {
+		    for(int column = 0; column < table.getColumnCount(); column++) {
+				if(table.getValueAt(row, column).toString() != "")
+					list.add(table.getValueAt(row, column).toString());
+		    }
+		}
+		return list;
+	}
+
+	private static String[][] arrayListTo2DArray(ArrayList<String> table, int numColumns) {
+		String[][] array = new String[table.size()/numColumns][numColumns];
+		for(int x=0; x<table.size()/numColumns; x++) {
+			for(int y=0; y<numColumns; y++) {
+				array[x][y] = table.get(x+y);
+			}
+		}
+
+		return array;
 	}
 
 	public void setMBOMode(boolean mboMode) {
