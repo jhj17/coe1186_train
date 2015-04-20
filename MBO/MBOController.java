@@ -5,6 +5,10 @@
 *
 */
 
+//BRAKEACC = -1.2; m/s^2
+//EBRAKEACC = -2.73; m/s^2
+//d = (v^2)/(2ug)
+
 public class MBOController{
 
 	private boolean mboMode;
