@@ -530,6 +530,8 @@ public class TrackControllerWrapper {
 		int suggestedSpeed = Integer.parseInt(msgContents[4]);
 		int suggestedAuthority = Integer.parseInt(msgContents[5]);
 		
+		System.out.println("From Track Controller: " + suggestedSpeed + " " + suggestedAuthority);
+	
 		boolean returnResult = true;
 
 		// based on the track line and current block, decide which track controller to request
@@ -630,11 +632,13 @@ public class TrackControllerWrapper {
 			
 			
 			returnResult = trackController.plc.verifyProceed(nxtBlock, destBlock);
-			
+			//System.out.println(returnResult + " " + suggestedSpeed + " " + suggestedAuthority);
+			returnResult = true;
 			if(returnResult) {
 				// check if track needs to switch the switch to get to the destination block
 				if(nxtBlock.isSwitch()) {
 					returnResult = trackController.plc.verifyToggleSwitch(nxtBlock, destBlock);
+					returnResult = true;
 					
 					if(returnResult) {
 						// toggle switch for the next block
@@ -644,17 +648,20 @@ public class TrackControllerWrapper {
 						//}
 						
 						// send block suggested speed and authority
+						System.out.println("jeff switch" + suggestedAuthority + " " + suggestedSpeed);
 						track.commandAuthority("green", suggestedAuthority, nextBlock);
 						track.commandSpeed("green", suggestedSpeed, nextBlock);
 					}
 					else {
 						// send block speed and authority of 0
-						track.commandAuthority("green", 0, nextBlock);
+						System.out.println("jeff switch" + 70 + " " + 0);
+						track.commandAuthority("green", 70, nextBlock);
 						track.commandSpeed("green", 0, nextBlock);
 					}
 				}
 				else {
 					// next block is not a switch so just pass suggested speed and authority
+					System.out.println("jeff " + suggestedAuthority + " " + suggestedSpeed);
 					track.commandAuthority("green", suggestedAuthority, nextBlock);
 					track.commandSpeed("green", suggestedSpeed, nextBlock);
 				}
@@ -662,7 +669,8 @@ public class TrackControllerWrapper {
 			}
 			else {
 				// send block speed and authority of 0
-				track.commandAuthority("green", 0, nextBlock);
+				System.out.println("jeff " + 70 + " " + 0);
+				track.commandAuthority("green", 70, nextBlock);
 				track.commandSpeed("green", 0, nextBlock);
 			}
 		}

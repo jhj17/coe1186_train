@@ -120,11 +120,11 @@ public class TrainModel implements TrainModelInterface
 		authority = curBlock.getTrainAuthority();
 		
 		String beacon = curBlock.getBeacon();
-		if (!beacon.isEmpty())
+		if (beacon.length() > 0)
 		{
-			controller.passBeacon(beacon);
+			System.out.println(beacon);
+			//controller.passBeacon(beacon);
 		}
-		
 		double grade = curBlock.getGrade();
 
 		// Radians
@@ -140,6 +140,8 @@ public class TrainModel implements TrainModelInterface
 		{
 			deltaT = (current - lastUpdate) / 1000.0;
 		}
+		
+		deltaT *= clock.getSpeedFactor();
 		
 		lastUpdate = current;
 
@@ -209,7 +211,9 @@ public class TrainModel implements TrainModelInterface
 		
 		
 		acceleration = Math.min(acceleration, MAXACCELERATION);
-		distance += (speed * deltaT) + ( (1.0/2.0)*(acceleration)*(deltaT * deltaT) );
+		
+		double distChange = (speed * deltaT) + ( (1.0/2.0)*(acceleration)*(deltaT * deltaT));
+		distance +=  distChange;
 
 		// Update temperature;
 		if (commandedTemperature > temperature)
@@ -225,8 +229,11 @@ public class TrainModel implements TrainModelInterface
 		{
 			temperature = commandedTemperature;
 		}
+		
+		track.updateDistance(ID, distChange);
 
 		// Populate train values and return them
+		System.out.println("Block "+ curBlock + " Speed "+ speed + " distance " + distance +" Change Distance " + distChange);
 		DynamicTrainValues dtv = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);
 		TrainData data = new TrainData(dtv, ID, mass, numPassengers, lastStop, grade, power, commandedTemperature, leftDoor, rightDoor, lights);
 		gui.updateGUI(data);

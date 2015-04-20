@@ -78,8 +78,8 @@ public class TrainController {
 	public void decodeBeacon(){
 		String[] stuff = ts.curBeacon.split(",");
 		ts.stationName = stuff[0];
-		ts.distToStation = Double.parseDouble(stuff[1]);
-		ts.stationSide = stuff[2];
+		ts.distToStation = Double.parseDouble(stuff[2]);
+		ts.stationSide = stuff[1];
 	}
 	public boolean stationArriveSequence(){
 		if(!ts.stationAnnounced){

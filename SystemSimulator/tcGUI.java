@@ -135,14 +135,14 @@ public class tcGUI {
 		t1.start();
 	}
 	public synchronized boolean updateValues(TrainState newState){
-		System.out.println("IN GUI " + localState.userDesSpeed);
+		//System.out.println("IN GUI " + localState.userDesSpeed);
 		refreshDisplay();
 		newState.isAutopilot = localState.isAutopilot;
 		newState.userEmergencyBrake = localState.userEmergencyBrake;
 		newState.userServiceBrake = localState.userServiceBrake;
 		newState.userDesSpeed = localState.userDesSpeed;
 		localState = new TrainState(newState);
-		System.out.println("IN GUI -- AFTER " + localState.userDesSpeed);
+		//System.out.println("IN GUI -- AFTER " + localState.userDesSpeed);
 		refreshDisplay();
 		return true;
 	}

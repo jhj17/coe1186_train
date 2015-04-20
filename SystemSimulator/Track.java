@@ -68,14 +68,15 @@ public class Track implements TrackInterface {
 		}
 
 //TEST CURRENT BLOCKS AS WELL AS SWITCH TOGGLING. 
-		/*printBlockList(currentAll);
+		printBlockList(currentAll);
 
 		for(Switch setupSwitch: currentSwitches) //setup switch connections 
 		{
 			setupSwitch.toggleSwitch();
 		}
 		printBlockList(currentAll);
-*/
+		printSwitchList(currentSwitches);
+
 
 //TEST FOR PROPER ROUTING! 
 		//printSwitchList(currentSwitches);
@@ -263,6 +264,8 @@ public void printBlockList(ArrayList<Block> printList)
 
 	public void commandAuthority(String line, double commandedAuthority, int blockNumber) {
 		// TODO Auto-generated method stub
+		//System.out.println("track authority " + commandedAuthority);
+		//System.out.println("setting: "+ getBlock(blockNumber,line).toString());
 		getBlock(blockNumber, line).setAuthority(commandedAuthority);
 	}
 
@@ -299,7 +302,7 @@ public void printBlockList(ArrayList<Block> printList)
 		{
 			if(trainBlocks.get(i).getTrainID() == trainID)
 			{
-				System.out.println(trainBlocks.get(i).getSection() + trainBlocks.get(i).getBlockNumber() + " has " +trainBlocks.get(i).getTrainID());
+				//System.out.println(trainBlocks.get(i).getSection() + trainBlocks.get(i).getBlockNumber() + " has " +trainBlocks.get(i).getTrainID());
 				Block nextBlock = trainBlocks.get(i).moveTrain(distance);
 				if(nextBlock != trainBlocks.get(i))
 				{

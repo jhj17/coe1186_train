@@ -47,8 +47,8 @@ public class Block implements BlockInterface {
 	private int trainID = 0;
 	private boolean blockOccupied = false;
 	boolean crossingOccurence;
-	double commandedAuthority = 0;
-	double commandedSpeed = 0;
+	double commandedAuthority = 100000;
+	double commandedSpeed = 70;
 	double distanceTraveled = 0;
 	boolean lightsGreenTrueRedFalse;
 	boolean beacon;
@@ -323,7 +323,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 			{
 				currentBlock.toggleSwitch();
 				currentBlock = currentBlock.traverseTrain(trainID);
-				System.out.println("toggle");
+				//System.out.println("toggle");
 			}
 			currentBlock =currentBlock.placeTrain(trainID,newDist);
 			//trainID = 0;
@@ -375,8 +375,8 @@ public Block traverseTrain(int train)
 				{
 					returnBlock = this;
 				}
-				System.out.println("got here");
-				System.out.println(returnBlock);
+				//System.out.println("got here");
+				//System.out.println(returnBlock);
 			}
 			else if(this.getNext() == null)
 			{
@@ -464,10 +464,9 @@ public Block traverseTrain(int train)
 
 	public double getTrainCommandedSpeed() {
 		// TODO Auto-generated method stub
-
 		double temp = commandedAuthority;
-		commandedAuthority = -1.0;
-		return commandedSpeed;
+		//commandedAuthority = -1.0;
+		return temp;
 	}
 
 	public double getTrainAuthority() {
