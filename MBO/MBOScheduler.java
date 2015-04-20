@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class MBOScheduler{
 
+//	private Track track = new Track();
 	/*set*/
 	private ArrayList<String> timeTableInfo = new ArrayList<String>();
-	private ArrayList<String> operatorScheduleInfo = new ArrayList<String>();
 	private String scheduleStartTime;
 	/*return*/
 	private ArrayList<String> trainSchedule = new ArrayList<String>();
@@ -19,10 +19,6 @@ public class MBOScheduler{
 
 	public void setTimeTable(ArrayList<String> timeTableInfo) {
 		this.timeTableInfo = timeTableInfo;
-	}
-
-	public void setOperatorSchedule(ArrayList<String> operatorScheduleInfo) {
-		this.operatorScheduleInfo = operatorScheduleInfo;
 	}
 
 	public void setScheduleStartTime(String scheduleStartTime) {
@@ -33,8 +29,15 @@ public class MBOScheduler{
 	* Start creating schedules after all private variables are set
 	*/
 	public ArrayList<String> getTrainSchedule() {
+		//start time
 
 
+		//use getRoute() method in track.java
+		//ArrayList<String> route = track.getRoute("", "");
+		//
+		//
+		//
+		//
 
 
 		return trainSchedule;
