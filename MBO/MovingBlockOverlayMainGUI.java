@@ -1,4 +1,3 @@
-
 /**
 * MovingBlockOverlayMainGUI.java
 *
@@ -56,13 +55,13 @@ public class MovingBlockOverlayMainGUI {
 		passengerCountButton.setEnabled(true);
 		gernerateScheduleButton.setEnabled(true);
 
-		String columnNames[]  = {"Train ID", "Line", "Station", "Total Time to Station w/ Dwell (min)"};
-		String dataValues[][] = { { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""},
-								  { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""},
-								  { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""},
-								  { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""},
-								  { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""},
-								  { "", "", "", ""}, { "", "", "", ""}, { "", "", "", ""} };
+		String columnNames[]  = {"Train ID", "Line", "Station", "Total Time to Station(min)", "Arrival Time"};
+		String dataValues[][] = { { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""},
+								  { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""},
+								  { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""},
+								  { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""},
+								  { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""},
+								  { "", "", "", "", ""}, { "", "", "", "", ""}, { "", "", "", "", ""} };
 
 		scheduleJTable = new JTable(dataValues, columnNames);
 		scheduleJTable.setEnabled(false);
@@ -216,8 +215,8 @@ public class MovingBlockOverlayMainGUI {
 		gernerateScheduleButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent unused) {
 				/*****Generate train schedule*****/
-				String columnNames[]  = {"Train ID", "Line", "Station", "Total Time to Station w/ Dwell (min)"};
-				String dataValues[][] = arrayListTo2DArray(mboScheduler.getTrainSchedule(), 4);
+				String columnNames[]  = {"Train ID", "Line", "Station", "Total Time to Station(min)", "Arrival Time"};
+				String dataValues[][] = arrayListTo2DArray(mboScheduler.getTrainSchedule(), 5);
 				scheduleJTable = new JTable(dataValues, columnNames);
 				scheduleJTable.setEnabled(false);
 				jScrollPane = new JScrollPane(scheduleJTable);
