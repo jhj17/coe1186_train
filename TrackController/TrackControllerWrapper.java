@@ -1,5 +1,3 @@
-package trackControllerFinal;
-
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -39,7 +37,7 @@ public class TrackControllerWrapper {
 
 	Track track;
 	public boolean running = false;
-	
+
 	private JFrame frmTrackController;
 	private JTextField plcProgramPathTextbox;
 	private JSlider changeViewSlider;
@@ -73,7 +71,7 @@ public class TrackControllerWrapper {
 	private final int redTc2Blocks[] = {2};
 
 	public boolean plcLoaded = true;
-	
+
 	// defined block status values
 	public final byte BLOCK_OPEN = 0;
 	public final byte BLOCK_OCCUPIED = 1;
@@ -88,7 +86,7 @@ public class TrackControllerWrapper {
 	 */
 	public TrackControllerWrapper(Track track) {
 		this.track = track;
-		
+
 		initialize();
 		loadTrackModel();
 		populateDefaultDisplay();
@@ -114,14 +112,14 @@ public class TrackControllerWrapper {
 
 		redLineTrackControllers.add(new TrackController("red", 0, redTc1Blocks));
 		redLineTrackControllers.add(new TrackController("red", 1, redTc2Blocks));
-		
+
 		// TODO: loaded plc through GUI
 		// set default plc program for track controllers - only for demo
 		greenLineTrackControllers.get(0).initPLC("testPLC.plc");
 		greenLineTrackControllers.get(1).initPLC("testPLC.plc");
 		greenLineTrackControllers.get(2).initPLC("testPLC.plc");
 		greenLineTrackControllers.get(3).initPLC("testPLC.plc");
-		
+
 		redLineTrackControllers.get(0).initPLC("testPLC.plc");
 		redLineTrackControllers.get(1).initPLC("testPLC.plc");
 	}
@@ -135,11 +133,11 @@ public class TrackControllerWrapper {
 
 		// default controller to view is ID = 0, populate list boxes
 		updateListBoxes();
-		
+
 		// update plc program file
 		plcProgramPathTextbox.setText(greenLineTrackControllers.get(0).plcFile);
 	}
-	
+
 	/**
 	 * Function to update the track controller id combo box
 	 */
@@ -171,7 +169,7 @@ public class TrackControllerWrapper {
 		// clear existing data in list boxes
 		blockModel.clear();
 		//railwayModel.clear();
-		//switchModel.clear();
+		switchModel.clear();
 
 		try {
 			if(changeViewSlider.getValue() == 0) {
@@ -180,22 +178,23 @@ public class TrackControllerWrapper {
 					if(tcComboBox.getSelectedIndex() == 0) {
 						// update plc program file
 						plcProgramPathTextbox.setText(redLineTrackControllers.get(0).plcFile);
-						
+
 						for(int id : redTc1Blocks) {
 							// Add block to list box
-							blockModel.addElement(Integer.toString(id));
-							
+							//blockModel.addElement(Integer.toString(id));
+							blockModel.addElement(track.getBlock(id, "red").toString());
+
 							// TODO: check if block contains railway and/or switch to add to respective list box
 						}
 					}
 					else if(tcComboBox.getSelectedIndex() == 1) {
 						// update plc program file
 						plcProgramPathTextbox.setText(redLineTrackControllers.get(1).plcFile);
-						
+
 						for(int id : redTc2Blocks) {
 							// Add block to list box
-							blockModel.addElement(Integer.toString(id));
-							
+							blockModel.addElement(track.getBlock(id, "red").toString());
+
 							// TODO: check if block contains railway and/or switch to add to respective list box
 						}
 					}
@@ -207,44 +206,52 @@ public class TrackControllerWrapper {
 					if(tcComboBox.getSelectedIndex() == 0) {
 						// update plc program file
 						plcProgramPathTextbox.setText(greenLineTrackControllers.get(0).plcFile);
-						
+
 						for(int id : greenTc1Blocks) {
 							// Add block to list box
-							blockModel.addElement(Integer.toString(id));
-							
-							// TODO: check if block contains railway and/or switch to add to respective list box
+							Block block = track.getBlock(id, "green");
+							blockModel.addElement(block.toString());
+
+							// check if block contains railway and/or switch to add to respective list box
+							if(block.isSwitch()) {
+								switchModel.addElement(block.getSwitch().toString());
+							}
+
+							if(block.isCrossing()) {
+								//railwayModel.addElement(block.getCrossing().toString());
+							}
 						}
 					}
 					else if(tcComboBox.getSelectedIndex() == 1) {
 						// update plc program file
 						plcProgramPathTextbox.setText(greenLineTrackControllers.get(1).plcFile);
-						
+
 						for(int id : greenTc2Blocks) {
 							// Add block to list box
-							blockModel.addElement(Integer.toString(id));
-							
+							blockModel.addElement(track.getBlock(id, "green").toString());
+
 							// TODO: check if block contains railway and/or switch to add to respective list box
 						}
 					}
 					else if(tcComboBox.getSelectedIndex() == 2) {
 						// update plc program file
 						plcProgramPathTextbox.setText(greenLineTrackControllers.get(2).plcFile);
-						
+
 						for(int id : greenTc3Blocks) {
 							// Add block to list box
-							blockModel.addElement(Integer.toString(id));
-							
+							blockModel.addElement(track.getBlock(id, "green").toString());
+
 							// TODO: check if block contains railway and/or switch to add to respective list box
 						}					
 					}
 					else if(tcComboBox.getSelectedIndex() == 3) {
 						// update plc program file
 						plcProgramPathTextbox.setText(greenLineTrackControllers.get(3).plcFile);
-						
+
 						for(int id : greenTc4Blocks) {
 							// Add block to list box
-							blockModel.addElement(Integer.toString(id));
-							
+							blockModel.addElement(track.getBlock(id, "green").toString());
+
 							// TODO: check if block contains railway and/or switch to add to respective list box
 						}
 					}
@@ -268,10 +275,10 @@ public class TrackControllerWrapper {
 		frmTrackController.pack();
 		frmTrackController.setLocationRelativeTo(null);
 		frmTrackController.addWindowListener(new WindowAdapter() {
-		    public void WindowClosing(WindowEvent e) {
-		        running = false;
-		        frmTrackController.dispose();
-		    }
+			public void WindowClosing(WindowEvent e) {
+				running = false;
+				frmTrackController.dispose();
+			}
 		});
 		frmTrackController.setVisible(true);
 
@@ -312,10 +319,10 @@ public class TrackControllerWrapper {
 		tcComboBox = new JComboBox<Integer>();
 		tcComboBox.setBounds(322, 8, 81, 20);
 		tcComboBox.addActionListener (new ActionListener () {
-		    public void actionPerformed(ActionEvent e) {
-		    	// update boxes
+			public void actionPerformed(ActionEvent e) {
+				// update boxes
 				updateListBoxes();
-		    }
+			}
 		});
 		panel.add(tcComboBox);
 
@@ -407,7 +414,7 @@ public class TrackControllerWrapper {
 		breakBlockButton.setBounds(84, 495, 89, 36);
 		breakBlockButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				breakBlock();
+				breakBlockAction();
 			}
 		});
 		panel.add(breakBlockButton);
@@ -417,7 +424,7 @@ public class TrackControllerWrapper {
 		maintBlockButton.setBounds(178, 495, 109, 36);
 		maintBlockButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				maintBlock();
+				maintBlockAction();
 			}
 		});
 		panel.add(maintBlockButton);
@@ -435,46 +442,8 @@ public class TrackControllerWrapper {
 		scrollPane2.setBounds(366, 370, 229, 114);
 		panel.add(scrollPane2);
 
-		railwayListbox = new JList<String>(railwayModel);
-		scrollPane2.setViewportView(railwayListbox);
-		railwayListbox.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		railwayListbox.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		railwayListbox.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent arg0) {
-				if(railwayListbox.isSelectionEmpty() || plcLoaded == false) {
-					railwayButton.setEnabled(false);
-				}
-				else {
-					railwayButton.setEnabled(true);
-				}
-			}
-		});
-
-		railwayButton = new JButton("Activate Crossing");
-		railwayButton.setEnabled(false);
-		railwayButton.setBounds(401, 279, 160, 36);
-		railwayButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				railwayCrossing();
-			}
-		});
-		panel.add(railwayButton);
-
-		JLabel switchLabel = new JLabel("Switches");
-		switchLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		switchLabel.setBounds(366, 326, 146, 14);
-		panel.add(switchLabel);
-
-		JLabel lblNewLabel_1 = new JLabel("Block      Switch    Status");
-		lblNewLabel_1.setBounds(366, 351, 160, 14);
-		panel.add(lblNewLabel_1);
-
-		JScrollPane scrollPane1 = new JScrollPane();
-		scrollPane1.setBounds(366, 149, 229, 119);
-		panel.add(scrollPane1);
-
 		switchListbox = new JList<String>(switchModel);
-		scrollPane1.setViewportView(switchListbox);
+		scrollPane2.setViewportView(switchListbox);
 		switchListbox.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		switchListbox.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		switchListbox.addListSelectionListener(new ListSelectionListener() {
@@ -493,10 +462,48 @@ public class TrackControllerWrapper {
 		switchButton.setBounds(424, 495, 109, 36);
 		switchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				switchBlock();
+				switchBlockAction();
 			}
 		});
 		panel.add(switchButton);
+
+		JLabel switchLabel = new JLabel("Switches");
+		switchLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		switchLabel.setBounds(366, 326, 146, 14);
+		panel.add(switchLabel);
+
+		JLabel lblNewLabel_1 = new JLabel("Block      Switch    Status");
+		lblNewLabel_1.setBounds(366, 351, 160, 14);
+		panel.add(lblNewLabel_1);
+
+		JScrollPane scrollPane1 = new JScrollPane();
+		scrollPane1.setBounds(366, 149, 229, 119);
+		panel.add(scrollPane1);
+
+		railwayListbox = new JList<String>(railwayModel);
+		scrollPane1.setViewportView(railwayListbox);
+		railwayListbox.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		railwayListbox.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		railwayListbox.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg0) {
+				if(railwayListbox.isSelectionEmpty() || plcLoaded == false) {
+					railwayButton.setEnabled(false);
+				}
+				else {
+					railwayButton.setEnabled(true);
+				}
+			}
+		});
+
+		railwayButton = new JButton("Activate Crossing");
+		railwayButton.setEnabled(false);
+		railwayButton.setBounds(401, 279, 160, 36);
+		railwayButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				railwayCrossingAction();
+			}
+		});
+		panel.add(railwayButton);
 	}
 
 	/**
@@ -519,7 +526,7 @@ public class TrackControllerWrapper {
 	public boolean newProceedMsg(String msg) {
 		String delimeter = ",";
 		String[] msgContents;
-		
+
 		TrackController trackController;
 
 		msgContents = msg.split(delimeter);
@@ -529,11 +536,11 @@ public class TrackControllerWrapper {
 		int destinationBlock = Integer.parseInt(msgContents[3]);
 		int suggestedSpeed = Integer.parseInt(msgContents[4]);
 		int suggestedAuthority = Integer.parseInt(msgContents[5]);
-		
+
 		boolean returnResult = true;
 
 		// TODO: check suggested speed for -1 to show that its in MBO mode
-		
+
 		// based on the track line and current block, decide which track controller to request
 		if(line.equals("red")) {
 			// track controller part of the red line
@@ -548,30 +555,30 @@ public class TrackControllerWrapper {
 					Arrays.binarySearch(redTc2Blocks, destinationBlock) >= 0) {
 				// targeted blocks will be in track controller 2
 				trackController = redLineTrackControllers.get(1);
-				
+
 			}
 			else {
 				trackController = redLineTrackControllers.get(1);
 			}
-			
+
 			// pass suggestion to PLC for it to verify
 			Block currBlock = track.getBlock(currentBlock,"red");
 			Block nxtBlock = track.getBlock(nextBlock,"red");
 			Block destBlock = track.getBlock(destinationBlock,"red");
 			returnResult = trackController.plc.verifyProceed(nxtBlock, destBlock);
-			
+
 			if(returnResult) {
 				// check if track needs to switch the switch to get to the destination block
 				if(nxtBlock.isSwitch()) {
 					returnResult = trackController.plc.verifyToggleSwitch(nxtBlock, destBlock);
-					
+
 					if(returnResult) {
 						// toggle switch for the next block
 						if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
 							// need to toggle switch
 							nxtBlock.toggleSwitch();
 						}
-						
+
 						// send block suggested speed and authority
 						track.commandAuthority("red", suggestedAuthority, currentBlock);
 						track.commandSpeed("red", suggestedSpeed, currentBlock);
@@ -587,7 +594,7 @@ public class TrackControllerWrapper {
 					track.commandAuthority("red", suggestedAuthority, currentBlock);
 					track.commandSpeed("red", suggestedSpeed, currentBlock);
 				}
-				
+
 			}
 			else {
 				// send block speed and authority of 0
@@ -624,25 +631,25 @@ public class TrackControllerWrapper {
 			else {
 				trackController = greenLineTrackControllers.get(0);
 			}
-			
+
 			// pass suggestion to PLC for it to verify
 			Block currBlock = track.getBlock(currentBlock,"green");
 			Block nxtBlock = track.getBlock(nextBlock,"green");
 			Block destBlock = track.getBlock(destinationBlock,"green");
 			returnResult = trackController.plc.verifyProceed(nxtBlock, destBlock);
-			
+
 			if(returnResult) {
 				// check if track needs to switch the switch to get to the destination block
 				if(nxtBlock.isSwitch()) {
 					returnResult = trackController.plc.verifyToggleSwitch(nxtBlock, destBlock);
-					
+
 					if(returnResult) {
 						// toggle switch for the next block
 						if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
 							// need to toggle switch
 							nxtBlock.toggleSwitch();
 						}
-						
+
 						// send block suggested speed and authority
 						track.commandAuthority("green", suggestedAuthority, currentBlock);
 						track.commandSpeed("green", suggestedSpeed, currentBlock);
@@ -658,7 +665,7 @@ public class TrackControllerWrapper {
 					track.commandAuthority("green", suggestedAuthority, currentBlock);
 					track.commandSpeed("green", suggestedSpeed, currentBlock);
 				}
-				
+
 			}
 			else {
 				// send block speed and authority of 0
@@ -679,24 +686,93 @@ public class TrackControllerWrapper {
 		String delimeter = ",";
 		String[] msgContents;
 
+		TrackController trackController;
+
 		msgContents = msg.split(delimeter);
 		String line = msgContents[0].toLowerCase();
 		int currentBlock = Integer.parseInt(msgContents[1]);
 		String maintStatus = msgContents[2].toLowerCase();
 
+		boolean returnResult = true;
+
 		// based on the track line and current block, decide which track controller to request
 		if(line.equals("red")) {
 			// track controller part of the red line
+			if(Arrays.binarySearch(redTc1Blocks, currentBlock) >= 0)  {
+				// targeted blocks will be in track controller 1
+				trackController = redLineTrackControllers.get(0);
+			}
+			else if(Arrays.binarySearch(redTc2Blocks, currentBlock) >= 0) {
+				// targeted blocks will be in track controller 2
+				trackController = redLineTrackControllers.get(1);
 
+			}
+			else {
+				trackController = redLineTrackControllers.get(1);
+			}
+
+			// pass suggestion to PLC for it to verify
+			Block currBlock = track.getBlock(currentBlock,"red");
+			
+			if(maintStatus.toLowerCase().equals("close")) {
+				// only check that you can close the block
+				Block prevBlock = track.getBlock(currentBlock,"red");
+				returnResult = trackController.plc.verifyToggleSwitch(prevBlock, currBlock);
+				
+				if(returnResult) {
+					// can close block for maintenance
+					currBlock.closeBlock();
+				}
+			}
+			else {
+				// open block from maintenance
+				currBlock.openBlock();
+			}
 		}
 		else {
 			// track controller part of the green line
+			if(Arrays.binarySearch(greenTc1Blocks, currentBlock) >= 0) {
+				// targeted blocks will be in track controller 1
+				trackController = greenLineTrackControllers.get(0);
+			}
+			else if(Arrays.binarySearch(greenTc2Blocks, currentBlock) >= 0)  {
+				// targeted blocks will be in track controller 2
+				trackController = greenLineTrackControllers.get(1);
+			}
+			else if(Arrays.binarySearch(greenTc3Blocks, currentBlock) >= 0)  {
+				// targeted blocks will be in track controller 3
+				trackController = greenLineTrackControllers.get(2);
+			}
+			else if(Arrays.binarySearch(greenTc4Blocks, currentBlock) >= 0)  {
+				// targeted blocks will be in track controller 4
+				trackController = greenLineTrackControllers.get(3);
+			}
+			else {
+				trackController = greenLineTrackControllers.get(0);
+			}
 
+			// pass suggestion to PLC for it to verify
+			Block currBlock = track.getBlock(currentBlock,"green");
+			
+			if(maintStatus.toLowerCase().equals("close")) {
+				// only check that you can close the block
+				Block prevBlock = track.getBlock(currentBlock,"green");
+				returnResult = trackController.plc.verifyToggleSwitch(prevBlock, currBlock);
+				
+				if(returnResult) {
+					// can close block for maintenance
+					currBlock.closeBlock();
+				}
+			}
+			else {
+				// open block from maintenance
+				currBlock.openBlock();
+			}
 		}
 
-		return true;
+		return returnResult;
 	}
-	
+
 	/**
 	 * Tell track to flash beacon at selected station
 	 * @param line	track line station is on
@@ -705,7 +781,7 @@ public class TrackControllerWrapper {
 	 */
 	public boolean showBeacon(String line, int blockID) {
 		//track.showBeacon(blockID, line);
-		
+
 		return true;
 	}
 
@@ -717,84 +793,199 @@ public class TrackControllerWrapper {
 	public byte getBlockStatus(String line, int blockID) {
 		// based on the track line and the requested block, select the appropriate track controller
 		byte returnStatus = BLOCK_OPEN;
-		
+
 		Block requestedBlock = track.getBlock(blockID,line);
 		if(requestedBlock.isBlockOccupied()) {
 			returnStatus = BLOCK_OCCUPIED;
+
+			// Toggle signal on the track block
+			requestedBlock.toggleRedGreen();	// Maybe add toggle state to function?
 		}
-		
+		if(requestedBlock.isBroken()) {
+			returnStatus = RAIL_BROKEN;
+		}
+		else if(requestedBlock.isClosed()) {
+			returnStatus = BLOCK_MAINT;
+		}
+		else if(requestedBlock.getSwitch().isSwitchWorking()) {
+			// TODO: Brian needs to make a variable to monitor working status of switch
+			returnStatus = ~(SWITCH_BROKEN);
+		}
+		// TODO: Brian needs to create variables to get broken status from signal and railway
+
 		return returnStatus;
 	}
 
 	/**
-	 * Function for user to break/fix a selected block on the track
+	 * Function for user to manually break a selected block on the track
 	 */
-	private void breakBlock() {
-		int selectedTC = 0;
+	private void breakBlockAction() {
 		int selectedBlock = 0;
 
-		selectedTC = (int) tcComboBox.getSelectedItem();
-		selectedBlock = Integer.parseInt(blocksListbox.getSelectedValue());
-
+		// Get targeted block based on view
 		if(changeViewSlider.getValue() == 0) {
+			// Viewing Red Line
+			// Based on the viewed track controller ID, get that block
+			if(tcComboBox.getSelectedIndex() == 0) {
+				selectedBlock = redTc1Blocks[blocksListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 1) {
+				selectedBlock = redTc2Blocks[blocksListbox.getSelectedIndex()];
+			}
 
+			//track.breakBlock("red", selectedBlock);
 		}
 		else {
-			track.breakBlock(selectedBlock);
+			// Viewing Green Line
+			// Based on the viewed track controller ID, get that block
+			if(tcComboBox.getSelectedIndex() == 0) {
+				selectedBlock = greenTc1Blocks[blocksListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 1) {
+				selectedBlock = greenTc2Blocks[blocksListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 2) {
+				selectedBlock = greenTc3Blocks[blocksListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 3) {
+				selectedBlock = greenTc4Blocks[blocksListbox.getSelectedIndex()];
+			}
+
+			//track.breakBlock("green", selectedBlock);
 		}
 	}
 
 	/**
-	 * Function for user to open/close a block for maintenance
+	 * Function for user to manually open/close a block for maintenance
 	 */
-	private void maintBlock() {
-		int selectedTC = 0;
+	private void maintBlockAction() {
 		int selectedBlock = 0;
+		Block targetBlock = null;
 
-		selectedTC = (int) tcComboBox.getSelectedItem();
-		selectedBlock = blocksListbox.getSelectedIndex();
-
+		// Get targeted block based on view
 		if(changeViewSlider.getValue() == 0) {
-			redLineTrackControllers.get(selectedTC).setMaintenace(selectedBlock);
+			// Viewing Red Line
+			// Based on the viewed track controller ID, get that block
+			if(tcComboBox.getSelectedIndex() == 0) {
+				selectedBlock = redTc1Blocks[blocksListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 1) {
+				selectedBlock = redTc2Blocks[blocksListbox.getSelectedIndex()];
+			}
+
+			targetBlock = track.getBlock(selectedBlock, "red");
 		}
 		else {
-			greenLineTrackControllers.get(selectedTC).setMaintenace(selectedBlock);
+			// Viewing Green Line
+			// Based on the viewed track controller ID, get that block
+			if(tcComboBox.getSelectedIndex() == 0) {
+				selectedBlock = greenTc1Blocks[blocksListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 1) {
+				selectedBlock = greenTc2Blocks[blocksListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 2) {
+				selectedBlock = greenTc3Blocks[blocksListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 3) {
+				selectedBlock = greenTc4Blocks[blocksListbox.getSelectedIndex()];
+			}
+
+			targetBlock = track.getBlock(selectedBlock, "green");
+		}
+
+		// depending on the current status, open/close the block
+		if(targetBlock.isClosed()) {
+			targetBlock.openBlock();
+		}
+		else {
+			targetBlock.closeBlock();
 		}
 	}
 
 	/**
 	 * Function for the user to manually switch the track
 	 */
-	private void switchBlock() {
-		int selectedTC = 0;
+	private void switchBlockAction() {
 		int selectedBlock = 0;
+		Block targetBlock = null;
 
-		selectedTC = (int) tcComboBox.getSelectedItem();
-		selectedBlock = blocksListbox.getSelectedIndex();
-
+		// Get targeted block based on view
 		if(changeViewSlider.getValue() == 0) {
+			// Viewing Red Line
+			// Based on the viewed track controller ID, get that block
+			if(tcComboBox.getSelectedIndex() == 0) {
+				selectedBlock = redTc1Blocks[switchListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 1) {
+				selectedBlock = redTc2Blocks[switchListbox.getSelectedIndex()];
+			}
 
+			targetBlock = track.getBlock(selectedBlock, "red");
 		}
 		else {
+			// Viewing Green Line
+			// Based on the viewed track controller ID, get that block
+			if(tcComboBox.getSelectedIndex() == 0) {
+				selectedBlock = greenTc1Blocks[switchListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 1) {
+				selectedBlock = greenTc2Blocks[switchListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 2) {
+				selectedBlock = greenTc3Blocks[switchListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 3) {
+				selectedBlock = greenTc4Blocks[switchListbox.getSelectedIndex()];
+			}
 
+			targetBlock = track.getBlock(selectedBlock, "green");
 		}
+
+		// Toggle the state of the switch
+		targetBlock.toggleSwitch();
 	}
 
 	/**
-	 * Function for the user to activate/terminate a railway crossing
+	 * Function for the user to manually activate/terminate a railway crossing
 	 */
-	private void railwayCrossing() {
-		int selectedTC = 0;
+	private void railwayCrossingAction() {
+		Block targetBlock = null;
 		int selectedBlock = 0;
 
-		selectedTC = (int) tcComboBox.getSelectedItem();
-		selectedBlock = blocksListbox.getSelectedIndex();
-
+		// Get targeted block based on view
 		if(changeViewSlider.getValue() == 0) {
+			// Viewing Red Line
+			// Based on the viewed track controller ID, get that block
+			if(tcComboBox.getSelectedIndex() == 0) {
+				selectedBlock = redTc1Blocks[railwayListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 1) {
+				selectedBlock = redTc2Blocks[railwayListbox.getSelectedIndex()];
+			}
 
+			targetBlock = track.getBlock(selectedBlock, "red");
 		}
 		else {
+			// Viewing Green Line
+			// Based on the viewed track controller ID, get that block
+			if(tcComboBox.getSelectedIndex() == 0) {
+				selectedBlock = greenTc1Blocks[railwayListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 1) {
+				selectedBlock = greenTc2Blocks[railwayListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 2) {
+				selectedBlock = greenTc3Blocks[railwayListbox.getSelectedIndex()];
+			}
+			else if(tcComboBox.getSelectedIndex() == 3) {
+				selectedBlock = greenTc4Blocks[railwayListbox.getSelectedIndex()];
+			}
 
+			targetBlock = track.getBlock(selectedBlock, "green");
 		}
+
+		// Depending on the state of the crossing, activate/deactivate it
+		// TODO: Function to toggle railway crossing state
 	}	
 }
