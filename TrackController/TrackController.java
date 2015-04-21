@@ -1,5 +1,3 @@
-package trackControllerFinal;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -43,14 +41,5 @@ public class TrackController {
 	 */
 	public int getID() {
 		return this.trackControllerID;
-	}
-	
-	/**
-	 * Function to set the maintenance state of a requested block
-	 * @param maintState
-	 * @param blockID
-	 */
-	public void setMaintenace(int blockID) {
-			
 	}
 }
