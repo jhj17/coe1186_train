@@ -112,8 +112,8 @@ public class TrainModel implements TrainModelInterface
 		
 		Block curBlock = track.getBlock(ID);
 		
-		commandedSpeed = curBlock.getTrainCommandedSpeed(ID);
-		authority = curBlock.getTrainAuthority(ID);
+		commandedSpeed = curBlock.getTrainCommandedSpeed();
+		authority = curBlock.getTrainAuthority();
 
 		// mboSpeed = mbo.getSpeed(ID);
 		// mboAuthority = mbo.getAuthority(ID);
@@ -134,7 +134,7 @@ public class TrainModel implements TrainModelInterface
 			controller.passBeacon(beacon);
 		}
 		
-		double grade = curBlock.getGrade(ID);
+		double grade = curBlock.getGrade();
 
 		// Radians
 		double theta = Math.atan2(grade, 100);
