@@ -78,7 +78,7 @@ public class TrainModel implements TrainModelInterface
 
 	private TrainModelGUI gui;
 	
-	MBO mbo;
+	//MBO mbo;
 	TrainController controller;
 	Track track;
 	
@@ -88,12 +88,12 @@ public class TrainModel implements TrainModelInterface
 	DynamicTrainValues DTV;
 	TrainData TD;
 
-	public TrainModel(int ID, Track track, TrainController controller, SimClock clock, MBO mbo)
+	public TrainModel(int ID, Track track, TrainController controller, SimClock clock)
 	{
 		this.ID = ID;
 		this.track = track;
 		this.controller = controller;
-		this.mbo = mbo;
+		//this.mbo = mbo;
 		this.clock = clock;
 		gui = new TrainModelGUI();
 		DTV = new DynamicTrainValues(0,0,0,0,0,temperature);
@@ -115,18 +115,18 @@ public class TrainModel implements TrainModelInterface
 		commandedSpeed = curBlock.getTrainCommandedSpeed(ID);
 		authority = curBlock.getTrainAuthority(ID);
 
-		mboSpeed = mbo.getSpeed(ID);
-		mboAuthority = mbo.getAuthority(ID);
+		// mboSpeed = mbo.getSpeed(ID);
+		// mboAuthority = mbo.getAuthority(ID);
 
-		if (mboSpeed > 0)
-		{
-			commandedSpeed = mboSpeed;
-		}
+		// if (mboSpeed > 0)
+		// {
+		// 	commandedSpeed = mboSpeed;
+		// }
 
-		if (mboAuthority > 0)
-		{
-			authority = mboAuthority;
-		}
+		// if (mboAuthority > 0)
+		// {
+		// 	authority = mboAuthority;
+		// }
 		
 		String beacon = curBlock.getBeacon();
 		if (!beacon.isEmpty())
@@ -241,7 +241,7 @@ public class TrainModel implements TrainModelInterface
 		DTV = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);
 		TD = new TrainData(DTV, ID, mass, numPassengers, lastStop, grade, power, commandedTemperature, leftDoor, rightDoor, lights);
 		gui.updateGUI(TD);
-		mbo.setPosition(this.getPosition(), ID);
+		//mbo.setPosition(this.getPosition(), ID);
 		return DTV;
 	}
 
