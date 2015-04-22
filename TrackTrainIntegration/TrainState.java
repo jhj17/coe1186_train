@@ -35,7 +35,8 @@ public double curTime;
 public String curTimeString;
 public double calculatedAuthority = 0;
 public double previousDistance = 0;
-public double commandedSpeed =0;
+public double commandedSpeed = 0;
+public int clockFactor = 1;
 	public TrainState()
 	{
 		tv = new DynamicTrainValues(0,0,0,0,0,0);
