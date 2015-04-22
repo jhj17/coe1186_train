@@ -577,11 +577,8 @@ public class CTCGUI {
 		btnTransitSystem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				TransitSys ts = new TransitSys();
-				ts.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				ts.setVisible(true);
-				ts.pack();
-				ts.setTitle("Transit System");
+			 new TransitSys();
+
 			}
 		});
 		btnTransitSystem.setBounds(80, 572, 201, 25);
