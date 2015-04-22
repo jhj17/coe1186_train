@@ -11,6 +11,7 @@ public class TrainController {
 		vh = new VitalHandler();
 		gui = new TrainControllerGUI(ts);
 		this.sm = sm;
+		ts.clockFactor = sm.getSpeedFactor();
 	}
 	public void initTrainModel(TrainModel tmodel)
 	{
@@ -20,7 +21,7 @@ public class TrainController {
 		updateTime();
 		updateFromGUI();
 		powerCalculation();
-		updateFromTrackModel();
+		updateFromTrainModel();
 		vitalCalculations();
 	}
 	private void updateTime(){
@@ -47,23 +48,27 @@ public class TrainController {
 	public void updateFromGUI(){
 		gui.updateUserSamples(ts);
 	}
-	public void updateFromTrackModel(){
+	public void updateFromTrainModel(){
 		if(ts.isService || ts.isEmergency)
 			ts.commandedPower = 0;
+
 		if(ts.commandedPower> ts.MAXPOWER){
 			ts.commandedPower = ts.MAXPOWER;
 		}
+
+		//UPDATE TEMPERATURE
+
 		ts.tv=tm.updateSamples(ts.commandedPower);
+
+
 		ts.calculatedAuthority = ts.calculatedAuthority - (ts.tv.distance-ts.previousDistance);
+
 		ts.previousDistance = ts.tv.distance;
 		if(ts.tv.curAuthority != -1){
 			ts.calculatedAuthority = ts.tv.curAuthority;
 		}
-//		if(ts.tv.commandedSpeed != -1){
-//			ts.commandedSpeed = ts.tv.commandedSpeed;
-//		}
-		//System.out.println("Authority "+ ts.calculatedAuthority);
-		//System.out.println("Speed "+ ts.commandedSpeed);
+		
+
 	}
 	public boolean vitalCalculations(){
 		int brakeDecision = brakeCalculation();
@@ -126,14 +131,17 @@ public class TrainController {
 	}
 	public double powerCalculation(){
 		if(!ts.isAutopilot){
+			//System.out.println("USER SPEED: "+ ts.userDesSpeed);
+			//System.out.println("FROM TRACK SPEED: "+ ts.tv.commandedSpeed);
 			ts.commandedSpeed = Math.min(ts.tv.commandedSpeed, ts.userDesSpeed);
 		}
-		else
+		else{
 			ts.commandedSpeed = ts.tv.commandedSpeed;
+		}
 		return vh.calculatePower(ts);
 	}
 	public boolean isAtStation(){
-		if(ts.approachingStation && ts.tv.curSpeed == 0 ){
+		if(ts.approachingStation && ts.tv.curSpeed == 0){
 			ts.atStation = true;
 			ts.approachingStation = false;
 			ts.timeOfStationArrival = ts.curTime;

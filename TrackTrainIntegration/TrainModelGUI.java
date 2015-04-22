@@ -1,4 +1,5 @@
 import java.awt.EventQueue;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.lang.Thread;
 
@@ -22,9 +23,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.SwingConstants;
+
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.Panel;
+import java.awt.Font;
 
 
 public class TrainModelGUI 
@@ -51,6 +54,7 @@ public class TrainModelGUI
 	private JTextField txtRoute;
 	private JTextField txtID;
 	private JTextField txtDistance;
+	private DecimalFormat db = new DecimalFormat("0.00");
 
 	//How to call
 	//TrainModelGUI window = new TrainModelGUI();
@@ -71,117 +75,120 @@ public class TrainModelGUI
 	private void initialize() 
 	{
 		frame = new JFrame();
-		frame.setBounds(100, 100, 900, 450);
+		frame.setBounds(100, 100, 789, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JLabel lblInputs = new JLabel("Inputs");
-		lblInputs.setBounds(362, 13, 35, 16);
+		JLabel lblInputs = new JLabel("Inputs:");
+		lblInputs.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 16));
+		lblInputs.setBounds(262, 57, 231, 16);
 		
 		JLabel lblAuthority = new JLabel("Authority:");
-		lblAuthority.setBounds(281, 42, 56, 16);
+		lblAuthority.setBounds(262, 86, 75, 16);
 		
 		JLabel lblPower = new JLabel("Power:");
-		lblPower.setBounds(281, 75, 41, 16);
+		lblPower.setBounds(262, 122, 41, 16);
 		
-		JLabel lblCommandedSpeed = new JLabel("Commanded Speed:");
-		lblCommandedSpeed.setBounds(281, 110, 121, 16);
+		JLabel lblCommandedSpeed = new JLabel("Comm. Speed:");
+		lblCommandedSpeed.setBounds(262, 155, 121, 16);
 		
 		JLabel lblTemperature = new JLabel("Temperature:");
-		lblTemperature.setBounds(281, 145, 80, 16);
+		lblTemperature.setBounds(262, 190, 98, 16);
 		
 		txtAuthority = new JTextField();
 		txtAuthority.setEditable(false);
-		txtAuthority.setBounds(349, 39, 160, 22);
+		txtAuthority.setBounds(359, 83, 150, 22);
 		txtAuthority.setText("0");
 		txtAuthority.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtAuthority.setColumns(10);
 		
 		txtPower = new JTextField();
 		txtPower.setEditable(false);
-		txtPower.setBounds(327, 72, 182, 22);
+		txtPower.setBounds(359, 116, 150, 22);
 		txtPower.setText("0");
 		txtPower.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtPower.setColumns(10);
 		
 		txtSpeedLimit = new JTextField();
 		txtSpeedLimit.setEditable(false);
-		txtSpeedLimit.setBounds(408, 107, 101, 22);
+		txtSpeedLimit.setBounds(359, 151, 150, 22);
 		txtSpeedLimit.setText("43.496");
 		txtSpeedLimit.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtSpeedLimit.setColumns(10);
 		
 		txtTempIn = new JTextField();
 		txtTempIn.setEditable(false);
-		txtTempIn.setBounds(366, 142, 143, 22);
+		txtTempIn.setBounds(359, 186, 150, 22);
 		txtTempIn.setText("69");
 		txtTempIn.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtTempIn.setColumns(10);
 		
-		JLabel lblOutputs = new JLabel("Outputs");
-		lblOutputs.setBounds(698, 13, 51, 16);
+		JLabel lblOutputs = new JLabel("Outputs:");
+		lblOutputs.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 16));
+		lblOutputs.setBounds(262, 231, 264, 16);
 		
 		JLabel lblActualSpeed = new JLabel("Actual Speed:");
-		lblActualSpeed.setBounds(552, 42, 80, 16);
+		lblActualSpeed.setBounds(262, 260, 95, 16);
 		
 		JLabel lblAcceleration = new JLabel("Acceleration:");
-		lblAcceleration.setBounds(552, 75, 75, 16);
+		lblAcceleration.setBounds(262, 296, 95, 16);
 		
 		JLabel lblTemperature_1 = new JLabel("Temperature:");
-		lblTemperature_1.setBounds(552, 110, 80, 16);
+		lblTemperature_1.setBounds(262, 329, 95, 16);
 		
 		JLabel lblDoors = new JLabel("Doors:");
-		lblDoors.setBounds(552, 145, 38, 16);
+		lblDoors.setBounds(262, 364, 61, 16);
 		
 		JLabel lblLights = new JLabel("Lights:");
-		lblLights.setBounds(552, 183, 38, 16);
+		lblLights.setBounds(262, 399, 75, 16);
 		
 		JLabel lblNewLabel = new JLabel("Grade:");
-		lblNewLabel.setBounds(12, 373, 39, 16);
+		lblNewLabel.setBounds(6, 402, 101, 16);
 		
-		JLabel lblInformation = new JLabel("Information");
-		lblInformation.setBounds(98, 13, 66, 16);
+		JLabel lblInformation = new JLabel("Information:");
+		lblInformation.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 16));
+		lblInformation.setBounds(6, 57, 223, 16);
 		
 		JLabel lblLength = new JLabel("Length:");
-		lblLength.setBounds(12, 78, 43, 16);
+		lblLength.setBounds(6, 107, 95, 16);
 		
 		JLabel lblNewLabel_1 = new JLabel("Width:");
-		lblNewLabel_1.setBounds(12, 111, 38, 16);
+		lblNewLabel_1.setBounds(6, 140, 95, 16);
 		
 		JLabel lblHeight = new JLabel("Height:");
-		lblHeight.setBounds(12, 146, 41, 16);
+		lblHeight.setBounds(6, 175, 80, 16);
 		
 		JLabel lblMass = new JLabel("Mass:");
-		lblMass.setBounds(12, 181, 34, 16);
+		lblMass.setBounds(6, 210, 95, 16);
 		
 		JLabel lblCrewCount = new JLabel("Crew Count:");
-		lblCrewCount.setBounds(12, 254, 72, 16);
+		lblCrewCount.setBounds(6, 283, 95, 16);
 		
-		JLabel lblPassengerCount = new JLabel("Passenger Count:");
-		lblPassengerCount.setBounds(12, 286, 101, 16);
+		JLabel lblPassengerCount = new JLabel("Pass. Count:");
+		lblPassengerCount.setBounds(6, 315, 101, 16);
 		
 		txtLength = new JTextField();
-		txtLength.setBounds(60, 75, 175, 22);
+		txtLength.setBounds(113, 104, 116, 22);
 		txtLength.setText("105.643 ft");
 		txtLength.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtLength.setEditable(false);
 		txtLength.setColumns(10);
 		
 		txtWidth = new JTextField();
-		txtWidth.setBounds(55, 108, 180, 22);
+		txtWidth.setBounds(113, 137, 116, 22);
 		txtWidth.setText("8.694 ft");
 		txtWidth.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtWidth.setEditable(false);
 		txtWidth.setColumns(10);
 		
 		txtHeight = new JTextField();
-		txtHeight.setBounds(58, 143, 177, 22);
+		txtHeight.setBounds(113, 172, 116, 22);
 		txtHeight.setText("11.221 ft");
 		txtHeight.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtHeight.setEditable(false);
 		txtHeight.setColumns(10);
 		
 		txtMass = new JTextField();
-		txtMass.setBounds(51, 178, 184, 22);
+		txtMass.setBounds(113, 207, 116, 22);
 		txtMass.setText("80200 lbs");
 		txtMass.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtMass.setEditable(false);
@@ -189,96 +196,98 @@ public class TrainModelGUI
 		
 		txtCrewCount = new JTextField();
 		txtCrewCount.setEditable(false);
-		txtCrewCount.setBounds(90, 251, 145, 22);
+		txtCrewCount.setBounds(113, 280, 116, 22);
 		txtCrewCount.setText("2");
 		txtCrewCount.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtCrewCount.setColumns(10);
 		
 		txtPassengerCount = new JTextField();
 		txtPassengerCount.setEditable(false);
-		txtPassengerCount.setBounds(119, 283, 116, 22);
+		txtPassengerCount.setBounds(113, 312, 116, 22);
 		txtPassengerCount.setText("0");
 		txtPassengerCount.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtPassengerCount.setColumns(10);
 		
 		JLabel lblCars = new JLabel("Cars:");
-		lblCars.setBounds(12, 219, 31, 16);
+		lblCars.setBounds(6, 248, 95, 16);
 		
 		txtCars = new JTextField();
-		txtCars.setBounds(48, 216, 187, 22);
+		txtCars.setBounds(113, 245, 116, 22);
 		txtCars.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtCars.setText("1");
 		txtCars.setEditable(false);
 		txtCars.setColumns(10);
 		
 		txtSpeed = new JTextField();
-		txtSpeed.setBounds(649, 39, 167, 22);
+		txtSpeed.setBounds(359, 257, 204, 22);
 		txtSpeed.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtSpeed.setEditable(false);
 		txtSpeed.setColumns(10);
 		
 		txtAcceleration = new JTextField();
-		txtAcceleration.setBounds(644, 72, 172, 22);
+		txtAcceleration.setBounds(359, 293, 204, 22);
 		txtAcceleration.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtAcceleration.setEditable(false);
 		txtAcceleration.setColumns(10);
 		
 		txtTemp = new JTextField();
-		txtTemp.setBounds(644, 107, 172, 22);
+		txtTemp.setBounds(359, 326, 204, 22);
 		txtTemp.setText("69");
 		txtTemp.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtTemp.setEditable(false);
 		txtTemp.setColumns(10);
 		
 		txtDoors = new JTextField();
-		txtDoors.setBounds(612, 142, 204, 22);
+		txtDoors.setBounds(359, 361, 204, 22);
 		txtDoors.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtDoors.setEditable(false);
 		txtDoors.setColumns(10);
 		
 		txtLights = new JTextField();
-		txtLights.setBounds(601, 180, 215, 22);
+		txtLights.setBounds(359, 396, 204, 22);
 		txtLights.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtLights.setEditable(false);
 		txtLights.setColumns(10);
 		
 		txtGrade = new JTextField();
 		txtGrade.setEditable(false);
-		txtGrade.setBounds(57, 370, 178, 22);
+		txtGrade.setBounds(113, 399, 116, 22);
 		txtGrade.setText("0");
 		txtGrade.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtGrade.setColumns(10);
 		
-		JLabel lblFailures = new JLabel("Failures");
-		lblFailures.setBounds(406, 240, 45, 16);
+		JLabel lblFailures = new JLabel("Failures:");
+		lblFailures.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 16));
+		lblFailures.setBounds(574, 57, 113, 16);
 		
 		txtRoute = new JTextField();
-		txtRoute.setBounds(48, 312, 187, 22);
+		txtRoute.setBounds(113, 341, 116, 22);
 		txtRoute.setEditable(false);
 		txtRoute.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtRoute.setColumns(10);
 		
 		JLabel lblRoute = new JLabel("Stop:");
-		lblRoute.setBounds(12, 315, 38, 16);
+		lblRoute.setBounds(6, 344, 38, 16);
 		
 		JRadioButton rdbtnAutomatic = new JRadioButton("Automatic");
-		rdbtnAutomatic.setBounds(297, 340, 85, 25);
+		rdbtnAutomatic.setBounds(626, 344, 113, 33);
 		
 		JRadioButton rdbtnManual = new JRadioButton("Manual");
-		rdbtnManual.setBounds(424, 340, 69, 25);
+		rdbtnManual.setBounds(626, 306, 101, 33);
 		rdbtnManual.setSelected(true);
 		
-		JLabel lblMode = new JLabel("Mode");
-		lblMode.setBounds(383, 315, 31, 16);
+		JLabel lblMode = new JLabel("Mode:");
+		lblMode.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 16));
+		lblMode.setBounds(626, 282, 101, 16);
 		
 		JToggleButton tglbtnEngineFailure = new JToggleButton("Engine Failure");
-		tglbtnEngineFailure.setBounds(247, 269, 113, 25);
+		tglbtnEngineFailure.setBounds(574, 85, 189, 41);
 		
 		JToggleButton tglbtnSignalPickupFailure = new JToggleButton("Signal Pickup Failure");
-		tglbtnSignalPickupFailure.setBounds(366, 269, 160, 25);
+		tglbtnSignalPickupFailure.setBounds(574, 128, 189, 41);
 		
 		JToggleButton tglbtnBrakeFailure = new JToggleButton("Brake Failure");
-		tglbtnBrakeFailure.setBounds(538, 269, 116, 25);
+		tglbtnBrakeFailure.setBounds(574, 173, 189, 41);
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(lblCars);
 		frame.getContentPane().add(txtCars);
@@ -328,43 +337,49 @@ public class TrainModelGUI
 		frame.getContentPane().add(lblFailures);
 		
 		JLabel lblId = new JLabel("ID #");
-		lblId.setBounds(12, 42, 31, 16);
+		lblId.setBounds(6, 79, 31, 16);
 		frame.getContentPane().add(lblId);
 		
 		txtID = new JTextField();
 		txtID.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtID.setEditable(false);
-		txtID.setBounds(48, 39, 187, 22);
+		txtID.setBounds(113, 75, 116, 22);
 		frame.getContentPane().add(txtID);
 		txtID.setColumns(10);
 		
 		JLabel lblDistance = new JLabel("Distance:");
-		lblDistance.setBounds(12, 344, 56, 16);
+		lblDistance.setBounds(6, 373, 101, 16);
 		frame.getContentPane().add(lblDistance);
 		
 		txtDistance = new JTextField();
 		txtDistance.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtDistance.setEditable(false);
-		txtDistance.setBounds(75, 341, 160, 22);
+		txtDistance.setBounds(113, 370, 116, 22);
 		frame.getContentPane().add(txtDistance);
 		txtDistance.setColumns(10);
+		
+		JLabel lblTrainModelV = new JLabel("Train Model V4:");
+		lblTrainModelV.setVerticalAlignment(SwingConstants.TOP);
+		lblTrainModelV.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 35));
+		lblTrainModelV.setBounds(6, 6, 463, 48);
+		frame.getContentPane().add(lblTrainModelV);
 	}
 	
 	public void updateGUI(TrainData data)
 	{
 		txtID.setText(Integer.toString(data.ID));
-		txtMass.setText(Double.valueOf(data.mass * 2.2).toString() + " lbs");
+		txtMass.setText(db.format(data.mass * 2.2) + " lbs");
 		txtPassengerCount.setText(Integer.toString(data.passengers));
 		txtRoute.setText(data.lastStop);
-		txtDistance.setText(Double.valueOf(data.dtv.distance * 3.2).toString() + " ft");
-		txtGrade.setText(Double.valueOf(data.grade).toString());
-		txtAuthority.setText(Double.valueOf(data.dtv.curAuthority * 3.2).toString() + " ft");
-		txtPower.setText(Double.valueOf(data.power).toString() + " W");
-		txtSpeedLimit.setText(Double.valueOf(data.dtv.commandedSpeed * 2.23).toString() + " mph");
-		txtTempIn.setText(Double.valueOf(data.commandedTemperature).toString() + " F");
-		txtSpeed.setText(Double.valueOf(data.dtv.curSpeed * 2.23).toString() + " mph");
-		txtAcceleration.setText(Double.valueOf(data.dtv.curAcceleration * 3.28).toString() + "ft/s^2");
-		txtTemp.setText(Double.valueOf(data.dtv.curTemp).toString() + " F");
+		txtDistance.setText(db.format(data.dtv.distance * 3.2) + " ft");
+		txtGrade.setText(db.format(data.grade));
+		txtAuthority.setText(db.format(data.dtv.curAuthority * 3.2) + " ft");
+		txtPower.setText(db.format(data.power) + " W");
+		txtSpeedLimit.setText(db.format(data.dtv.commandedSpeed * 2.23) + " mph");
+		txtTempIn.setText(db.format(data.commandedTemperature) + " F");
+		txtSpeed.setText(db.format(data.dtv.curSpeed * 2.23) + " mph");
+		txtAcceleration.setText(db.format(data.dtv.curAcceleration * 3.28) + "ft/s^2");
+		txtTemp.setText(db.format(data.dtv.curTemp) + " F");
 		if (data.leftDoor && data.rightDoor)
 			txtDoors.setText("Both Open");
 		else if(data.leftDoor && !data.rightDoor)
