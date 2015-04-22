@@ -9,7 +9,7 @@ public class Scheduler
 	{
 		
 	}
-	public String[] createScheduleFB(String destination, String line, String trainID)
+	public String[] createScheduleManual(String destination, String line, String trainID)
 	{
 		String[] scheduleTable = new String[3];
 		scheduleTable[0] = trainID;
@@ -18,5 +18,4 @@ public class Scheduler
 		return scheduleTable;
 		
 	}
-
 }

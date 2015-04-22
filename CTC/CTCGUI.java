@@ -1,8 +1,14 @@
+/* Ademusoyo Awosika-Olumo
+ * CTC System
+ * Last Edit: 4/19/2015
+ */
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import javax.swing.JFrame;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -41,8 +47,9 @@ public class CTCGUI {
 	public static ArrayList<Router> routers = new ArrayList<Router>();
 	private Scheduler s;
 	private Track tk;
-	TrackControllerWrapper tcw;
+	private TrackControllerWrapper tcw;
 	public ArrayList<Train> theTrains = new ArrayList<Train>();
+	private SimClock sm;
 	//private TrackControllerTest tct = new TrackControllerTest();;
 	public static double authority;
 	public static int indexSched = 0, indexFB = 0, indMBO = 0;
@@ -52,11 +59,13 @@ public class CTCGUI {
 	private Text textTrainRoute;
 	private Router mainRouter = new Router();
 	private boolean done;
+	public boolean isMBO;
 
-	public CTCGUI(Track tk, TrackControllerWrapper tcw) throws FileNotFoundException
+	public CTCGUI(Track tk, TrackControllerWrapper tcw, SimClock sm) throws FileNotFoundException
 	{
 		this.tk = tk;
 		this.tcw = tcw;
+		this.sm = sm;
 		Scanner outScan = new Scanner(new File("redLine.txt"));
 		while(outScan.hasNextLine())
 		{
@@ -147,6 +156,7 @@ public class CTCGUI {
 					btnRequestSchedule.setEnabled(false);
 					trainID.setEnabled(true);
 					comboLine.setEnabled(true);
+					isMBO = false;
 			}
 		});
 		
@@ -158,6 +168,7 @@ public class CTCGUI {
 					trainID.setEnabled(false);
 					comboLine.setEnabled(false);
 					btnRequestSchedule.setEnabled(true);
+					isMBO = true;
 			}
 		});
 		btnMbo.setBounds(193, 53, 55, 16);
@@ -173,8 +184,8 @@ public class CTCGUI {
 		
 		comboLine = new Combo(shell, SWT.NONE);
 		comboLine.setBounds(177, 95, 79, 21);
-		comboLine.add("Red");
-		comboLine.add("Green");
+		comboLine.add("red");
+		comboLine.add("green");
 		
 		Label lblLine = new Label(shell, SWT.NONE);
 		lblLine.setBounds(193, 75, 55, 15);
@@ -187,12 +198,12 @@ public class CTCGUI {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				System.out.println("ComboLine.getText() " + comboLine.getText());
-				if(comboLine.getText().equals("Green"))
+				if(comboLine.getText().equals("green"))
 				{
 					comboStationsGreen.setVisible(true);
 					comboStationsRed.setVisible(false);
 				}
-				else if(comboLine.getText().equals("Red"))
+				else if(comboLine.getText().equals("red"))
 				{
 					comboStationsRed.setVisible(true);
 					comboStationsGreen.setVisible(false);
@@ -217,7 +228,7 @@ public class CTCGUI {
 		});
 		btnRequestSchedule.setBounds(276, 47, 105, 25);
 		btnRequestSchedule.setText("Request Schedule");
-		btnRequestSchedule.setEnabled(false);
+		btnRequestSchedule.setEnabled(true);
 		
 		btnSchedule = new Button(shell, SWT.NONE);
 		btnSchedule.addMouseListener(new MouseAdapter() {
@@ -225,25 +236,29 @@ public class CTCGUI {
 			public void mouseDoubleClick(MouseEvent e) {
 				String [] sched = null;
 				s = new Scheduler();
+				/*try {
+					tk = new Track();
+					tcw = new TrackControllerWrapper(tk);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}*/
+				
 				System.out.println("Train ID: " + trainID.getText() + " Line: " +  comboLine.getText());
-				Router newRouter = new Router(trainID.getText(), comboLine.getText(), tcw);
-				if(comboLine.getText().equals("Green"))
+				Router newRouter = new Router(trainID.getText(), comboLine.getText(), tcw, sm, isMBO);
+				if(comboLine.getText().equals("green"))
 				{
-					sched = s.createScheduleFB(comboStationsGreen.getText(), comboLine.getText(), trainID.getText());
+					sched = s.createScheduleManual(comboStationsGreen.getText(), comboLine.getText(), trainID.getText());
 				}
-				else if(comboLine.getText().equals("Red"))
+				else if(comboLine.getText().equals("red"))
 				{
-					sched = s.createScheduleFB(comboStationsRed.getText(), comboLine.getText(), trainID.getText());
+					sched = s.createScheduleManual(comboStationsRed.getText(), comboLine.getText(), trainID.getText());
 				}
 				trainIDs.add(trainID.getText());
 				tableTrain[indexSched] = new TableItem(table, SWT.NONE, 0);
 				tableTrain[indexSched].setText(sched);
 				indexSched++;
 				routers.add(newRouter);
-				// create train
-				int idTrain = Integer.parseInt(trainID.getText());
-				Train t = new Train(tk, idTrain);
-				theTrains.add(t);
 				
 			}
 		});
@@ -286,7 +301,7 @@ public class CTCGUI {
 			public void mouseDoubleClick(MouseEvent e) {
 				if(btnFixedBlock.getSelection() == true)
 				{
-					if(comboLine.getText().equals("Green"))
+					if(comboLine.getText().equals("green"))
 					{
 						try {
 							for(int i = 0; i < routers.size(); i++)
@@ -294,9 +309,10 @@ public class CTCGUI {
 								if(routers.get(i).getTrainID() == i+1)
 								{
 									System.out.println("Routing Train: " + routers.get(i).getTrainID());
-									routers.get(i).getRouteFB(tk, trainID.getText(), comboStationsGreen.getText());
+									routers.get(i).getRoute(tk, trainID.getText(), comboStationsGreen.getText());
 									authority = routers.get(i).getFullAuthority();
 									System.out.println("Full Authority: " +  authority);
+									
 									break;
 								}
 							}
@@ -304,7 +320,7 @@ public class CTCGUI {
 							e1.printStackTrace();
 						}
 					}
-					else if(comboLine.getText().equals("Red"))
+					else if(comboLine.getText().equals("red"))
 					{
 						try {
 							for(int i = 0; i < routers.size(); i++)
@@ -312,7 +328,7 @@ public class CTCGUI {
 								if(routers.get(i).getTrainID() == i+1)
 								{
 									System.out.println("Routing Train: " + routers.get(i).getTrainID());
-									routers.get(i).getRouteFB(tk, trainID.getText(), comboStationsRed.getText());
+									routers.get(i).getRoute(tk, trainID.getText(), comboStationsRed.getText());
 									authority = routers.get(i).getFullAuthority();
 									System.out.println("Full Authority: " +  authority);
 								}
@@ -322,10 +338,48 @@ public class CTCGUI {
 							e1.printStackTrace();
 						}
 					}
+					
 				}
 				else if(btnMbo.getSelection() == true)
 				{
 					//route each one from source to destination
+					if(comboLine.getText().equals("green"))
+					{
+						try {
+							for(int i = 0; i < routers.size(); i++)
+							{
+								if(routers.get(i).getTrainID() == i+1)
+								{
+									System.out.println("Routing Train: " + routers.get(i).getTrainID());
+									routers.get(i).getRoute(tk, trainID.getText(), comboStationsGreen.getText());
+									authority = routers.get(i).getFullAuthority();
+									System.out.println("Full Authority: " +  authority);
+									
+									break;
+								}
+							}
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+					else if(comboLine.getText().equals("red"))
+					{
+						try {
+							for(int i = 0; i < routers.size(); i++)
+							{
+								if(routers.get(i).getTrainID() == i+1)
+								{
+									System.out.println("Routing Train: " + routers.get(i).getTrainID());
+									routers.get(i).getRoute(tk, trainID.getText(), comboStationsRed.getText());
+									authority = routers.get(i).getFullAuthority();
+									System.out.println("Full Authority: " +  authority);
+								}
+							
+							}
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
 				}
 				// create train
 				
@@ -523,8 +577,8 @@ public class CTCGUI {
 		btnTransitSystem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				TransitSystem trackLayout = new TransitSystem();
-				trackLayout.open();
+			 new TransitSys();
+
 			}
 		});
 		btnTransitSystem.setBounds(80, 572, 201, 25);
