@@ -1,5 +1,3 @@
-package trackControllerFinal;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -63,33 +61,83 @@ public class PLCClass {
 	 * @return whether or not the train can proceed
 	 */
 	public boolean verifyProceed(Block nextBlock, Block destinationBlock) {
+		// Return the vital evaluation in order to proceed
+		return vitalProceed(nextBlock, destinationBlock);
+	}
+
+	/**
+	 * Helper function for verifyProceed that evaluates the operation safely
+	 * @param nextBlock object of the next block the train would proceed to
+	 * @param destinationBlock object of the 2nd next block
+	 * @return whether or not the train can proceed
+	 */
+	private boolean vitalProceed(Block nextBlock, Block destinationBlock) {
+		boolean result = true;
+
 		// grab expression to verify proceed
 		Expression e = jexl.createExpression(canProceedExpr);
 
 		// populate the context
 		JexlContext context = new MapContext();
-		context.set("b1_occupied", nextBlock.isBlockOccupied());
-		context.set("b2_occupied", destinationBlock.isBlockOccupied());
-		context.set("b1_broken", nextBlock.isBroken());
-		context.set("b2_broken", destinationBlock.isBroken());
 
-		// evaluate expression with variables
-		boolean result = (boolean) e.evaluate(context);
+		// do evaluation 5 times to assure correct action
+		for(int iii = 0; iii < 5; iii++) {
+			context.set("b1_occupied", nextBlock.isBlockOccupied());
+			context.set("b2_occupied", destinationBlock.isBlockOccupied());
+			context.set("b3_occupied", destinationBlock.traverse().isBlockOccupied());
+
+			context.set("b1_broken", nextBlock.isBroken());
+			context.set("b2_broken", destinationBlock.isBroken());
+			context.set("b3_broken", destinationBlock.traverse().isBroken());
+
+			// evaluate expression with variables 
+			// all evaluations must be true for it to verify the proceed
+			result &= (boolean) e.evaluate(context);
+		}
 
 		return result;
 	}
 
+	/**
+	 * Function to decide if the track can switch or not
+	 * @param nextBlock object of the next block the train would proceed to
+	 * @param destinationBlock object of the 2nd next block
+	 * @return whether or not there can be a switch
+	 */
 	public boolean verifyToggleSwitch(Block nextBlock, Block destinationBlock) {
-		// grab expression to verify we can switch
+		// Return the vital evaluation in order to switch
+		return vitalSwitch(nextBlock, destinationBlock);
+	}
+
+	/**
+	 * Helper function for verifyToggleSwitch that evaluates the operation safely
+	 * @param nextBlock object of the next block the train would proceed to
+	 * @param destinationBlock object of the 2nd next block
+	 * @return whether or not there can be a switch
+	 */
+	private boolean vitalSwitch(Block nextBlock, Block destinationBlock) {
+		boolean result = true;
+
+		// grab expression to verify switch
 		Expression e = jexl.createExpression(canSwitchExpr);
 
 		// populate the context
 		JexlContext context = new MapContext();
-		context.set("b1_occupied", nextBlock.isBlockOccupied());
-		context.set("b2_occupied", destinationBlock.isBlockOccupied());
 
-		// evaluate expression with variables
-		boolean result = (boolean) e.evaluate(context);
+		// do evaluation 5 times to assure correct action
+		for(int iii = 0; iii < 5; iii++) {
+			context.set("b1_occupied", nextBlock.isBlockOccupied());
+			context.set("b2_occupied", destinationBlock.isBlockOccupied());
+			context.set("b3_occupied", destinationBlock.traverse().isBlockOccupied());
+
+			context.set("b1_broken", nextBlock.isBroken());
+			context.set("b2_broken", destinationBlock.isBroken());
+			context.set("b3_broken", destinationBlock.traverse().isBroken());
+
+			// evaluate expression with variables 
+			// all evaluations must be true for it to verify the switch
+			result &= (boolean) e.evaluate(context);
+		}
 
 		return result;
 	}
@@ -101,15 +149,72 @@ public class PLCClass {
 	 * @return whether or not that block can be closed
 	 */
 	public boolean verifySetMaint(Block prevBlock, Block desiredBlock) {
+		// Return the vital evaluation in order to switch
+		return vitalMaintenance(prevBlock, desiredBlock);
+	}
+
+	/**
+	 * Helper function for verifySetMaint that evaluates the operation safely
+	 * @param prevBlock object of the previous block to the one to be closed
+	 * @param desiredBlock object of block to be closed
+	 * @return whether or not the block can be closed for maintenance
+	 */
+	private boolean vitalMaintenance(Block prevBlock, Block desiredBlock) {
+		boolean result = true;
+
 		// grab expression to verify maintenance
 		Expression e = jexl.createExpression(canMaintExpr);
 
 		// populate the context
 		JexlContext context = new MapContext();
-		//context.set("b1_occupied", b1_occupied);
 
-		// evaluate expression with variables
-		boolean result = (boolean) e.evaluate(context);
+		// do evaluation 5 times to assure correct action
+		for(int iii = 0; iii < 5; iii++) {
+			context.set("b1_occupied", prevBlock.isBlockOccupied());
+			context.set("b2_occupied", desiredBlock.isBlockOccupied());
+
+			// evaluate expression with variables 
+			// all evaluations must be true for it to verify the closure of the block
+			result &= (boolean) e.evaluate(context);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Function to decide whether or not the railway crossing can be activated
+	 * @param prevBlock object of the previous block to the one to be closed
+	 * @param desiredBlock object of block to be closed
+	 * @return whether or not the railway crossing can be activated
+	 */
+	public boolean verifyRailwayCrossing(Block prevBlock, Block desiredBlock) {
+		// Return the vital evaluation in order to do the railway crossing
+		return vitalCrossing(prevBlock, desiredBlock);
+	}
+
+	/**
+	 * Helper function for verifyRailwayCrossing that evaluates the operation safely
+	 * @param prevBlock object of the previous block to the one to be closed
+	 * @param desiredBlock object of block to be closed
+	 * @return whether or not the railway crossing can be activated
+	 */
+	private boolean vitalCrossing(Block prevBlock, Block desiredBlock) {
+		boolean result = true;
+
+		// grab expression to verify maintenance
+		Expression e = jexl.createExpression(canDoCrossingExpr);
+
+		// populate the context
+		JexlContext context = new MapContext();
+
+		// do evaluation 5 times to assure correct action
+		for(int iii = 0; iii < 5; iii++) {
+			context.set("b1_occupied", prevBlock.isBlockOccupied());
+
+			// evaluate expression with variables 
+			// all evaluations must be true for it to verify the crossing
+			result &= (boolean) e.evaluate(context);
+		}
 
 		return result;
 	}

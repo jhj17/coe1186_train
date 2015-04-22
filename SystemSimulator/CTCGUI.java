@@ -1,8 +1,14 @@
+/* Ademusoyo Awosika-Olumo
+ * CTC System
+ * Last Edit: 4/19/2015
+ */
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import javax.swing.JFrame;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -175,8 +181,8 @@ public class CTCGUI {
 		
 		comboLine = new Combo(shell, SWT.NONE);
 		comboLine.setBounds(177, 95, 79, 21);
-		comboLine.add("Red");
-		comboLine.add("Green");
+		comboLine.add("red");
+		comboLine.add("green");
 		
 		Label lblLine = new Label(shell, SWT.NONE);
 		lblLine.setBounds(193, 75, 55, 15);
@@ -189,12 +195,12 @@ public class CTCGUI {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				System.out.println("ComboLine.getText() " + comboLine.getText());
-				if(comboLine.getText().equals("Green"))
+				if(comboLine.getText().equals("green"))
 				{
 					comboStationsGreen.setVisible(true);
 					comboStationsRed.setVisible(false);
 				}
-				else if(comboLine.getText().equals("Red"))
+				else if(comboLine.getText().equals("red"))
 				{
 					comboStationsRed.setVisible(true);
 					comboStationsGreen.setVisible(false);
@@ -227,13 +233,21 @@ public class CTCGUI {
 			public void mouseDoubleClick(MouseEvent e) {
 				String [] sched = null;
 				s = new Scheduler();
+				/*try {
+					tk = new Track();
+					tcw = new TrackControllerWrapper(tk);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}*/
+				
 				System.out.println("Train ID: " + trainID.getText() + " Line: " +  comboLine.getText());
-				Router newRouter = new Router(trainID.getText(), comboLine.getText(), tcw);
-				if(comboLine.getText().equals("Green"))
+				Router newRouter = new Router(trainID.getText(), comboLine.getText(), tcw, sm);
+				if(comboLine.getText().equals("green"))
 				{
 					sched = s.createScheduleFB(comboStationsGreen.getText(), comboLine.getText(), trainID.getText());
 				}
-				else if(comboLine.getText().equals("Red"))
+				else if(comboLine.getText().equals("red"))
 				{
 					sched = s.createScheduleFB(comboStationsRed.getText(), comboLine.getText(), trainID.getText());
 				}
@@ -242,10 +256,6 @@ public class CTCGUI {
 				tableTrain[indexSched].setText(sched);
 				indexSched++;
 				routers.add(newRouter);
-				// create train
-				int idTrain = Integer.parseInt(trainID.getText());
-				Train t = new Train(tk, idTrain, sm);
-				theTrains.add(t);
 				
 			}
 		});
@@ -288,7 +298,7 @@ public class CTCGUI {
 			public void mouseDoubleClick(MouseEvent e) {
 				if(btnFixedBlock.getSelection() == true)
 				{
-					if(comboLine.getText().equals("Green"))
+					if(comboLine.getText().equals("green"))
 					{
 						try {
 							for(int i = 0; i < routers.size(); i++)
@@ -299,6 +309,7 @@ public class CTCGUI {
 									routers.get(i).getRouteFB(tk, trainID.getText(), comboStationsGreen.getText());
 									authority = routers.get(i).getFullAuthority();
 									System.out.println("Full Authority: " +  authority);
+									
 									break;
 								}
 							}
@@ -306,7 +317,7 @@ public class CTCGUI {
 							e1.printStackTrace();
 						}
 					}
-					else if(comboLine.getText().equals("Red"))
+					else if(comboLine.getText().equals("red"))
 					{
 						try {
 							for(int i = 0; i < routers.size(); i++)
@@ -324,6 +335,7 @@ public class CTCGUI {
 							e1.printStackTrace();
 						}
 					}
+					
 				}
 				else if(btnMbo.getSelection() == true)
 				{
@@ -525,8 +537,11 @@ public class CTCGUI {
 		btnTransitSystem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				TransitSystem trackLayout = new TransitSystem();
-				trackLayout.open();
+				TransitSys ts = new TransitSys();
+				ts.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				ts.setVisible(true);
+				ts.pack();
+				ts.setTitle("Transit System");
 			}
 		});
 		btnTransitSystem.setBounds(80, 572, 201, 25);
