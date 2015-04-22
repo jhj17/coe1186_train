@@ -12,7 +12,7 @@ public class Track implements TrackInterface {
 	private ArrayList<Block> greenBlocks = new ArrayList<Block>();
 	private ArrayList<Switch> redSwitches = new ArrayList<Switch>();
 	private ArrayList<Switch> greenSwitches = new ArrayList<Switch>();
-	private ArrayList<Block> trainBlocks = new ArrayList<Block>();
+	ArrayList<Block> trainBlocks = new ArrayList<Block>();
 
 	private double coeffFriction;
 	private int weather;

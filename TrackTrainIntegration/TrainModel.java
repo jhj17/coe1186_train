@@ -111,9 +111,12 @@ public class TrainModel implements TrainModelInterface
 		double deltaT = 0;
 		
 		Block curBlock = track.getBlock(ID);
+		
 		while(curBlock == null){
-			System.out.print("halp...");
+			for(Block blocksWTrains: track.trainBlocks)
+				System.out.println(blocksWTrains);
 			curBlock = track.getBlock(ID);
+			break;
 		}
 
 		//System.out.println(curBlock);
