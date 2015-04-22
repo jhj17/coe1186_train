@@ -33,6 +33,7 @@ public class CTCGUI {
 	private Combo comboLine;
 	public static ArrayList<String> redLine = new ArrayList<String>();
 	public static ArrayList<String> greenLine = new ArrayList<String>();
+	public static ArrayList<String> defaultSchedule = new ArrayList<String>();
 	private Button btnSchedule;
 	private Combo comboStationsRed;
 	private Combo comboStationsGreen;
@@ -61,7 +62,7 @@ public class CTCGUI {
 	private boolean done;
 	public boolean isMBO;
 
-	public CTCGUI(Track tk, TrackControllerWrapper tcw, SimClock sm) throws FileNotFoundException
+	/*public CTCGUI(Track tk, TrackControllerWrapper tcw, SimClock sm) throws FileNotFoundException
 	{
 		this.tk = tk;
 		this.tcw = tcw;
@@ -86,14 +87,14 @@ public class CTCGUI {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	/**
 	 * Launch the application.
 	 * @param args
 	 * @throws FileNotFoundException 
 	 */
 	@SuppressWarnings("resource")
-	/*public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws FileNotFoundException {
 		Scanner outScan = new Scanner(new File("redLine.txt"));
 		while(outScan.hasNextLine())
 		{
@@ -103,6 +104,11 @@ public class CTCGUI {
 		while(outScan.hasNextLine())
 		{
 			greenLine.add(outScan.nextLine());
+		}
+		outScan = new Scanner(new File("greenLineDefaultSchedule.txt"));
+		while(outScan.hasNextLine())
+		{
+			defaultSchedule.add(outScan.nextLine());
 		}
 		for(int i =0; i < greenLine.size(); i++)
 			System.out.println(greenLine.get(i));
@@ -115,7 +121,7 @@ public class CTCGUI {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 
 	/**
 	 * Open the window.
@@ -222,8 +228,15 @@ public class CTCGUI {
 		btnRequestSchedule.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				//get schedule from the MBO as ArrayList of Strings
-				//do all configuration here
+				String schedGenerate[];
+				tableTrain = new TableItem [defaultSchedule.size()];
+				for(int i = 0; i < defaultSchedule.size(); i++)
+				{
+					schedGenerate = defaultSchedule.get(i).split(",");
+					tableTrain[i] = new TableItem(table, SWT.NONE, 0);
+					tableTrain[i].setText(schedGenerate);
+					
+				}
 			}
 		});
 		btnRequestSchedule.setBounds(276, 47, 105, 25);
@@ -577,7 +590,8 @@ public class CTCGUI {
 		btnTransitSystem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-			 new TransitSys();
+			TransitSys ts = new TransitSys();
+				ts.locateTrain(1, tk);
 
 			}
 		});

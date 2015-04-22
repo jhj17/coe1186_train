@@ -8,10 +8,10 @@ public class TransitSys {
 	private JScrollPane trainTextPane;
 	private ImageIcon imageTransit;
 	private JLabel labelTransit;
-	private JTextArea trainInfo;
+	public JTextArea trainInfo;
 	private JSplitPane split;
 	
-	TransitSys()
+	public TransitSys()
 	{
 		theWindow = new JFrame("Transit System");
 		theWindow.setVisible(true);
@@ -24,6 +24,7 @@ public class TransitSys {
 		trackPicturePane.add(labelTransit);
 		
 		trainInfo = new JTextArea();
+		trainInfo.setText("Train Location: \n");
 		trainInfo.setEditable(false); 
 		trainInfo.setPreferredSize(new Dimension(328, 415));
 		trainTextPane = new JScrollPane(trainInfo);
@@ -33,7 +34,21 @@ public class TransitSys {
 		
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, trackPicturePane, trainTextPane);
 		theWindow.getContentPane().add(split);
-	
+		
+	}
+	public void locateTrain(int trainID, Track tk)
+	{
+		Block b;
+		String section;
+		int blockNumber;
+		while(true)
+		{
+			b = tk.getBlock(trainID);
+			section = b.getSection();
+			blockNumber = b.getBlockNumber();
+			trainInfo.append("Train: " + trainID + "Section: " + section + "Block: " + blockNumber + "\n");
+			System.out.println("Train: " + trainID + "Section: " + section + "Block: " + blockNumber);
+		}
 		
 	}
 	public static void main(String [] args)

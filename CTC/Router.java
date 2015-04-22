@@ -78,10 +78,6 @@ public class Router
 			}
 		}
 	}
-	public void getRouteMBO()
-	{
-		
-	}
 	public double getFullAuthority()
 	{
 		double aut = 0;
