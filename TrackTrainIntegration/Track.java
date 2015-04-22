@@ -241,17 +241,12 @@ public void printBlockList(ArrayList<Block> printList)
 			}
 	}
 
-	@Override
-	public boolean breakBlock(int blockNumber) {
+	public void breakBlock(String line, int blockNum) {
 		// TODO Auto-generated method stub
-		return false;
+		
+		getBlock(line, blockNum).toggleBroken()
 	}
 
-	@Override
-	public boolean breakBlockCircuit(int blockNumber) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public void setWeather(int weatherType) {
@@ -292,11 +287,7 @@ public void printBlockList(ArrayList<Block> printList)
 		getBlock(blockNumber, line).setCommandedSpeed(commandedSpeed);
 		
 	}
-	@Override
-	public boolean toggleRedGreen(String line, int blockNumber) {
-		// TODO Auto-generated method stub
-		return getBlock(blockNumber, line).toggleRedGreen();
-	}
+
 	@Override
 	public synchronized void updateDistance(int trainID, double distance) {
  		for(int i = 0; i<trainBlocks.size();i++)
@@ -399,5 +390,10 @@ public void printBlockList(ArrayList<Block> printList)
 	public void displayBlock(int blockNumber) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void showBeacon(int blockNumber, String line)
+	{
+		getBlock(blockNumber,line).setBeaconOn();
 	}
 }

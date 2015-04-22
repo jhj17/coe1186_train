@@ -36,6 +36,7 @@ public class Block implements BlockInterface {
 	//..User configurable attributes..
 	private boolean brokenBlock = false;
 	private boolean closedBlock = false;
+	private boolean signalWorking = true;
 
 	//boolean brokenCircuit;
 	
@@ -46,13 +47,15 @@ public class Block implements BlockInterface {
 
 	private int trainID = 0;
 	private boolean blockOccupied = false;
+
+	private boolean lightsGreenTrueRedFalse;
+	private boolean beaconCommanded = false;
+
 	boolean crossingOccurence;
-	double commandedAuthority = -1;
-	double commandedSpeed = 15;
+	private double commandedAuthority = 0;
+	private double commandedSpeed = 0;
 	double distanceTraveled = 0;
-	boolean lightsGreenTrueRedFalse;
-	boolean beacon;
-	boolean beaconCommanded = true;
+
 /*
 	
 	
@@ -92,6 +95,8 @@ public Block(String[] splitStrings, Block lastCreated) {
 	if(station.equals("FROM YARD") || station.equals("TO YARD/FROM YARD"))
 	{
 		fromYard = true;
+		commandedAuthority = blockLength;
+		commandedSpeed = 10;
 		station = "";
 	}
 
@@ -342,7 +347,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 		//System.out.println("In " + this.section + " " + this.blockNumber + " moved: " + newDist + "Length:"+ this.blockLength);
 
 		Block currentBlock = this;
-		if(newDist>=blockLength)
+		if(newDist>blockLength)
 		{
 			Block temp = currentBlock;
 			blockOccupied = false;
@@ -516,6 +521,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 	}
 
 /*
+	[Internal]
 	Returns 1 if this block has already been traversed, 0 if not. ??? REDUNDANT... remove. 
 */	
 	public int getBlockDirection() {
@@ -533,29 +539,16 @@ public Block(String[] splitStrings, Block lastCreated) {
 	}
 
 /*
+	[Internal]
 	returns the integer number of the block
 */	
 	public int getBlockNumber() {
 		return blockNumber;
 	}
 
-/*
-	Closes a block for maintenance.
-*/	
-	public void closeBlock()
-	{
-		closedBlock = true;
-	}
 
 /*
-	Opens a block for maintenance. 
-*/	
-	public void openBlock()
-	{
-		closedBlock = false;
-	}
-
-/*
+	[Internal]
 	returns the ID of the train currently in the block.  if not there, 0. 
 */	
 	public int getTrainID() 
@@ -565,61 +558,31 @@ public Block(String[] splitStrings, Block lastCreated) {
 
 
 /*
-	WAYSIDE
-	Sets the commanded speed of the block. 
-*/	
-	public void setCommandedSpeed(double commandedSpeed2) 
-	{		
-		commandedSpeed = commandedSpeed2;
-	}
-
-/*
-	hmmmm ??? not complete
-*/	
-	public boolean toggleRedGreen() {
-		// TODO Auto-generated method stub
-		return !(lightsGreenTrueRedFalse);
-	}
-
-/*
+	[Internal]
 	returns speed limit of block
 */	
 	public int getSpeedLimit() {
 		// TODO Auto-generated method stub
 		return speedLimit;
 	}
-/*
-	Returns a string of this block including: section, block number, occupied (boolean), broken (boolean), closed (boolean)
-*/	
-	public String toString()
-	{
-		return (this.getSection() + "\t" + this.getBlockNumber() + "\t" + this.isBlockOccupied() + "\t" + this.isBroken() + "\t" +this.isClosed());
-	}
 
-/*
-	Returns true if broken, false if not broken.
-*/
-	public boolean isBroken()
-	{
-		return brokenBlock;
-	}
-
-/*
-	Returns true if closed, false if not closed.
-*/
-	public boolean isClosed()
-	{
-		return closedBlock;
-	}
 
 /*
 	??? not done yet
 */
 	@Override
 	public boolean isCrossing() {
-		// TODO Auto-generated method stub
 		return false;
 	}
+
+/*
+	??? not done yet
+*/
+	@Override
+	public boolean getCrossing() {
+		return null;
+	}
+
 /*
 	??? not done yet.
 */
@@ -676,7 +639,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 	{
 		if(station.length()>0 && beaconCommanded)
 		{
-			//beaconCommanded = false;
+			beaconCommanded = false;
 			return station + "," + stationSide + "," + "90" + "," + "4";
 		}
 		else
@@ -687,10 +650,95 @@ public Block(String[] splitStrings, Block lastCreated) {
 
 
 													/*			WAYSIDE RELEVANT METHODS 			*/
+/*
+	[Wayside]
+*/	
+	public void toggleBroken()
+	{
+		brokenBlock= (!brokenBlock);
+	}
+/*
+	[Wayside]
+	Returns a string of this block including: section, block number, occupied (boolean), broken (boolean), closed (boolean)
+*/	
+	public String toString()
+	{
+		return (this.getSection() + "\t" + this.getBlockNumber() + "\t" + this.isBlockOccupied() + "\t" + this.isBroken() + "\t" +this.isClosed());
+	}
+
+/*
+	[Wayside]
+	Returns true if broken, false if not broken.
+*/
+	public boolean isBroken()
+	{
+		return brokenBlock;
+	}
+
+/*
+	[Wayside]
+	Returns true if closed, false if not closed.
+*/
+	public boolean isClosed()
+	{
+		return closedBlock;
+	}
 
 
+/*
+	WAYSIDE
+	Sets the commanded speed of the block. 
+*/	
+	public void setCommandedSpeed(double commandedSpeed2) 
+	{		
+		commandedSpeed = commandedSpeed2;
+	}
+
+/*
+	[Wayside]
+*/	
+	public void toggleRedGreen(boolean trueGreen) {
+		// TODO Auto-generated method stub
+		lightsGreenTrueRedFalse	= trueGreen;
+	}
+/*
+	[Wayside]
+*/	
+	public boolean getRedFalseGreenTrue()
+	{
+		return lightsGreenTrueRedFalse;
+	}
+/*
+	[Wayside]
+*/	
+	public boolean isSignalWorking()
+	{
+		return signalWorking;
+	}
+
+	/*
+	[Wayside]
+	Closes a block for maintenance.
+*/	
+	public void closeBlock()
+	{
+		closedBlock = true;
+	}
+
+/*
+	[Wayside]
+	Opens a block for maintenance. 
+*/	
+	public void openBlock()
+	{
+		closedBlock = false;
+	}
 
 
+	public void setBeaconOn()
+	{
+		beaconCommanded = true;	
+	}
 
 
 }

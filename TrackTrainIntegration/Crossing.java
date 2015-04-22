@@ -1,5 +1,9 @@
 
-public class Crossing implements CrossingInterface {
+public class Crossing  {
+
+
+
+
 
 	@Override
 	public void toggleCrossing() {

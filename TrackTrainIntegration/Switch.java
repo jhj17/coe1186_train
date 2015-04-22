@@ -142,10 +142,14 @@ public class Switch implements SwitchInterface {
 		setup();
 	}
 
+	public void breakSwitch()
+	{
+		brokenSwitch = (!brokenSwitch);
+	}
+
 	@Override
 	public boolean isSwitchWorking() {
-		// TODO Auto-generated method stub
-		return false;
+		return brokenSwitch;
 	}
 
 	@Override
