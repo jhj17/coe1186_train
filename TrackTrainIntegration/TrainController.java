@@ -42,7 +42,7 @@ public class TrainController {
 		return true;
 	}
 	public boolean passFailure(byte fails){ //0 is no failure, 1 is Engine, 2 is Brake, 3 is Signal
-		ts.fails = 1;
+		ts.fails = fails;
 		return true;
 	}
 	public void updateFromGUI(){
@@ -156,6 +156,7 @@ public class TrainController {
 			ts.isLeftDoor = tm.setLeftDoor(ts.shouldLeftDoor);
 		if(ts.isRightDoor != ts.shouldRightDoor)
 			ts.isRightDoor = tm.setRightDoor(ts.shouldRightDoor);
+		tm.setStation(ts.stationName);
 		return true;	
 	}
 	private void announceStation(String name){

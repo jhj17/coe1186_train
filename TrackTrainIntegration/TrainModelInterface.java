@@ -7,4 +7,5 @@ public interface TrainModelInterface {
 	public double setTemp(double cmdTemp);
 	public boolean setLeftDoor(boolean leftDoor);
 	public boolean setRightDoor(boolean rightDoor);
+	public boolean setStation(String stationName);
 }
