@@ -110,14 +110,15 @@ public class TrackDriver {
 		//trackTester.placeTrain("Red", 15);
 
 //TESTING TRAIN TRAVERSAL. 
-		/*
+		
+		System.out.println("placing, updating");
 		trackTester.placeTrain("green", 5);
 		for(int i = 0;i<1000;i++)
 		{
 			trackTester.updateDistance(5,100);
 			//trackTester.updateDistance(TrainID, distance)
 		}
-		*/
+		
 
 		/*
 		trackTester.toggleSwitch("Green", 153);

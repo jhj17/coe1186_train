@@ -110,8 +110,11 @@ public class TrainModel implements TrainModelInterface
 
 		double deltaT = 0;
 		
+		System.out.println("before getblock");
 		Block curBlock = track.getBlock(ID);
-		
+		System.out.println(curBlock.toString());
+		System.out.println(curBlock.toString());
+
 		commandedSpeed = curBlock.getTrainCommandedSpeed();
 		authority = curBlock.getTrainAuthority();
 

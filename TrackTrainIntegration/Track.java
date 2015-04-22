@@ -322,6 +322,7 @@ public void printBlockList(ArrayList<Block> printList)
 
 	public void placeTrain(String line, int trainID )
 	{	
+		
 		Block trainBlock = null;
 		line = line.toLowerCase();
 		System.out.println(line);
@@ -331,10 +332,18 @@ public void printBlockList(ArrayList<Block> printList)
 		}
 		else
 		{
+			System.out.println("green train created");
 			trainBlock = greenYard.placeTrain(trainID,0);
+			System.out.println(trainBlock);
+
 		}
 
 			trainBlocks.add(trainBlock);
+			System.out.println("done placing");
+			for(Block blocksWTrains: trainBlocks)
+			{
+				System.out.println(blocksWTrains);
+			}
 	}
 	
 	/*public Block getBlock(int TrainID)
@@ -377,6 +386,7 @@ public void printBlockList(ArrayList<Block> printList)
 	public Block getBlock(int TrainID) {
 		// TODO Auto-generated method stub
 		
+			
 			for(Block reds: redBlocks)
 			{
 				if(reds.getTrainID() == TrainID)
@@ -389,7 +399,9 @@ public void printBlockList(ArrayList<Block> printList)
 			{
 				if(greens.getTrainID() == TrainID)
 				{
+					System.out.println("found:" + greens);
 					return greens;
+
 				}
 			}	
 

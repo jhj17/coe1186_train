@@ -47,8 +47,8 @@ public class Block implements BlockInterface {
 	private int trainID = 0;
 	private boolean blockOccupied = false;
 	boolean crossingOccurence;
-	double commandedAuthority = 0;
-	double commandedSpeed = 0;
+	double commandedAuthority = 10000;
+	double commandedSpeed = 15;
 	double distanceTraveled = 0;
 	boolean lightsGreenTrueRedFalse;
 	boolean beacon;
@@ -591,7 +591,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 */	
 	public String toString()
 	{
-		return this.getSection() + "\t" + this.getBlockNumber() + "\t" + this.isBlockOccupied() + "\t" + this.isBroken() + "\t" +this.isClosed();
+		return (this.getSection() + "\t" + this.getBlockNumber() + "\t" + this.isBlockOccupied() + "\t" + this.isBroken() + "\t" +this.isClosed());
 	}
 
 /*
