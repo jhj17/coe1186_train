@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 
-public class Block implements BlockInterface {
+public class Block {
 
 	private String line;
 	private String section;
@@ -532,7 +532,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 /*
 	hmmmm ??? not complete
 */	
-	@Override
 	public boolean isBlockWorking() {
 		// TODO Auto-generated method stub
 		return false;
@@ -570,7 +569,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 /*
 	??? not done yet
 */
-	@Override
 	public boolean isCrossing() {
 		return false;
 	}
@@ -578,15 +576,13 @@ public Block(String[] splitStrings, Block lastCreated) {
 /*
 	??? not done yet
 */
-	@Override
 	public boolean getCrossing() {
-		return null;
+		return false;
 	}
 
 /*
 	??? not done yet.
 */
-	@Override
 	public boolean isStation() {
 		// TODO Auto-generated method stub
 		return false;
