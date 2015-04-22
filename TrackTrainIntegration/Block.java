@@ -47,12 +47,12 @@ public class Block implements BlockInterface {
 	private int trainID = 0;
 	private boolean blockOccupied = false;
 	boolean crossingOccurence;
-	double commandedAuthority = 10000;
+	double commandedAuthority = -1;
 	double commandedSpeed = 15;
 	double distanceTraveled = 0;
 	boolean lightsGreenTrueRedFalse;
 	boolean beacon;
-	boolean beaconCommanded = false;
+	boolean beaconCommanded = true;
 /*
 	
 	
@@ -87,10 +87,12 @@ public Block(String[] splitStrings, Block lastCreated) {
 	if(station.equals("TO YARD") || station.equals("TO YARD/FROM YARD"))
 	{
 		toYard = true;
+		station = "";
 	}
 	if(station.equals("FROM YARD") || station.equals("TO YARD/FROM YARD"))
 	{
 		fromYard = true;
+		station = "";
 	}
 
 	if(toYard == false && fromYard == false && station.length()>0)
@@ -325,7 +327,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 	*/	
 	public Block placeTrain(int train, double distanceMoved)
 	{
-		//System.out.println("Train place " + this.section + " " + this.blockNumber);
+		System.out.println(train+" train moved to: " + this.section + " " + this.blockNumber);
 		trainID = train;
 		blockOccupied = true;
 		return this.moveTrain(distanceMoved);	
@@ -674,7 +676,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 	{
 		if(station.length()>0 && beaconCommanded)
 		{
-			beaconCommanded = false;
+			//beaconCommanded = false;
 			return station + "," + stationSide + "," + "90" + "," + "4";
 		}
 		else

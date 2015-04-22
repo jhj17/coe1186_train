@@ -110,13 +110,17 @@ public class TrainModel implements TrainModelInterface
 
 		double deltaT = 0;
 		
-		System.out.println("before getblock");
 		Block curBlock = track.getBlock(ID);
-		System.out.println(curBlock.toString());
-		System.out.println(curBlock.toString());
+		while(curBlock == null){
+			System.out.print("halp...");
+			curBlock = track.getBlock(ID);
+		}
 
+		//System.out.println(curBlock);
+		
 		commandedSpeed = curBlock.getTrainCommandedSpeed();
 		authority = curBlock.getTrainAuthority();
+
 
 		// mboSpeed = mbo.getSpeed(ID);
 		// mboAuthority = mbo.getAuthority(ID);
@@ -221,24 +225,27 @@ public class TrainModel implements TrainModelInterface
 			}
 		}
 		
-		
-		acceleration = Math.min(acceleration, MAXACCELERATION);
-		distance += (speed * deltaT) + ( (1.0/2.0)*(acceleration)*(deltaT * deltaT) );
+		double distChange = (speed * deltaT) + ( (1.0/2.0)*(acceleration)*(deltaT * deltaT));
+		distance += distChange;
 
 		// Update temperature;
+
 		if (commandedTemperature > temperature)
 		{
-			temperature += (0.00005 * deltaT);
+		temperature += (0.00005 * deltaT);
 		}
+
 		else if (commandedTemperature < temperature)
 		{
-			temperature -= (0.00005 * deltaT);
+		temperature -= (0.00005 * deltaT);
 		}
 
 		if ((commandedTemperature - temperature) > -0.01 && (commandedTemperature - temperature) < 0.01)
 		{
-			temperature = commandedTemperature;
+		temperature = commandedTemperature;
 		}
+
+		track.updateDistance(ID, distChange);
 
 		// Populate train values and return them
 		DTV = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);

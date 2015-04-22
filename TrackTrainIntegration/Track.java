@@ -12,7 +12,7 @@ public class Track implements TrackInterface {
 	private ArrayList<Block> greenBlocks = new ArrayList<Block>();
 	private ArrayList<Switch> redSwitches = new ArrayList<Switch>();
 	private ArrayList<Switch> greenSwitches = new ArrayList<Switch>();
-	private	ArrayList<Block> trainBlocks = new ArrayList<Block>();
+	private ArrayList<Block> trainBlocks = new ArrayList<Block>();
 
 	private double coeffFriction;
 	private int weather;
@@ -239,7 +239,6 @@ public void printBlockList(ArrayList<Block> printList)
 					existingSwitch.addBlock(currentBlock);
 				}
 			}
-
 	}
 
 	@Override
@@ -299,17 +298,18 @@ public void printBlockList(ArrayList<Block> printList)
 		return getBlock(blockNumber, line).toggleRedGreen();
 	}
 	@Override
-	public void updateDistance(int trainID, double distance) {
+	public synchronized void updateDistance(int trainID, double distance) {
  		for(int i = 0; i<trainBlocks.size();i++)
 		{
 			if(trainBlocks.get(i).getTrainID() == trainID)
 			{
-				System.out.println(trainBlocks.get(i).getSection() + trainBlocks.get(i).getBlockNumber() + " has " +trainBlocks.get(i).getTrainID());
+				//System.out.println(trainBlocks.get(i).getSection() + trainBlocks.get(i).getBlockNumber() + " has " +trainBlocks.get(i).getTrainID());
 				Block nextBlock = trainBlocks.get(i).moveTrain(distance);
 				if(nextBlock != trainBlocks.get(i))
 				{
-					trainBlocks.remove(i);
-					trainBlocks.add(nextBlock);
+					trainBlocks.set(i,nextBlock);
+					//trainBlocks.remove(i);
+					//trainBlocks.add(nextBlock);
 				}
 				//printBlockList(trainBlocks);
 				return;
@@ -325,25 +325,19 @@ public void printBlockList(ArrayList<Block> printList)
 		
 		Block trainBlock = null;
 		line = line.toLowerCase();
-		System.out.println(line);
+		//System.out.println(line);
 		if(line.equals("red"))
 		{
 			trainBlock = redYard.placeTrain(trainID,0);
 		}
 		else
 		{
-			System.out.println("green train created");
 			trainBlock = greenYard.placeTrain(trainID,0);
-			System.out.println(trainBlock);
+			//System.out.println(trainBlock);
 
 		}
 
 			trainBlocks.add(trainBlock);
-			System.out.println("done placing");
-			for(Block blocksWTrains: trainBlocks)
-			{
-				System.out.println(blocksWTrains);
-			}
 	}
 	
 	/*public Block getBlock(int TrainID)
@@ -353,7 +347,7 @@ public void printBlockList(ArrayList<Block> printList)
 	*/
 	
 	@Override
-	public Block getBlock(int blockNumber, String line) {
+	public synchronized Block getBlock(int blockNumber, String line) {
 		// TODO Auto-generated method stub
 		
 		Block returnBlock = null;
@@ -383,25 +377,13 @@ public void printBlockList(ArrayList<Block> printList)
 	}
 	
 	@Override
-	public Block getBlock(int TrainID) {
+	public synchronized Block getBlock(int TrainID) {
 		// TODO Auto-generated method stub
-		
-			
-			for(Block reds: redBlocks)
+			for(Block trainer: trainBlocks)
 			{
-				if(reds.getTrainID() == TrainID)
+				if(trainer.getTrainID() == TrainID)
 				{
-					return reds;
-				}
-			}
-
-			for(Block greens: greenBlocks)
-			{
-				if(greens.getTrainID() == TrainID)
-				{
-					System.out.println("found:" + greens);
-					return greens;
-
+					return trainer;
 				}
 			}	
 

@@ -15,8 +15,6 @@ public class TrainController {
 	public void initTrainModel(TrainModel tmodel)
 	{
 		tm = tmodel;
-		System.out.println("update samples called");
-		ts.tv = tm.updateSamples(0);
 	}
 	public void tick(){
 		updateTime();

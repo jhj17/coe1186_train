@@ -1,6 +1,6 @@
 
 public class TrainState {
-final double SampleRate = .01;
+final double SampleRate = .05;
 final double EBrakeRate = 2.73; //need real value
 final double SBrakeRate = 1.2; //need real value
 final double StationStopTime = 300; //seconds
