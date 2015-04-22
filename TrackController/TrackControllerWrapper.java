@@ -1,3 +1,5 @@
+package trackControllerFinal;
+
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -113,7 +115,6 @@ public class TrackControllerWrapper {
 		redLineTrackControllers.add(new TrackController("red", 0, redTc1Blocks));
 		redLineTrackControllers.add(new TrackController("red", 1, redTc2Blocks));
 
-		// TODO: loaded plc through GUI
 		// set default plc program for track controllers - only for demo
 		greenLineTrackControllers.get(0).initPLC("testPLC.plc");
 		greenLineTrackControllers.get(1).initPLC("testPLC.plc");
@@ -539,8 +540,6 @@ public class TrackControllerWrapper {
 
 		boolean returnResult = true;
 
-		// TODO: check suggested speed for -1 to show that its in MBO mode
-
 		// based on the track line and current block, decide which track controller to request
 		if(line.equals("red")) {
 			// track controller part of the red line
@@ -565,41 +564,104 @@ public class TrackControllerWrapper {
 			Block currBlock = track.getBlock(currentBlock,"red");
 			Block nxtBlock = track.getBlock(nextBlock,"red");
 			Block destBlock = track.getBlock(destinationBlock,"red");
-			returnResult = trackController.plc.verifyProceed(nxtBlock, destBlock);
-
-			if(returnResult) {
-				// check if track needs to switch the switch to get to the destination block
+			
+			if(suggestedSpeed == -1 && suggestedAuthority == -1) {
+				// In MBO Mode, just pass ignore characters
+				// Check if track needs to switch
 				if(nxtBlock.isSwitch()) {
-					returnResult = trackController.plc.verifyToggleSwitch(nxtBlock, destBlock);
-
+					// toggle switch for the next block
+					if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
+						// need to toggle switch
+						nxtBlock.toggleSwitch();
+					}
+				}
+				
+				// TODO: Check for railway crossing on 3rd block ahead
+				if(destBlock.traverse().isCrossing()) {
+					returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
 					if(returnResult) {
-						// toggle switch for the next block
-						if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
-							// need to toggle switch
-							nxtBlock.toggleSwitch();
+						//destBlock.traverse().getCrossing().toggleCrossing();
+					}
+				}
+				
+				// send block suggested speed and authority - ignore
+				track.commandAuthority("red", suggestedAuthority, currentBlock);
+				track.commandSpeed("red", suggestedSpeed, currentBlock);
+			}
+			else {
+				returnResult = trackController.plc.verifyProceed(nxtBlock, destBlock);
+	
+				if(returnResult) {
+					// check if track needs to switch the switch to get to the destination block
+					if(nxtBlock.isSwitch()) {
+						returnResult = trackController.plc.verifyToggleSwitch(nxtBlock, destBlock);
+	
+						if(returnResult) {
+							// toggle switch for the next block
+							if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
+								// need to toggle switch
+								nxtBlock.toggleSwitch();
+							}
+							
+							// TODO: Check for railway crossing on 3rd block ahead
+							if(destBlock.traverse().isCrossing()) {
+								returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+								if(returnResult) {
+									// set crossing occurrence
+									//destBlock.traverse().getCrossing().toggleCrossing();
+									
+									// send block suggested speed and authority
+									track.commandAuthority("red", suggestedAuthority, currentBlock);
+									track.commandSpeed("red", suggestedSpeed, currentBlock);
+								}
+								else {
+									// send block suggested speed and authority
+									track.commandAuthority("red", 70, currentBlock);
+									track.commandSpeed("red", 0, currentBlock);
+								}
+							}
+							else {
+								// send block suggested speed and authority
+								track.commandAuthority("red", suggestedAuthority, currentBlock);
+								track.commandSpeed("red", suggestedSpeed, currentBlock);
+							}
 						}
-
-						// send block suggested speed and authority
-						track.commandAuthority("red", suggestedAuthority, currentBlock);
-						track.commandSpeed("red", suggestedSpeed, currentBlock);
+						else {
+							// send block speed and authority of 0
+							track.commandAuthority("red", 70, currentBlock);
+							track.commandSpeed("red", 0, currentBlock);
+						}
 					}
 					else {
-						// send block speed and authority of 0
-						track.commandAuthority("red", 70, currentBlock);
-						track.commandSpeed("red", 0, currentBlock);
+						// TODO: Check for railway crossing on 3rd block ahead
+						if(destBlock.traverse().isCrossing()) {
+							returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+							if(returnResult) {
+								// set crossing occurrence
+								//destBlock.traverse().getCrossing().toggleCrossing();
+								
+								// send block suggested speed and authority
+								track.commandAuthority("red", suggestedAuthority, currentBlock);
+								track.commandSpeed("red", suggestedSpeed, currentBlock);
+							}
+							else {
+								// send block suggested speed and authority
+								track.commandAuthority("red", 70, currentBlock);
+								track.commandSpeed("red", 0, currentBlock);
+							}
+						}
+						else {
+							// send block suggested speed and authority
+							track.commandAuthority("red", suggestedAuthority, currentBlock);
+							track.commandSpeed("red", suggestedSpeed, currentBlock);
+						}
 					}
 				}
 				else {
-					// send block suggested speed and authority
-					track.commandAuthority("red", suggestedAuthority, currentBlock);
-					track.commandSpeed("red", suggestedSpeed, currentBlock);
+					// send block speed and authority of 0
+					track.commandAuthority("red", 70, currentBlock);
+					track.commandSpeed("red", 0, currentBlock);
 				}
-
-			}
-			else {
-				// send block speed and authority of 0
-				track.commandAuthority("red", 70, currentBlock);
-				track.commandSpeed("red", 0, currentBlock);
 			}
 		}
 		else {
@@ -636,41 +698,61 @@ public class TrackControllerWrapper {
 			Block currBlock = track.getBlock(currentBlock,"green");
 			Block nxtBlock = track.getBlock(nextBlock,"green");
 			Block destBlock = track.getBlock(destinationBlock,"green");
-			returnResult = trackController.plc.verifyProceed(nxtBlock, destBlock);
-
-			if(returnResult) {
-				// check if track needs to switch the switch to get to the destination block
+			
+			if(suggestedSpeed == -1 && suggestedAuthority == -1) {
+				// In MBO Mode, just pass ignore characters
+				// Check if track needs to switch
 				if(nxtBlock.isSwitch()) {
-					returnResult = trackController.plc.verifyToggleSwitch(nxtBlock, destBlock);
-
-					if(returnResult) {
-						// toggle switch for the next block
-						if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
-							// need to toggle switch
-							nxtBlock.toggleSwitch();
+					// toggle switch for the next block
+					if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
+						// need to toggle switch
+						nxtBlock.toggleSwitch();
+					}
+				}
+				
+				// TODO: Check for railway crossing
+				
+				// send block suggested speed and authority - ignore
+				track.commandAuthority("green", suggestedAuthority, currentBlock);
+				track.commandSpeed("green", suggestedSpeed, currentBlock);
+			}
+			else {
+				returnResult = trackController.plc.verifyProceed(nxtBlock, destBlock);
+	
+				if(returnResult) {
+					// check if track needs to switch the switch to get to the destination block
+					if(nxtBlock.isSwitch()) {
+						returnResult = trackController.plc.verifyToggleSwitch(nxtBlock, destBlock);
+	
+						if(returnResult) {
+							// toggle switch for the next block
+							if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
+								// need to toggle switch
+								nxtBlock.toggleSwitch();
+							}
+	
+							// send block suggested speed and authority
+							track.commandAuthority("green", suggestedAuthority, currentBlock);
+							track.commandSpeed("green", suggestedSpeed, currentBlock);
 						}
-
-						// send block suggested speed and authority
+						else {
+							// send block speed and authority of 0
+							track.commandAuthority("green", 70, currentBlock);
+							track.commandSpeed("green", 0, currentBlock);
+						}
+					}
+					else {
+						// next block is not a switch so just pass suggested speed and authority
 						track.commandAuthority("green", suggestedAuthority, currentBlock);
 						track.commandSpeed("green", suggestedSpeed, currentBlock);
 					}
-					else {
-						// send block speed and authority of 0
-						track.commandAuthority("green", 70, currentBlock);
-						track.commandSpeed("green", 0, currentBlock);
-					}
+	
 				}
 				else {
-					// next block is not a switch so just pass suggested speed and authority
-					track.commandAuthority("green", suggestedAuthority, currentBlock);
-					track.commandSpeed("green", suggestedSpeed, currentBlock);
+					// send block speed and authority of 0
+					track.commandAuthority("green", 70, currentBlock);
+					track.commandSpeed("green", 0, currentBlock);
 				}
-
-			}
-			else {
-				// send block speed and authority of 0
-				track.commandAuthority("green", 70, currentBlock);
-				track.commandSpeed("green", 0, currentBlock);
 			}
 		}
 
@@ -799,20 +881,34 @@ public class TrackControllerWrapper {
 			returnStatus = BLOCK_OCCUPIED;
 
 			// Toggle signal on the track block
-			requestedBlock.toggleRedGreen();	// Maybe add toggle state to function?
+			//requestedBlock.toggleRedGreen(false);
 		}
+		else {
+			//requestedBlock.toggleRedGreen(true);
+		}
+		
 		if(requestedBlock.isBroken()) {
 			returnStatus = RAIL_BROKEN;
 		}
 		else if(requestedBlock.isClosed()) {
 			returnStatus = BLOCK_MAINT;
 		}
-		else if(requestedBlock.getSwitch().isSwitchWorking()) {
-			// TODO: Brian needs to make a variable to monitor working status of switch
-			returnStatus = ~(SWITCH_BROKEN);
+		//else if(requestedBlock.isSignalWorking()) {
+		//returnStatus = SIGNAL_BROKEN;
+		//}
+		
+		if(requestedBlock.isSwitch()) {
+			if(requestedBlock.getSwitch().isSwitchWorking()) {
+				returnStatus = SWITCH_BROKEN;
+			}
 		}
-		// TODO: Brian needs to create variables to get broken status from signal and railway
-
+		
+		if(requestedBlock.isCrossing()) {
+			//else if(requestedBlock.getCrossing().isCrossingWorking()) {
+			//returnStatus = RAILWAY_BROKEN;
+			//}
+		}
+		
 		return returnStatus;
 	}
 
@@ -987,5 +1083,6 @@ public class TrackControllerWrapper {
 
 		// Depending on the state of the crossing, activate/deactivate it
 		// TODO: Function to toggle railway crossing state
+		//targetBlock.getCrossing().toggleCrossing();
 	}	
 }
