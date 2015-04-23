@@ -62,7 +62,7 @@ public class CTCGUI {
 	private boolean done;
 	public boolean isMBO;
 
-	/*public CTCGUI(Track tk, TrackControllerWrapper tcw, SimClock sm) throws FileNotFoundException
+	public CTCGUI(Track tk, TrackControllerWrapper tcw, SimClock sm) throws FileNotFoundException
 	{
 		this.tk = tk;
 		this.tcw = tcw;
@@ -87,14 +87,14 @@ public class CTCGUI {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 	/**
 	 * Launch the application.
 	 * @param args
 	 * @throws FileNotFoundException 
 	 */
 	@SuppressWarnings("resource")
-	public static void main(String[] args) throws FileNotFoundException {
+	/*public static void main(String[] args) throws FileNotFoundException {
 		Scanner outScan = new Scanner(new File("redLine.txt"));
 		while(outScan.hasNextLine())
 		{
@@ -121,7 +121,7 @@ public class CTCGUI {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * Open the window.

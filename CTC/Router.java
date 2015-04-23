@@ -61,20 +61,32 @@ public class Router
 		theTrains.add(t);
 		if(isMBO == false)
 		{
-			for(int i =0; i < blockIDs.size(); i++)
+			int i = 0;
+			while(i < blockIDs.size())
 			{
-					String msg = createProceedMsgFB(line, i);
-					tcw.newProceedMsg(msg);
-					System.out.println("From CTC: " + msg);
+					int blockInt = Integer.parseInt(blockIDs.get(i));
+					if(tcw.getBlockStatus(line, blockInt) == 1)
+					{
+						String msg = createProceedMsgFB(line, i);
+						tcw.newProceedMsg(msg);
+						System.out.println("From CTC: " + msg);
+						i++;
+					}
 			}
 		}
 		else if(isMBO == true)
 		{
-			for(int i = 0; i < blockIDs.size(); i++)
+			int i = 0;
+			while(i < blockIDs.size())
 			{
-				String msg = createProceedMsgMBO(line, i);
-				tcw.newProceedMsg(msg);
-				System.out.println("From CTC: " + msg);
+				int blockInt = Integer.parseInt(blockIDs.get(i));
+				if(tcw.getBlockStatus(line, blockInt) == 1)
+				{
+					String msg = createProceedMsgMBO(line, i);
+					tcw.newProceedMsg(msg);
+					System.out.println("From CTC: " + msg);
+					i++;
+				}
 			}
 		}
 	}
@@ -156,18 +168,6 @@ public class Router
 	{
 		int lastBlock = Integer.parseInt(blockIDs.get(blockIDs.size()-1));
 		return lastBlock;
-	}
-	public void printStatus(/*TrackControllerWrapper tcw,*/ int ind, String trainID)
-	{
-		int j = 0;
-		/* for(int i = 0; i < blockIDs.size(); i++)
-		 {
-			 //byte t = tcw.getBlockStatus(line, Integer.parseInt(blockIDs.get(i)));
-			 if(t == 1);
-			 	j = i;
-		 }
-			 
-		System.out.println("Train: " + trainID + " Current: " +  blockIDs.get(j) + " Next: " + blockIDs.get(j+1));*/
 	}
 
 }
