@@ -8,4 +8,5 @@ public interface TrainModelInterface {
 	public boolean setLeftDoor(boolean leftDoor);
 	public boolean setRightDoor(boolean rightDoor);
 	public boolean setStation(String stationName);
+	public int updatePassengers(int pplAtStation);
 }

@@ -5,7 +5,7 @@ public class VitalHandler {
 	private final double SCALAR = 1000;
 	private final double MAXSPEED = 19;
 	private final double KI = .001*SCALAR;
-	private final double KP = 10*SCALAR;
+	private final double KP = 5*SCALAR;
 	private double uk = 0;
 	private double uk_prev = 0;
 	private double ek = 0;
@@ -34,11 +34,13 @@ public class VitalHandler {
 		if(shouldBrakeError(ts) || shouldBrakeUserEmergency(ts) || velError(ts) || noBackwards(ts)){
 			ts.shouldEmergency = true;
 			ts.shouldService = false;
+			ek=uk=ek_prev=uk_prev=0;
 			return 1;
 		}
 		else if(shouldBrakeAuthority(ts) || shouldStationBrake(ts) || shouldBrakeUserService(ts)){
 			ts.shouldService = true;
 			ts.shouldEmergency = false;
+			ek=uk=ek_prev=uk_prev=0;
 			return 2;
 		}
 		else{
@@ -49,7 +51,7 @@ public class VitalHandler {
 	}
 	private boolean velError(TrainState ts){
 		//System.out.println("ts.commandedSpeed is? " + ts.commandedSpeed + " < " + ts.tv.curSpeed);
-		if(ts.commandedSpeed < ts.tv.curSpeed){
+		if(ts.commandedSpeed <= ts.tv.curSpeed){
 			//System.out.println("VELOCITY TRIGGERED BRAKE");
 			return true;
 		}

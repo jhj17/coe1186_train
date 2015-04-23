@@ -7,7 +7,7 @@ TrainController tc;
 TrainModel trainM;
 boolean wannaRun = true;
 	public Train (Track trackM, int trainID, SimClock sm){
-		tc = new TrainController(sm);
+		tc = new TrainController(sm,trainID);
 		trainM = new TrainModel(trainID, trackM, tc, sm);
 		tc.initTrainModel(trainM);
 		new Thread(){
