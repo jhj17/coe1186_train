@@ -231,11 +231,44 @@ public class tcGUI {
 	private double getCommandedSpeedSlider(){
 		return (double) slider.getValue();
 	}
+	private void calcPower(){
+		localState.userDesSpeed = getCommandedSpeedSlider();
+        setCommandedSpeedBox(localState.userDesSpeed);
+	}
+	private void setService(){
+		if(localState.userServiceBrake){
+			toggle_service.setSelected(true);
+			slider.setEnabled(false);
+		}
+		else{
+			toggle_service.setSelected(false);
+			setDesiredVelocitySlider(localState.commandedSpeed);
+        	slider.setEnabled(true);
+		}
+	}
+	private void setEmergency(){
+		if(localState.userEmergencyBrake){
+			toggle_emergency.setSelected(true);
+			slider.setEnabled(false);
+		}
+		else{
+			toggle_emergency.setSelected(false);
+			setDesiredVelocitySlider(localState.commandedSpeed);
+        	slider.setEnabled(true);
+		}
+	}
+	private void setAutopilot(){
+		if(localState.isAutopilot){
+
+		}
+		else{
+
+		}
+	}
 	private synchronized void beginPowerHandler(){
 		slider.addChangeListener(new ChangeListener() {
 	        public void stateChanged(ChangeEvent e) {
-	        	localState.userDesSpeed = getCommandedSpeedSlider();
-            	setCommandedSpeedBox(localState.userDesSpeed);
+	        	calcPower();
 	        }
 	    });
 	}
@@ -245,18 +278,15 @@ public class tcGUI {
         public void actionPerformed(ActionEvent e) {
         	if(toggle_service.isSelected()){
         		if(toggle_emergency.isSelected()){
-        			toggle_emergency.setSelected(false);
         			localState.userEmergencyBrake = false;
-        			
         		}
-        		slider.setEnabled(false);
         		localState.userServiceBrake = true;
         	}
         	else{
-        		setDesiredVelocitySlider(localState.tv.commandedSpeed);
-        		slider.setEnabled(true);
         		localState.userServiceBrake = false;
         	}
+        	setService();
+        	setEmergency();
         }
     });
 	}
@@ -266,17 +296,15 @@ public class tcGUI {
         public void actionPerformed(ActionEvent e) {
         	if(toggle_emergency.isSelected()){
         		if(toggle_service.isSelected()) {
-        			toggle_service.setSelected(false);
         			localState.userServiceBrake = false;
         		}
-        		slider.setEnabled(false);
         		localState.userEmergencyBrake = true;
         	}
         	else{
-        		setDesiredVelocitySlider(localState.tv.commandedSpeed);
-        		slider.setEnabled(true);
         		localState.userEmergencyBrake = false;
         	}
+        	setService();
+        	setEmergency();
         }
     });
 	}
@@ -295,7 +323,6 @@ public class tcGUI {
                 	radioButton_doors.setEnabled(false);
                 	radioButton_lights.setEnabled(false);
                 	radioButton_announcement.setEnabled(false);
-                	//btnSetSpeed.setEnabled(false);
                 	
                 	localState.isAutopilot = true;
                 	setCommandedSpeedBox(localState.tv.commandedSpeed);
@@ -313,7 +340,7 @@ public class tcGUI {
                 	radioButton_lights.setEnabled(true);
                 	radioButton_announcement.setEnabled(true);
                 	localState.isAutopilot = false;
-                	//btnSetSpeed.setEnabled(true);
+                
                 }
             }
         });

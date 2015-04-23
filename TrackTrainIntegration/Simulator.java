@@ -5,7 +5,7 @@ public class Simulator
 { 
 
 	public static void main(String[] args) throws Exception {
-			SimClock sm = new SimClock(20,0,0,0);
+			SimClock sm = new SimClock(10,0,0,0);
 			Thread clockThread = new Thread(sm, "clockThread");
 			clockThread.start();
 			Track track = new Track();
@@ -21,12 +21,13 @@ public class Simulator
 
 			track.getBlock(trainID);
 			Train train1 = new Train(track, trainID, sm);
-			Thread.sleep(10000);
+			
+			// Thread.sleep(10000);
 
-			track.placeTrain(line2,trainID2);
-			track.commandAuthority(line2,1000000,track.getBlock(trainID2).getBlockNumber());
+			// track.placeTrain(line2,trainID2);
+			// track.commandAuthority(line2,1000000,track.getBlock(trainID2).getBlockNumber());
 
-			Train train2 = new Train(track, trainID2, sm);
+			// Train train2 = new Train(track, trainID2, sm);
 
 
 			/*//TESTING TRAIN TRAVERSAL. 
