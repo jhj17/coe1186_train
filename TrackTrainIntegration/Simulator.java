@@ -21,7 +21,6 @@ public class Simulator
 
 			track.getBlock(trainID);
 			Train train1 = new Train(track, trainID, sm);
-<<<<<<< HEAD
 			//Thread.sleep(10000);
 
 			/*track.placeTrain(line2,trainID2);
@@ -29,7 +28,6 @@ public class Simulator
 
 			Train train2 = new Train(track, trainID2, sm);
 */
-=======
 			
 			// Thread.sleep(10000);
 
@@ -37,8 +35,6 @@ public class Simulator
 			// track.commandAuthority(line2,1000000,track.getBlock(trainID2).getBlockNumber());
 
 			// Train train2 = new Train(track, trainID2, sm);
-
->>>>>>> f5db82ccc3a2c347e276e7763ee8305a2f24c874
 
 			/*//TESTING TRAIN TRAVERSAL. 
 			for(int i = 0;i<1000;i++)

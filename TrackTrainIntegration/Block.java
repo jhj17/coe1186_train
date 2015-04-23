@@ -571,7 +571,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 */
 	public boolean isCrossing() {
 		
-		if(crossingOccurence.equals("-"))
+		if(crossing.equals("-"))
 		{
 			return false;
 		}
