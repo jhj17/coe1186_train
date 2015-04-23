@@ -842,4 +842,37 @@ public Block(String[] splitStrings, Block lastCreated) {
 	{
 		beaconCommanded = true;	
 	}
+
+
+
+	public String gui1()
+	{
+		int directional = direction;
+		if(direction == -1)
+			direction = 1;
+
+		String firstGui = "";
+		firstGui = firstGui + "Grade: " + grade + "\tElevation (cum): " + cumElevation + "\tLength: 	" + blockLength + "\tSpeed Limit: " + speedLimit + "\nDirection: " + direction;
+		
+		/*String stationString = "";
+		if(isStation())
+		{
+			stationString = "\tBeacon: " + station + "\t" + 
+
+						return station + "," + stationSide + "," + "90" + "," + "4";
+
+		}
+		firstGui= firstGui + "\nIs station: " + isStation() + "\t" ;*/
+
+// station string, is station? if yes, beacon, number of people 
+
+		return firstGui;
+	}
+
+
+
+
+
+
+
 }

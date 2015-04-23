@@ -22,6 +22,10 @@ public class Track {
 	{
 		loadTrack("REDFINALV2.csv");	
 		loadTrack("GREENFINALV2.csv");	
+
+		TrackModelGUI myGUI = new TrackModelGUI();
+		myGUI.initialize(this);
+
 	}
 	public void loadTrack(String csvIn) throws IOException {
 
@@ -399,4 +403,71 @@ public void printBlockList(ArrayList<Block> printList)
 	{
 		getBlock(blockNumber,line).setBeaconOn();
 	}
+
+
+
+public String[] getGUIBlocks()
+	{
+		int size = redBlocks.size() + greenBlocks.size();
+		int cnt = 0;
+		String[] allNames = new String[size];
+		for(Block reds: redBlocks)
+		{
+			allNames[cnt] = reds.getLine() + " " + reds.getSection() +" " + reds.getBlockNumber();
+			cnt++;
+		}
+
+		for(Block greens: greenBlocks)
+		{
+			allNames[cnt] = greens.getLine() + " " + greens.getSection() + " "+greens.getBlockNumber();
+			cnt++;
+		}
+
+		return allNames;
+	}
+
+
+
+	public String[] getGUISwitches()
+	{
+		int size = redSwitches.size() + greenSwitches.size();
+		int cnt = 0;
+		String[] allNames = new String[size];
+		for(Switch reds: redSwitches)
+		{
+			allNames[cnt] = reds.getSwitchNumber();
+			cnt++;
+		}
+
+		for(Switch greens: greenSwitches)
+		{
+			allNames[cnt] = greens.getSwitchNumber();
+			cnt++;
+		}
+
+		return allNames;
+	}
+
+	public Switch getSwitch(String switchNum)
+	{
+
+		for(Switch reds: redSwitches)
+		{
+			if(reds.getSwitchNumber().equals(switchNum))
+				return reds;
+		}
+
+		for(Switch greens: greenSwitches)
+		{
+			if(greens.getSwitchNumber().equals(switchNum))
+				return greens;
+		}
+
+		return null;
+
+
+	}
+
+
+
 }
