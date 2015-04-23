@@ -11,8 +11,44 @@ public class TrackDriver {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		
+		//Load track 
 		Track trackTester = new Track();
+
+		System.out.println("help");
+		Block get1 = trackTester.getBlock(19, "green");
+		Block get2 = trackTester.getBlock(47, "red");
+
+
+		trackTester.showBeacon(35, "red");
+		System.out.println(trackTester.getBlock(35,"red").getBeacon());
+
+		trackTester.placeTrain("green", 1);
+		System.out.println("Block retrieved through train methods");
+		System.out.println();
+		System.out.println(trackTester.getBlock(1).gui1());
+
 		
+
+
+/*
+		//Broken Rail
+		System.out.println(get1.getSection() + get1.getBlockNumber() + " broken: " +get1.isBroken());
+		get1.toggleBroken();
+		System.out.println(get1.getSection() + get1.getBlockNumber() + " broken: " +get1.isBroken());
+
+		//Broken Circuit
+		System.out.println(get2.getSection() + get2.getBlockNumber() + " is occupied: " +get2.isBlockOccupied());
+		get2.breakCircuit();
+		System.out.println(get2.getSection() + get2.getBlockNumber() + " is occupied: " +get2.isBlockOccupied());
+		
+		//Power failure? 
+
+*/
+
+
+//TEST CROSSING 
+
+		/*
 		Block get1 = trackTester.getBlock(19, "green");
 		System.out.println(get1);
 		System.out.println(get1.isCrossing());
@@ -30,8 +66,7 @@ public class TrackDriver {
 		System.out.println(pls.nextInt(50));
 
 
-
-//TEST CROSSING 
+*/
 
 
 		//E18

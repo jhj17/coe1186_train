@@ -124,9 +124,8 @@ public class Track {
 				traverseBlock.toggleSwitch();
 			}
 		}
-*/
+		*/
 
-		//store all current train blocks 
 	}
 
 
@@ -308,11 +307,13 @@ public void printBlockList(ArrayList<Block> printList)
 	}
 
 	public synchronized void updateDistance(int trainID, double distance) {
+ 		
  		for(int i = 0; i<trainBlocks.size();i++)
 		{
+			
 			if(trainBlocks.get(i).getTrainID() == trainID)
 			{
-				//System.out.println(trainBlocks.get(i).getSection() + trainBlocks.get(i).getBlockNumber() + " has " +trainBlocks.get(i).getTrainID());
+				
 				Block nextBlock = trainBlocks.get(i).moveTrain(distance);
 				if(nextBlock != trainBlocks.get(i))
 				{

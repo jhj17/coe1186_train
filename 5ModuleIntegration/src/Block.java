@@ -35,6 +35,7 @@ public class Block {
 
 	//..User configurable attributes..
 	private boolean brokenBlock = false;
+	private boolean brokenCircuit = false;
 	private boolean closedBlock = false;
 	private boolean signalWorking = false;		
 	private Crossing railroadCrossing= null;
@@ -435,11 +436,13 @@ public Block(String[] splitStrings, Block lastCreated) {
 				currentBlock.toggleSwitch();
 				currentBlock = currentBlock.traverseTrain(trainID);
 				System.out.println("toggle");
-			}*/
+			}
 			
+			currentBlock = currentBlock.placeTrain(trainID,newDist);
+	*/
 			if(temp == currentBlock) {
 				// Crash state
-				System.out.println("BOOM! BAM! CRASH!");
+				System.out.println("BOOM! POW! BAM! CRASH!");
 			}
 			else {
 				currentBlock = currentBlock.placeTrain(trainID,newDist);
@@ -765,10 +768,11 @@ public Block(String[] splitStrings, Block lastCreated) {
 	[Wayside]
 	Returns a string of this block including: section, block number, occupied (boolean), broken (boolean), closed (boolean)
 */	
-	public String toString()
-	{
-		return (this.getSection() + "\t" + this.getBlockNumber() + "\t" + this.isBlockOccupied() + "\t" + this.isBroken() + "\t" +this.isClosed());
-	}
+	/* Block.java toString() */
+public String toString()
+{
+	return (this.getSection() + "                    " + this.getBlockNumber() + "                " + this.isBlockOccupied() + "                " + this.isBroken() + "              " +this.isClosed());
+}
 
 /*
 	[Wayside]
@@ -827,6 +831,12 @@ public Block(String[] splitStrings, Block lastCreated) {
 	public void closeBlock()
 	{
 		closedBlock = true;
+	}
+
+	public void breakCircuit()
+	{
+		brokenCircuit = true;
+		blockOccupied = true;
 	}
 
 /*

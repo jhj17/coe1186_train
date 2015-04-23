@@ -159,7 +159,6 @@ public class TrackModelGUI {
 
 
 				
-				System.out.println("REFRESSSSH");
 
 				String chosenBlock = (String) comboBox.getSelectedItem();
 				String chosenSwitch = (String) comboBox_1.getSelectedItem();
@@ -181,17 +180,19 @@ public class TrackModelGUI {
 				textArea_1.append(switcher.toGUI());
 
 
+
+
 				if(rdbtnNewRadioButton.isSelected())
 				{
 					System.out.println("icy");
-					theTrack.setFriction(0.001);
+					theTrack.setFriction(0.0002);
+
 				}
 				else if(rdbtnRaining.isSelected())
 				{
 
 					System.out.println("raining");
-					theTrack.setFriction(0.001);
-
+					theTrack.setFriction(0.0005);
 
 				}
 

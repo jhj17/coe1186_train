@@ -34,13 +34,17 @@ public class Crossing  {
 	}
 	public void toggleCrossing() {
 
+		System.out.println("toggled crossing");
 		if(currentLineDown.equals("green"))
 		{
 			currentLineDown = "red";
+			System.out.println("to red");
 		}
 		else
 		{
 			currentLineDown = "green";
+			System.out.println("to green");
+
 		}
 
 	}
@@ -52,20 +56,21 @@ public class Crossing  {
 	}
 
 
-	public String toString()
-	{
+/* Crossing.java toString() */
+public String toString()
+{
 
 		//curent line and block
 		if(currentLineDown.equals("green"))
 		{
-			return "green" + "\t" + greenLineBlock.getSection() + greenLineBlock.getBlockNumber();
+			return "green" + "                  " + greenLineBlock.getSection() + "                " + greenLineBlock.getBlockNumber();
 		}
 		else
 		{
-			return "red" + "\t" + redLineBlock.getSection() + redLineBlock.getBlockNumber();
+			return "red" + "                       " + redLineBlock.getSection() + "               " + redLineBlock.getBlockNumber();
 		}
 
-	}
+}
 
 	public boolean getCrossingState(String line) 
 	{
