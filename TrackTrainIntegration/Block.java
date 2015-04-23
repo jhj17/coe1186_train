@@ -1,8 +1,5 @@
 import java.util.ArrayList;
-import java.util.Random;
 
-//initialization: Authority: -1, Commanded Speed: speed limit
-//for yard: Authority = first 2 blocks, Commanded Speed = 10 (arbitrarily chosen)
 
 public class Block {
 
@@ -23,29 +20,50 @@ public class Block {
 	private String crossing = null; //***
 	private String switchType;
 	private String stationSide;
-	private int stationPeople = 0;
+//
 	private boolean toYard = false;
 	private boolean fromYard = false;
 	private Block next;
 	private Block previous;
 	private int seen = 0;
+//
 	private Switch switcher = null;
-	private String stationName;
+
+	String stationName;
 	private double friction = 0.001;
+
 
 	//..User configurable attributes..
 	private boolean brokenBlock = false;
 	private boolean closedBlock = false;
-	private boolean signalWorking = true;		
-	private Crossing railroadCrossing= null;
+	private boolean signalWorking = true;
+
+	//boolean brokenCircuit;
+	
+	//Usage attributes
+	
+	
+//	..Usage attributes..
+
 	private int trainID = 0;
 	private boolean blockOccupied = false;
+
 	private boolean lightsGreenTrueRedFalse;
 	private boolean beaconCommanded = false;
-	private double commandedAuthority = -1;
-	private double commandedSpeed = 0;
-	private double distanceTraveled = 0;
 
+	private double commandedAuthority = 0;
+	private double commandedSpeed = 0;
+	double distanceTraveled = 0;
+
+/*
+	
+	
+	
+	Crossing crossing = null;
+	Station station = null; 
+	
+	
+	*/
 	
 public Block(String[] splitStrings, Block lastCreated) {
 		// TODO Auto-generated constructor stub
@@ -77,8 +95,8 @@ public Block(String[] splitStrings, Block lastCreated) {
 	if(station.equals("FROM YARD") || station.equals("TO YARD/FROM YARD"))
 	{
 		fromYard = true;
-		commandedAuthority = 100;
-		commandedSpeed = 10;
+		//commandedAuthority = blockLength;
+		//commandedSpeed = 10;
 		//station = "";
 	}
 
@@ -112,15 +130,10 @@ public Block(String[] splitStrings, Block lastCreated) {
 			previous.setNext(this);
 	}
 
-	if(isStation())
-	{
-		Random pls = new Random();
-		stationPeople = pls.nextInt(50);
+//switches
+//stations
+//crossings
 	}
-
-	commandedSpeed = speedLimit;
-
-}
 
 
 /*
@@ -147,13 +160,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 		switcher = aSwitch;
 	}
 	//complete
-
-
-	public int getStationPeople()  
-	{
-		return stationPeople;
-	}
-
 
 /*
 	[Internal, Wayside]
@@ -312,88 +318,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 		return returnBlock;
 
 	}
-
-
-	public Block peek()
-	{
-		Block returnBlock = null;
-		//seen = 1;
-		boolean zeroNext = false;
-		boolean zeroPrevious = false;
-
-		if(direction == 1 || direction == -1)
-		{
-
-			if(this.getNext() == null)
-			{
-				returnBlock = this;
-			}
-			else
-			{
-				returnBlock = this.getNext();
-			}
-
-			if(this.getPrevious()!= null)
-			{
-				//this.getPrevious().setSeen(0);
-			}
-		}
-		else
-		{
-			if(this.station.equals("TO YARD/FROM YARD"))
-			{
-				returnBlock = this.getNext();
-				if(returnBlock == null)
-				{
-					returnBlock = this;
-				}
-			}
-			else if(this.getNext() == null)
-			{
-				returnBlock = this;
-			}
-			else if(this.getPrevious() == null)
-			{
-				returnBlock = this;
-			}
-			else if(this.getNext().getSeen() == 1)
-			{
-				returnBlock = this.getPrevious();
-				zeroNext = true;
-			}
-			else if(this.getPrevious().getSeen() == 1)
-			{
-				returnBlock = this.getNext();
-				zeroPrevious = true;
-
-			}
-
-			if(returnBlock != null && this.getArrow().equals("Head") && returnBlock.getArrow().equals("Head") && (returnBlock.getDirection() == 1 || returnBlock.getDirection() == -1)) //going wrong way on 1-way case
-			{
-				returnBlock = this;
-				zeroPrevious = false;
-				zeroNext = false;
-			}
-		}
-
-		if(zeroPrevious)
-		{
-			//this.getPrevious().setSeen(0);
-		}
-
-		if(zeroNext)
-		{
-			//this.getNext().setSeen(0);
-		}
-
-		return returnBlock;
-
-	}
-
-
-
-
-
 	/*
 		This method returns the type of arrow "Head" or "Tail" of the current block.
 	*/	
@@ -664,33 +588,18 @@ public Block(String[] splitStrings, Block lastCreated) {
 	}
 
 /*
-	[Wayside]
+	??? not done yet
 */
-	public Crossing getCrossing() {
-
-		return railroadCrossing;
-	}
-
-	public void addCrossing(Crossing newCrossing)
-	{
-
-		railroadCrossing = newCrossing;
+	public boolean getCrossing() {
+		return false;
 	}
 
 /*
-	[Internal]
+	??? not done yet.
 */
 	public boolean isStation() {
 		// TODO Auto-generated method stub
-		
-		if(station.length()>0 && (!toYard||!fromYard))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 													/*			TRAIN RELEVANT METHODS 			*/
@@ -738,11 +647,10 @@ public Block(String[] splitStrings, Block lastCreated) {
 */	
 	public String getBeacon()
 	{
-
-		if(station.length()>0 && beaconCommanded && (!toYard||!fromYard))
+		if(station.length()>0 && beaconCommanded)
 		{
 			beaconCommanded = false;
-			return station + "," + stationSide + "," + "90" + "," + stationPeople;
+			return station + "," + stationSide + "," + "90" + "," + "4";
 		}
 		else
 		{
@@ -836,8 +744,11 @@ public Block(String[] splitStrings, Block lastCreated) {
 		closedBlock = false;
 	}
 
+
 	public void setBeaconOn()
 	{
 		beaconCommanded = true;	
 	}
+
+
 }

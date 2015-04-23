@@ -382,6 +382,7 @@ public class TrainModelGUI
 		txtSpeedLimit.setText(db.format(data.dtv.commandedSpeed * 2.23) + " mph");
 		txtTempIn.setText(db.format(data.commandedTemperature) + " F");
 		txtSpeed.setText(db.format(data.dtv.curSpeed * 2.23) + " mph");
+		txtAcceleration.setText(db.format(data.dtv.curAcceleration * 3.28) + "ft/s^2");
 		txtAcceleration.setText(db.format(data.dtv.curAcceleration * 3.28) + " ft/s^2");
 		txtTemp.setText(db.format(data.dtv.curTemp) + " F");
 		if (data.leftDoor && data.rightDoor)

@@ -6,12 +6,13 @@ public class TrainController {
 	TrainModelInterface tm;
 	SimClock sm;
 	
-	public TrainController(SimClock sm){
+	public TrainController(SimClock sm, int trainID){
 		ts = new TrainState();
+		ts.trainID = trainID;
+		ts.clockFactor = sm.getSpeedFactor();
 		vh = new VitalHandler();
 		gui = new TrainControllerGUI(ts);
 		this.sm = sm;
-		ts.clockFactor = sm.getSpeedFactor();
 	}
 	public void initTrainModel(TrainModel tmodel)
 	{
@@ -56,8 +57,10 @@ public class TrainController {
 			ts.commandedPower = ts.MAXPOWER;
 		}
 
-		//UPDATE TEMPERATURE
-
+		tm.setTemp(ts.desTemp);
+		
+		communicateStationSignals();
+		
 		ts.tv=tm.updateSamples(ts.commandedPower);
 
 
@@ -100,6 +103,7 @@ public class TrainController {
 		ts.stationName = stuff[0];
 		ts.stationSide = stuff[1];
 		ts.dwellTime = Double.parseDouble(stuff[2]);
+		ts.pplAtStation = Integer.parseInt(stuff[3]);
 	}
 	public boolean stationArriveSequence(){
 		if(!ts.stationAnnounced){
@@ -125,6 +129,7 @@ public class TrainController {
 			ts.shouldLeftDoor = false;
 		else
 			ts.shouldRightDoor = false;
+		tm.updatePassengers(ts.pplAtStation);
 		communicateStationSignals();
 		ts.atStation = false;
 		return true;

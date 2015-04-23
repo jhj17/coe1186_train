@@ -62,10 +62,8 @@ public class Track {
 				{
 					lineCrossing.addBlock(currentBlock);
 				}
-
-					currentBlock.addCrossing(lineCrossing);
 			}
-
+			
 
 			switchMaker(splitStrings,currentBlock,currentSwitches); //connect all switch blocks and put them into ArrayList
 			if(splitStrings[6].equals("FROM YARD") || splitStrings[6].equals("TO YARD/FROM YARD"))

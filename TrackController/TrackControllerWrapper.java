@@ -357,7 +357,7 @@ public class TrackControllerWrapper {
 	 */
 	private void initialize() {
 		frmTrackController = new JFrame();
-		frmTrackController.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Jeff\\Documents\\College\\Senior Year\\COE 1186\\Train_Controller\\train_pic.png"));
+		frmTrackController.setIconImage(Toolkit.getDefaultToolkit().getImage(".\\train_pic.png"));
 		frmTrackController.setTitle("The Little Engine That Code - Track Controller");
 		frmTrackController.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmTrackController.setPreferredSize(new Dimension(676, 630));
@@ -650,7 +650,9 @@ public class TrackControllerWrapper {
 
 			// pass suggestion to PLC for it to verify
 			Block currBlock = track.getBlock(currentBlock,"red");
-			Block nxtBlock = track.getBlock(nextBlock,"red");
+			Block nxtBlock = currBlock.traverse();
+			//Block destBlock = nxtBlock.traverse();
+			//Block nxtBlock = track.getBlock(nextBlock,"red");
 			Block destBlock = track.getBlock(destinationBlock,"red");
 			
 			if(suggestedSpeed == -1 && suggestedAuthority == -1) {
@@ -658,19 +660,19 @@ public class TrackControllerWrapper {
 				// Check if track needs to switch
 				if(nxtBlock.isSwitch()) {
 					// toggle switch for the next block
-					if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
+					if(nxtBlock.peek().getBlockNumber() != destBlock.getBlockNumber()) {
 						// need to toggle switch
 						nxtBlock.toggleSwitch();
 					}
 				}
 				
 				// TODO: Check for railway crossing on 3rd block ahead
-				if(destBlock.traverse().isCrossing()) {
+				if(destBlock.isCrossing()) {
 					// Only toggle the crossing if the bar is up for this track
-					if(destBlock.traverse().getCrossing().getCrossingState("red")) { 
-						returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+					if(destBlock.getCrossing().getCrossingState("red")) { 
+						returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
 						if(returnResult) {
-							destBlock.traverse().getCrossing().toggleCrossing();
+							destBlock.getCrossing().toggleCrossing();
 						}
 					}
 				}
@@ -689,19 +691,19 @@ public class TrackControllerWrapper {
 	
 						if(returnResult) {
 							// toggle switch for the next block
-							if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
+							if(nxtBlock.peek().getBlockNumber() != destBlock.getBlockNumber()) {
 								// need to toggle switch
 								nxtBlock.toggleSwitch();
 							}
 							
 							// TODO: Check for railway crossing on 3rd block ahead
-							if(destBlock.traverse().isCrossing()) {
+							if(destBlock.isCrossing()) {
 								// Only toggle the crossing if the bar is up for this track
-								if(destBlock.traverse().getCrossing().getCrossingState("red")) { 
-									returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+								if(destBlock.getCrossing().getCrossingState("red")) { 
+									returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
 									if(returnResult) {
 										// set crossing occurrence
-										destBlock.traverse().getCrossing().toggleCrossing();
+										destBlock.getCrossing().toggleCrossing();
 										
 										// send block suggested speed and authority
 										track.commandAuthority("red", suggestedAuthority, currentBlock);
@@ -733,12 +735,12 @@ public class TrackControllerWrapper {
 					}
 					else {
 						// TODO: Check for railway crossing on 3rd block ahead
-						if(destBlock.traverse().isCrossing()) {
-							if(destBlock.traverse().getCrossing().getCrossingState("red")) { 
-								returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+						if(destBlock.isCrossing()) {
+							if(destBlock.getCrossing().getCrossingState("red")) { 
+								returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
 								if(returnResult) {
 									// set crossing occurrence
-									destBlock.traverse().getCrossing().toggleCrossing();
+									destBlock.getCrossing().toggleCrossing();
 									
 									// send block suggested speed and authority
 									track.commandAuthority("red", suggestedAuthority, currentBlock);
@@ -802,7 +804,10 @@ public class TrackControllerWrapper {
 
 			// pass suggestion to PLC for it to verify
 			Block currBlock = track.getBlock(currentBlock,"green");
-			Block nxtBlock = track.getBlock(nextBlock,"green");
+			System.out.println(currBlock.getBlockNumber());
+			Block nxtBlock = currBlock.traverse();
+			//Block destBlock = nxtBlock.traverse();
+			//Block nxtBlock = track.getBlock(nextBlock,"green");
 			Block destBlock = track.getBlock(destinationBlock,"green");
 			
 			if(suggestedSpeed == -1 && suggestedAuthority == -1) {
@@ -810,19 +815,20 @@ public class TrackControllerWrapper {
 				// Check if track needs to switch
 				if(nxtBlock.isSwitch()) {
 					// toggle switch for the next block
-					if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
+					if(nxtBlock.peek().getBlockNumber() != destBlock.getBlockNumber()) {
 						// need to toggle switch
+						System.out.println("Switch: " + nxtBlock.getBlockNumber() + " From: " + nxtBlock.peek().getBlockNumber() + " To: " + destBlock.getBlockNumber());
 						nxtBlock.toggleSwitch();
 					}
 				}
 				
 				// TODO: Check for railway crossing
-				if(destBlock.traverse().isCrossing()) {
+				if(destBlock.isCrossing()) {
 					// Only toggle the crossing if the bar is up for this track
-					if(destBlock.traverse().getCrossing().getCrossingState("green")) { 
-						returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+					if(destBlock.getCrossing().getCrossingState("green")) { 
+						returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
 						if(returnResult) {
-							destBlock.traverse().getCrossing().toggleCrossing();
+							destBlock.getCrossing().toggleCrossing();
 						}
 					}
 				}
@@ -841,19 +847,20 @@ public class TrackControllerWrapper {
 	
 						if(returnResult) {
 							// toggle switch for the next block
-							if(nxtBlock.traverse().getBlockNumber() != destBlock.getBlockNumber()) {
+							if(nxtBlock.peek().getBlockNumber() != destBlock.getBlockNumber()) {
 								// need to toggle switch
+								System.out.println("Switch: " + nxtBlock.getBlockNumber() + " From: " + nxtBlock.peek().getBlockNumber() + " To: " + destBlock.getBlockNumber());
 								nxtBlock.toggleSwitch();
 							}
 							
 							// TODO: Check for railway crossing on 3rd block ahead
-							if(destBlock.traverse().isCrossing()) {
+							if(destBlock.isCrossing()) {
 								// Only toggle the crossing if the bar is up for this track
-								if(destBlock.traverse().getCrossing().getCrossingState("green")) { 
-									returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+								if(destBlock.getCrossing().getCrossingState("green")) { 
+									returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
 									if(returnResult) {
 										// set crossing occurrence
-										destBlock.traverse().getCrossing().toggleCrossing();
+										destBlock.getCrossing().toggleCrossing();
 										
 										// send block suggested speed and authority
 										track.commandAuthority("green", suggestedAuthority, currentBlock);
@@ -889,12 +896,12 @@ public class TrackControllerWrapper {
 					}
 					else {
 						// TODO: Check for railway crossing on 3rd block ahead
-						if(destBlock.traverse().isCrossing()) {
-							if(destBlock.traverse().getCrossing().getCrossingState("green")) { 
-								returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+						if(destBlock.isCrossing()) {
+							if(destBlock.getCrossing().getCrossingState("green")) { 
+								returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
 								if(returnResult) {
 									// set crossing occurrence
-									destBlock.traverse().getCrossing().toggleCrossing();
+									destBlock.getCrossing().toggleCrossing();
 									
 									// send block suggested speed and authority
 									track.commandAuthority("green", suggestedAuthority, currentBlock);
@@ -1080,6 +1087,8 @@ public class TrackControllerWrapper {
 				returnStatus = RAILWAY_BROKEN;
 			}
 		}
+		
+		updateListBoxes();
 		
 		return returnStatus;
 	}

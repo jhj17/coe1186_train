@@ -14,7 +14,7 @@ public boolean shouldService = false; //should servBrake
 public boolean shouldLight = false;
 public boolean shouldLeftDoor = false;
 public boolean shouldRightDoor = false;
-public double desTemp;
+public double desTemp = 69;
 public double userDesSpeed = 0;
 public double commandedPower = 0;
 public boolean atStation = false;
@@ -37,6 +37,8 @@ public double calculatedAuthority = 0;
 public double previousDistance = 0;
 public double commandedSpeed = 0;
 public int clockFactor = 1;
+public int trainID;
+public int pplAtStation;
 	public TrainState()
 	{
 		tv = new DynamicTrainValues(0,0,0,0,0,0);

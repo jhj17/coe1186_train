@@ -1,6 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
+
 
 public class TrackDriver {
 
@@ -13,68 +13,14 @@ public class TrackDriver {
 		
 		Track trackTester = new Track();
 		
-		Block get1 = trackTester.getBlock(19, "green");
-		System.out.println(get1);
-		System.out.println(get1.isCrossing());
-
-		Block get2 = trackTester.getBlock(47, "red");
-		System.out.println(get2);
-		System.out.println(get2.isCrossing());
-
-		System.out.println(get1.getCrossing());
-		get1.getCrossing().toggleCrossing();
-		System.out.println(get2.getCrossing());
-
-		Random pls = new Random();
-		System.out.println(pls.nextInt(50));
-		System.out.println(pls.nextInt(50));
-
-
-		double totalAuthority = 0;
-		ArrayList<String> messages = trackTester.getRoute("green", "EDGEBROOK");
-		for(int i = 0; i<messages.size();i++)
-		{
-
-			System.out.print(messages.get(i).split(",")[0] + "\t");
-			
-			if((i+1)<messages.size())
-				System.out.print(messages.get(i+1).split(",")[0]+ "\t");
-		
-			if((i+2)<messages.size())
-				System.out.print(messages.get(i+2).split(",")[0]+ "\t");
-
-			System.out.print(messages.get(i).split(",")[3]+ "\t");
-
-			totalAuthority = totalAuthority + Double.parseDouble(messages.get(i).split(",")[2]);
-			System.out.println();
-		}
-		System.out.println(totalAuthority);
-
-
-
-
-		Block currBlock = trackTester.getBlock(155,"green");
-		Block previous = null;
-		System.out.println(currBlock);
-		for(int i = 0;i<100;i++)
-		{
-			previous = currBlock;
-			currBlock = currBlock.traverse();
-			System.out.print(currBlock);
-
-			System.out.println("\t" + currBlock.peek());
-
-			if(previous == currBlock)
-			{
-				currBlock.toggleSwitch();
-			}
-		}
-
-
 //TEST CROSSING 
+		
 
 
-		//E18
+
+
+
+
 
 
 

@@ -1,5 +1,3 @@
-package trackControllerFinal;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -86,15 +84,12 @@ public class PLCClass {
 		for(int iii = 0; iii < 5; iii++) {
 			context.set("b1_occupied", nextBlock.isBlockOccupied());
 			context.set("b2_occupied", destinationBlock.isBlockOccupied());
-			context.set("b3_occupied", destinationBlock.traverse().isBlockOccupied());
 
 			context.set("b1_broken", nextBlock.isBroken());
 			context.set("b2_broken", destinationBlock.isBroken());
-			context.set("b3_broken", destinationBlock.traverse().isBroken());
 			
 			context.set("b1_closed", nextBlock.isClosed());
 			context.set("b2_closed", destinationBlock.isClosed());
-			context.set("b3_closed", destinationBlock.traverse().isClosed());
 
 			// evaluate expression with variables 
 			// all evaluations must be true for it to verify the proceed
@@ -134,7 +129,6 @@ public class PLCClass {
 		for(int iii = 0; iii < 5; iii++) {
 			context.set("b1_occupied", nextBlock.isBlockOccupied());
 			context.set("b2_occupied", destinationBlock.isBlockOccupied());
-			context.set("b3_occupied", destinationBlock.traverse().isBlockOccupied());
 			
 			context.set("switch_Broken", !nextBlock.getSwitch().isSwitchWorking());
 

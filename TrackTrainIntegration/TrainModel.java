@@ -238,12 +238,12 @@ public class TrainModel implements TrainModelInterface
 		// Update temperature;
 		if (commandedTemperature > temperature)
 		{
-			temperature += (0.00005 * deltaT);
+		temperature += (0.005 * deltaT);
 		}
 
 		else if (commandedTemperature < temperature)
 		{
-			temperature -= (0.00005 * deltaT);
+		temperature -= (0.005 * deltaT);
 		}
 
 		if ((commandedTemperature - temperature) > -0.01 && (commandedTemperature - temperature) < 0.01)
