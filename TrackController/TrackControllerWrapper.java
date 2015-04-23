@@ -652,9 +652,9 @@ public class TrackControllerWrapper {
 			// pass suggestion to PLC for it to verify
 			Block currBlock = track.getBlock(currentBlock,"red");
 			Block nxtBlock = currBlock.traverse();
-			//Block destBlock = nxtBlock.traverse();
-			//Block nxtBlock = track.getBlock(nextBlock,"red");
 			Block destBlock = track.getBlock(destinationBlock,"red");
+			
+			System.out.println("Track Controller: Train on Block: " + currBlock.getBlockNumber());
 			
 			if(suggestedSpeed == -1 && suggestedAuthority == -1) {
 				// In MBO Mode, just pass ignore characters
@@ -667,8 +667,9 @@ public class TrackControllerWrapper {
 					}
 				}
 				
-				// TODO: Check for railway crossing on 3rd block ahead
+				// Check for railway crossing on 3rd block ahead
 				if(destBlock.isCrossing()) {
+					System.out.println("Crossing Active");
 					// Only toggle the crossing if the bar is up for this track
 					if(destBlock.getCrossing().getCrossingState("red")) { 
 						returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
@@ -697,8 +698,9 @@ public class TrackControllerWrapper {
 								nxtBlock.toggleSwitch();
 							}
 							
-							// TODO: Check for railway crossing on 3rd block ahead
+							// Check for railway crossing on 3rd block ahead
 							if(destBlock.isCrossing()) {
+								System.out.println("Crossing Active");
 								// Only toggle the crossing if the bar is up for this track
 								if(destBlock.getCrossing().getCrossingState("red")) { 
 									returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
@@ -712,7 +714,7 @@ public class TrackControllerWrapper {
 									}
 									else {
 										// send block suggested speed and authority
-										track.commandAuthority("red", 70, currentBlock);
+										track.commandAuthority("red", 80, currentBlock);
 										track.commandSpeed("red", 0, currentBlock);
 									}
 								}
@@ -730,13 +732,14 @@ public class TrackControllerWrapper {
 						}
 						else {
 							// send block speed and authority of 0
-							track.commandAuthority("red", 70, currentBlock);
+							track.commandAuthority("red", 80, currentBlock);
 							track.commandSpeed("red", 0, currentBlock);
 						}
 					}
 					else {
-						// TODO: Check for railway crossing on 3rd block ahead
+						// Check for railway crossing on 3rd block ahead
 						if(destBlock.isCrossing()) {
+							System.out.println("Crossing Active");
 							if(destBlock.getCrossing().getCrossingState("red")) { 
 								returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
 								if(returnResult) {
@@ -749,7 +752,7 @@ public class TrackControllerWrapper {
 								}
 								else {
 									// send block suggested speed and authority
-									track.commandAuthority("red", 70, currentBlock);
+									track.commandAuthority("red", 80, currentBlock);
 									track.commandSpeed("red", 0, currentBlock);
 								}
 							}
@@ -768,7 +771,7 @@ public class TrackControllerWrapper {
 				}
 				else {
 					// send block speed and authority of 0
-					track.commandAuthority("red", 70, currentBlock);
+					track.commandAuthority("red", 80, currentBlock);
 					track.commandSpeed("red", 0, currentBlock);
 				}
 			}
@@ -805,11 +808,10 @@ public class TrackControllerWrapper {
 
 			// pass suggestion to PLC for it to verify
 			Block currBlock = track.getBlock(currentBlock,"green");
-			System.out.println(currBlock.getBlockNumber());
 			Block nxtBlock = currBlock.traverse();
-			//Block destBlock = nxtBlock.traverse();
-			//Block nxtBlock = track.getBlock(nextBlock,"green");
 			Block destBlock = track.getBlock(destinationBlock,"green");
+			
+			System.out.println("Track Controller: Train on Block: " + currBlock.getBlockNumber());
 			
 			if(suggestedSpeed == -1 && suggestedAuthority == -1) {
 				// In MBO Mode, just pass ignore characters
@@ -823,8 +825,9 @@ public class TrackControllerWrapper {
 					}
 				}
 				
-				// TODO: Check for railway crossing
+				// Check for railway crossing
 				if(destBlock.isCrossing()) {
+					System.out.println("Crossing Active");
 					// Only toggle the crossing if the bar is up for this track
 					if(destBlock.getCrossing().getCrossingState("green")) { 
 						returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
@@ -854,8 +857,9 @@ public class TrackControllerWrapper {
 								nxtBlock.toggleSwitch();
 							}
 							
-							// TODO: Check for railway crossing on 3rd block ahead
+							// Check for railway crossing on 3rd block ahead
 							if(destBlock.isCrossing()) {
+								System.out.println("Crossing Active");
 								// Only toggle the crossing if the bar is up for this track
 								if(destBlock.getCrossing().getCrossingState("green")) { 
 									returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
@@ -869,7 +873,7 @@ public class TrackControllerWrapper {
 									}
 									else {
 										// send block suggested speed and authority
-										track.commandAuthority("green", 70, currentBlock);
+										track.commandAuthority("green", 80, currentBlock);
 										track.commandSpeed("green", 0, currentBlock);
 									}
 								}
@@ -891,13 +895,14 @@ public class TrackControllerWrapper {
 						}
 						else {
 							// send block speed and authority of 0
-							track.commandAuthority("green", 70, currentBlock);
+							track.commandAuthority("green", 80, currentBlock);
 							track.commandSpeed("green", 0, currentBlock);
 						}
 					}
 					else {
-						// TODO: Check for railway crossing on 3rd block ahead
+						// Check for railway crossing on 3rd block ahead
 						if(destBlock.isCrossing()) {
+							System.out.println("Crossing Active");
 							if(destBlock.getCrossing().getCrossingState("green")) { 
 								returnResult = trackController.plc.verifyRailwayCrossing(nxtBlock, destBlock);
 								if(returnResult) {
@@ -910,7 +915,7 @@ public class TrackControllerWrapper {
 								}
 								else {
 									// send block suggested speed and authority
-									track.commandAuthority("green", 70, currentBlock);
+									track.commandAuthority("green", 80, currentBlock);
 									track.commandSpeed("green", 0, currentBlock);
 								}
 							}
@@ -929,7 +934,7 @@ public class TrackControllerWrapper {
 				}
 				else {
 					// send block speed and authority of 0
-					track.commandAuthority("green", 70, currentBlock);
+					track.commandAuthority("green", 80, currentBlock);
 					track.commandSpeed("green", 0, currentBlock);
 				}
 			}
