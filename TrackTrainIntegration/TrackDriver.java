@@ -30,6 +30,27 @@ public class TrackDriver {
 		System.out.println(pls.nextInt(50));
 
 
+		double totalAuthority = 0;
+		ArrayList<String> messages = trackTester.getRoute("green", "EDGEBROOK");
+		for(int i = 0; i<messages.size();i++)
+		{
+
+			System.out.print(messages.get(i).split(",")[0] + "\t");
+			
+			if((i+1)<messages.size())
+				System.out.print(messages.get(i+1).split(",")[0]+ "\t");
+		
+			if((i+2)<messages.size())
+				System.out.print(messages.get(i+2).split(",")[0]+ "\t");
+
+			System.out.print(messages.get(i).split(",")[3]+ "\t");
+
+			totalAuthority = totalAuthority + Double.parseDouble(messages.get(i).split(",")[2]);
+			System.out.println();
+		}
+		System.out.println(totalAuthority);
+
+
 
 //TEST CROSSING 
 

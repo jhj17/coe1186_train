@@ -162,6 +162,6 @@ public class Switch implements SwitchInterface {
 		if(brokenSwitch)
 			return switchedBlock.getLine() + "\t" + switchNumber + "\t" + brokenSwitch;
 		else
-			return switchedBlock.getLine() + "\t" + switchNumber + "\t" + switchBlock.getSection() + switchBlock.getBlockNumber() + "\t" + switchedBlock.getSection()  + switchedBlock.getBlockNumber() + "\t" + unswitchedBlock.getSection() + unswitchedBlock.getBlockNumber();
+			return switchedBlock.getLine() + "\t" + switchNumber + "\t" + switchBlock.getSection() + switchBlock.getBlockNumber() + "\t" + switchedBlock.getSection()  + switchedBlock.getBlockNumber() + "\t" + unSwitchedBlock.getSection() + unSwitchedBlock.getBlockNumber();
 	}
 }
