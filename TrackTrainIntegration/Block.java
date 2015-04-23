@@ -589,6 +589,12 @@ public Block(String[] splitStrings, Block lastCreated) {
 		return railroadCrossing;
 	}
 
+	public void addCrossing(Crossing newCrossing)
+	{
+
+		railroadCrossing = newCrossing;
+	}
+
 /*
 	??? not done yet.
 */
