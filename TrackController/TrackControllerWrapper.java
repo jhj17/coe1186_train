@@ -1,7 +1,4 @@
-package trackControllerFinal;
-
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
 
@@ -31,7 +28,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 
 import javax.swing.JComboBox;
 
@@ -204,9 +200,14 @@ public class TrackControllerWrapper {
 	 */
 	private void updateListBoxes() {
 		// clear existing data in list boxes
-		blockModel.clear();
-		railwayModel.clear();
-		switchModel.clear();
+		try {
+			blockModel.clear();
+			railwayModel.clear();
+			switchModel.clear();
+		}
+		catch(Exception e) {
+			//e.printStackTrace();
+		}
 
 		try {
 			if(changeViewSlider.getValue() == 0) {
@@ -429,7 +430,7 @@ public class TrackControllerWrapper {
 		plcProgramBrowseButton.setBounds(444, 41, 89, 23);
 		panel.add(plcProgramBrowseButton);
 
-		JButton plcProgramLoadButton = new JButton("Load");
+		final JButton plcProgramLoadButton = new JButton("Load");
 		plcProgramLoadButton.setBounds(540, 41, 89, 23);
 		plcProgramLoadButton.setEnabled(false);
 		panel.add(plcProgramLoadButton);
@@ -622,8 +623,8 @@ public class TrackControllerWrapper {
 		int currentBlock = Integer.parseInt(msgContents[1]);
 		int nextBlock = Integer.parseInt(msgContents[2]);
 		int destinationBlock = Integer.parseInt(msgContents[3]);
-		int suggestedSpeed = Integer.parseInt(msgContents[4]);
-		int suggestedAuthority = Integer.parseInt(msgContents[5]);
+		double suggestedSpeed = Double.parseDouble(msgContents[4]);
+		double suggestedAuthority = Double.parseDouble(msgContents[5]);
 
 		boolean returnResult = true;
 
