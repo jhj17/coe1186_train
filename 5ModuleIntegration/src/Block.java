@@ -40,7 +40,7 @@ public class Block {
 	private Crossing railroadCrossing= null;
 	private int trainID = 0;
 	private boolean blockOccupied = false;
-	private boolean lightsGreenTrueRedFalse;
+	private boolean lightsGreenTrueRedFalse = false;
 	private boolean beaconCommanded = false;
 	private double commandedAuthority = -1;
 	private double commandedSpeed = 0;
@@ -852,27 +852,56 @@ public Block(String[] splitStrings, Block lastCreated) {
 			direction = 1;
 
 		String firstGui = "";
-		firstGui = firstGui + "Grade: " + grade + "\tElevation (cum): " + cumElevation + "\tLength: 	" + blockLength + "\tSpeed Limit: " + speedLimit + "\nDirection: " + direction;
+		firstGui = firstGui + "Grade: " + grade + "\nElevation (cum): " + cumElevation + "\nLength: " + blockLength + "\nSpeed Limit: " + speedLimit + "\nDirection: " + direction;
 		
-		/*String stationString = "";
+		String stationString = "";
 		if(isStation())
 		{
-			stationString = "\tBeacon: " + station + "\t" + 
-
-						return station + "," + stationSide + "," + "90" + "," + "4";
+			stationString = "\tBeacon: " + station + "\tStation side:" + stationSide + "\nDwell time: " + "90" + "\tPeople: " + stationPeople;
 
 		}
-		firstGui= firstGui + "\nIs station: " + isStation() + "\t" ;*/
+		
+		firstGui= firstGui + "\n\nIs station: " + isStation() +stationString;
 
-// station string, is station? if yes, beacon, number of people 
+
+		String crossingString = "";
+		if(isCrossing())
+		{
+			crossingString = "\t" + railroadCrossing.toString();
+		}
+
+		firstGui= firstGui + "\n\nIs crossing: " + isCrossing() +crossingString;
+
 
 		return firstGui;
 	}
 
+	public String gui2()
+	{
 
+		String secondGui = "";
 
+		
+		secondGui = secondGui + "Signal state: ";
 
+		if(getRedFalseGreenTrue())
+		{
+			secondGui = secondGui = "Green";
+		}
+		else
+		{
+			secondGui = secondGui + "Red";
+		}
 
+		secondGui = secondGui + "\n\nCommanded Authority: " + commandedAuthority + "\n\nCommanded Speed: " + commandedSpeed + "\n\nBlock occupied: " +blockOccupied;
 
+		return secondGui;
+
+	}
+
+	public void setFriction(double frictionIn)
+	{
+		friction = frictionIn;
+	}
 
 }

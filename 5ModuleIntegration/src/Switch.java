@@ -163,4 +163,13 @@ public class Switch implements SwitchInterface {
 		else
 			return switchedBlock.getLine() + "\t" + switchNumber + "\t" + switchedBlock.getSection() + switchedBlock.getBlockNumber();
 	}
+
+	public String toGUI()
+	{
+
+		return "Switch on: " + switchBlock.getSection() + switchBlock.getBlockNumber() + "\n\nConnected to: " + switchedBlock.getSection() + switchedBlock.getBlockNumber() + "\n\nNOT connected to: " + unSwitchedBlock.getSection() + unSwitchedBlock.getBlockNumber();
+
+	}
+
+
 }

@@ -465,6 +465,20 @@ public String[] getGUIBlocks()
 
 		return null;
 
+	}
+
+	public void setFriction(double frictionIn)
+	{
+		for(Block reds: redBlocks)
+		{
+			reds.setFriction(frictionIn);
+		}
+
+		for(Block greens: greenBlocks)
+		{
+
+			greens.setFriction(frictionIn);		
+		}
 
 	}
 

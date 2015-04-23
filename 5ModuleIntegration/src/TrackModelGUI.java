@@ -121,15 +121,15 @@ public class TrackModelGUI {
 		comboBox_1.setBounds(145, 432, 197, 23);
 		panel.add(comboBox_1);
 		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("Icy");
+		final JRadioButton rdbtnNewRadioButton = new JRadioButton("Icy");
 		rdbtnNewRadioButton.setBounds(571, 551, 50, 23);
 		panel.add(rdbtnNewRadioButton);
 		
-		JRadioButton rdbtnRaining = new JRadioButton("Raining");
+		final JRadioButton rdbtnRaining = new JRadioButton("Raining");
 		rdbtnRaining.setBounds(632, 551, 79, 23);
 		panel.add(rdbtnRaining);
 		
-		JRadioButton rdbtnNormal = new JRadioButton("Normal");
+		final JRadioButton rdbtnNormal = new JRadioButton("Normal");
 		rdbtnNormal.setBounds(633, 523, 78, 23);
 		panel.add(rdbtnNormal);
 		
@@ -168,34 +168,40 @@ public class TrackModelGUI {
 				Block block = theTrack.getBlock(Integer.parseInt(blockParams[2]), blockParams[0]);
 
 				Switch switcher = theTrack.getSwitch(chosenSwitch);
-
-
-
-/*
-Text area 1: 
-???railway crossings, track heaters, switches, beacons???
-*/
-
-
-// Grade, Elevation, Length, Speed lim, direction (1/2)
-// station string, is station? if yes, beacon, number of people 
-// is crossing?  if yes, is down? 
-
-
 				
 				textArea.setText("");
 				textArea.append(block.gui1());
 
 
 				textArea_2.setText("");
-				textArea_2.append(block.toString());
+				textArea_2.append(block.gui2());
 
 
 				textArea_1.setText("");
-				textArea_1.append(switcher.toString());
+				textArea_1.append(switcher.toGUI());
 
-				//block information, 
-				
+
+				if(rdbtnNewRadioButton.isSelected())
+				{
+					System.out.println("icy");
+					theTrack.setFriction(0.001);
+				}
+				else if(rdbtnRaining.isSelected())
+				{
+
+					System.out.println("raining");
+					theTrack.setFriction(0.001);
+
+
+				}
+
+				else if(rdbtnNormal.isSelected())
+				{
+					System.out.println("dry");
+					theTrack.setFriction(0.001);
+				}
+
+
 			}
 		});
 		btnSubmit.setBounds(750, 523, 178, 57);
