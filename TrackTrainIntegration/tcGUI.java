@@ -48,6 +48,9 @@ import java.awt.Toolkit;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import java.io.File;
+import java.io.IOException;
+
 
 public class tcGUI {
 
@@ -430,6 +433,20 @@ public class tcGUI {
         });
 	}
 
+	public static void play(String filename)
+	{
+    try
+    {
+        Clip clip = AudioSystem.getClip();
+        clip.open(AudioSystem.getAudioInputStream(new File(filename)));
+        clip.start();
+    }
+    catch (Exception exc)
+    {
+        exc.printStackTrace(System.out);
+    }
+	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -564,7 +581,7 @@ public class tcGUI {
 		btnHorn = new JButton("HORN!!!!!");
 		btnHorn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				play("Train_Whistle.wav");
 			}
 		});
 		btnHorn.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 15));

@@ -116,6 +116,7 @@ public class TrainController {
 				ts.shouldLeftDoor = true;
 			else
 				ts.shouldRightDoor = true;
+			tm.setStation(ts.stationName);
 			communicateStationSignals();
 		}
 		return true;
@@ -161,7 +162,6 @@ public class TrainController {
 			ts.isLeftDoor = tm.setLeftDoor(ts.shouldLeftDoor);
 		if(ts.isRightDoor != ts.shouldRightDoor)
 			ts.isRightDoor = tm.setRightDoor(ts.shouldRightDoor);
-		tm.setStation(ts.stationName);
 		return true;	
 	}
 	private void announceStation(String name){
