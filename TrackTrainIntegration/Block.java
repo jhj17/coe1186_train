@@ -312,6 +312,88 @@ public Block(String[] splitStrings, Block lastCreated) {
 		return returnBlock;
 
 	}
+
+
+	public Block peek()
+	{
+		Block returnBlock = null;
+		//seen = 1;
+		boolean zeroNext = false;
+		boolean zeroPrevious = false;
+
+		if(direction == 1 || direction == -1)
+		{
+
+			if(this.getNext() == null)
+			{
+				returnBlock = this;
+			}
+			else
+			{
+				returnBlock = this.getNext();
+			}
+
+			if(this.getPrevious()!= null)
+			{
+				//this.getPrevious().setSeen(0);
+			}
+		}
+		else
+		{
+			if(this.station.equals("TO YARD/FROM YARD"))
+			{
+				returnBlock = this.getNext();
+				if(returnBlock == null)
+				{
+					returnBlock = this;
+				}
+			}
+			else if(this.getNext() == null)
+			{
+				returnBlock = this;
+			}
+			else if(this.getPrevious() == null)
+			{
+				returnBlock = this;
+			}
+			else if(this.getNext().getSeen() == 1)
+			{
+				returnBlock = this.getPrevious();
+				zeroNext = true;
+			}
+			else if(this.getPrevious().getSeen() == 1)
+			{
+				returnBlock = this.getNext();
+				zeroPrevious = true;
+
+			}
+
+			if(returnBlock != null && this.getArrow().equals("Head") && returnBlock.getArrow().equals("Head") && (returnBlock.getDirection() == 1 || returnBlock.getDirection() == -1)) //going wrong way on 1-way case
+			{
+				returnBlock = this;
+				zeroPrevious = false;
+				zeroNext = false;
+			}
+		}
+
+		if(zeroPrevious)
+		{
+			//this.getPrevious().setSeen(0);
+		}
+
+		if(zeroNext)
+		{
+			//this.getNext().setSeen(0);
+		}
+
+		return returnBlock;
+
+	}
+
+
+
+
+
 	/*
 		This method returns the type of arrow "Head" or "Tail" of the current block.
 	*/	

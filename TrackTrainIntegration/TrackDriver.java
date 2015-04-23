@@ -52,6 +52,25 @@ public class TrackDriver {
 
 
 
+
+		Block currBlock = trackTester.getBlock(155,"green");
+		Block previous = null;
+		System.out.println(currBlock);
+		for(int i = 0;i<100;i++)
+		{
+			previous = currBlock;
+			currBlock = currBlock.traverse();
+			System.out.print(currBlock);
+
+			System.out.println("\t" + currBlock.peek());
+
+			if(previous == currBlock)
+			{
+				currBlock.toggleSwitch();
+			}
+		}
+
+
 //TEST CROSSING 
 
 
