@@ -21,6 +21,9 @@ public class TrackDriver {
 		System.out.println(get2);
 		System.out.println(get2.isCrossing());
 
+		System.out.println(get1.getCrossing());
+		get1.getCrossing().toggleCrossing();
+		System.out.println(get2.getCrossing());
 
 //TEST CROSSING 
 

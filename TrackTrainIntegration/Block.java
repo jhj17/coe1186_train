@@ -20,6 +20,7 @@ public class Block {
 	private String crossing = null; //***
 	private String switchType;
 	private String stationSide;
+	private int stationPeople = 0;
 //
 	private boolean toYard = false;
 	private boolean fromYard = false;
@@ -130,10 +131,9 @@ public Block(String[] splitStrings, Block lastCreated) {
 			previous.setNext(this);
 	}
 
-//switches
-//stations
-//crossings
-	}
+
+
+}
 
 
 /*
@@ -648,10 +648,11 @@ public Block(String[] splitStrings, Block lastCreated) {
 */	
 	public String getBeacon()
 	{
-		if(station.length()>0 && beaconCommanded)
+
+		if(station.length()>0 && beaconCommanded && (!toYard||!fromYard))
 		{
 			beaconCommanded = false;
-			return station + "," + stationSide + "," + "90" + "," + "4";
+			return station + "," + stationSide + "," + "90" + "," + stationPeople;
 		}
 		else
 		{
