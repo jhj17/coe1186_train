@@ -10,6 +10,7 @@ import javax.swing.JToggleButton;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Toolkit;
 
 import javax.swing.JSplitPane;
 
@@ -43,14 +44,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
 import java.text.DecimalFormat;
-import java.awt.Toolkit;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import java.io.File;
-import java.io.IOException;
-
 
 public class tcGUI {
 
@@ -68,9 +61,10 @@ public class tcGUI {
 	private JToggleButton toggle_service;
 	private JLabel lblArrivingAtStation;
 	private JLabel lblLightsOnoff;
-	private JLabel lblLeftDoorsOpen;
+	private JLabel lblDoorsOpen;
+	private JLabel lblAnnouncementInProgress;
 	private JLabel lblThermostat;
-	private JSlider slider_desTherm;
+	private JSlider slider_thermo;
 	private JLabel label_7;
 	private JLabel lblSpeed_1;
 	private JLabel lblAcutal;
@@ -89,22 +83,15 @@ public class tcGUI {
 	private JLabel lblInManualMode;
 	private JToggleButton tglbtnAutopilot;
 	private JToggleButton toggle_emergency;
-	private JRadioButton radioButton_leftDoor;
+	private JRadioButton radioButton_announcement;
+	private JRadioButton radioButton_doors;
 	private JRadioButton radioButton_lights;
 	private JRadioButton radioButton_station;
 	private JLabel lblNoBraking;
 	
-	JLabel lblTrainID;
-	JLabel lblID;
-	JButton btnHorn;
-	JLabel lblAnnouncements;
-	JRadioButton radioButton_rightDoor;
-	
 	
 	
 	private TrainState localState = new TrainState();
-	private JSlider slider_actTherm;
-	private JTextField textField_ads;
 
 	/**
 	 * Launch the application.
@@ -139,7 +126,6 @@ public class tcGUI {
 	/**
 	 * Create the application.
 	 * @throws InterruptedException 
-	 * @wbp.parser.entryPoint
 	 */
 	public tcGUI(TrainState ts) throws InterruptedException {
 		initialize();
@@ -148,17 +134,10 @@ public class tcGUI {
 		beginPowerHandler();
 		beginAutoPilotHandler();
 		beginServiceBrakeHandler();
-		beginEmergencyBrakeHandler();
-		beginThermHandler();
-		beginRadioHandler();
-		setTrainID(ts);
+		beginEmergencyBrakeHandler(); 
 		PowerThread pt = new PowerThread();
 		Thread t1 = new Thread(pt);
 		t1.start();
-	}
-	private void setTrainID(TrainState ts){
-		//System.out.println("asdasd " + ts.trainID);
-		lblID.setText("" + ts.trainID);
 	}
 	public synchronized boolean updateValues(TrainState newState){
 		//System.out.println("IN GUI " + localState.userDesSpeed);
@@ -167,10 +146,6 @@ public class tcGUI {
 		newState.userEmergencyBrake = localState.userEmergencyBrake;
 		newState.userServiceBrake = localState.userServiceBrake;
 		newState.userDesSpeed = localState.userDesSpeed;
-		newState.desTemp = localState.desTemp;
-		newState.shouldLight = localState.shouldLight;
-		newState.shouldLeftDoor = localState.shouldLeftDoor;
-		newState.shouldRightDoor = localState.shouldRightDoor;
 		localState = new TrainState(newState);
 		//System.out.println("IN GUI -- AFTER " + localState.userDesSpeed);
 		refreshDisplay();
@@ -222,22 +197,7 @@ public class tcGUI {
 		setBeaconBox(""+ts.approachingStation);
 		setErrorBox(""+ ts.fails);
 		setNextStationBox(ts.stationName);
-		calcPower();
-		setService();
-		setEmergency();
-		setAutopilot();
-		setActTherm();
-		setDesTherm();
-		setLeftDoor();
-		setRightDoor();
-		setLights();
-		setAtStation();
-	}
-	private void setActTherm(){
-		slider_actTherm.setValue((int)localState.tv.curTemp);
-	}
-	private void setDesTherm(){
-		slider_desTherm.setValue((int)localState.desTemp);
+		
 	}
 	private void setDesiredVelocitySlider( double value){
 		slider.setValue((int) value);
@@ -272,30 +232,6 @@ public class tcGUI {
 	private double getCommandedSpeedSlider(){
 		return (double) slider.getValue();
 	}
-	private void setLights(){
-		radioButton_lights.setSelected(localState.shouldLight);
-	}
-	private void setAtStation(){
-		radioButton_station.setSelected(localState.atStation);
-	}
-	private void setLeftDoor(){
-		//localState.shouldLeftDoor = radioButton_leftDoor.isSelected();
-		if(localState.tv.curSpeed > 0){
-			radioButton_leftDoor.setEnabled(false);
-		}
-		else
-			radioButton_leftDoor.setEnabled(true);
-		radioButton_leftDoor.setSelected(localState.shouldLeftDoor);
-	}
-	private void setRightDoor(){
-		//localState.shouldRightDoor = radioButton_rightDoor.isSelected();
-		if(localState.tv.curSpeed > 0){
-			radioButton_rightDoor.setEnabled(false);
-		}
-		else
-			radioButton_rightDoor.setEnabled(true);
-		radioButton_rightDoor.setSelected(localState.shouldRightDoor);
-	}
 	private void calcPower(){
 		localState.userDesSpeed = getCommandedSpeedSlider();
         setCommandedSpeedBox(localState.userDesSpeed);
@@ -307,7 +243,7 @@ public class tcGUI {
 		}
 		else{
 			toggle_service.setSelected(false);
-			//setDesiredVelocitySlider(localState.tv.commandedSpeed);
+			setDesiredVelocitySlider(localState.commandedSpeed);
         	slider.setEnabled(true);
 		}
 	}
@@ -318,36 +254,16 @@ public class tcGUI {
 		}
 		else{
 			toggle_emergency.setSelected(false);
-			//setDesiredVelocitySlider(localState.tv.commandedSpeed);
+			setDesiredVelocitySlider(localState.commandedSpeed);
         	slider.setEnabled(true);
 		}
 	}
 	private void setAutopilot(){
 		if(localState.isAutopilot){
-			lblInManualMode.setText("Automatic Mode is ON");
-        	lblInManualMode.setForeground(Color.RED);
-        	slider.setEnabled(false);
-        	toggle_service.setEnabled(false);
-        	//toggle_emergency.setEnabled(false);
-        	//radioButton_station.setEnabled(false);
-        	radioButton_leftDoor.setEnabled(false);
-        	radioButton_rightDoor.setEnabled(false);
-        	radioButton_lights.setEnabled(false);
-        	//radioButton_announcement.setEnabled(false);
-        	setCommandedSpeedBox(localState.tv.commandedSpeed);
-            setDesiredVelocitySlider(localState.tv.commandedSpeed);
+
 		}
 		else{
-			lblInManualMode.setText("Manual Mode is ON");
-        	lblInManualMode.setForeground(Color.BLACK);
-        	slider.setEnabled(true);
-        	toggle_service.setEnabled(true);
-        	//toggle_emergency.setEnabled(true);
-        	//radioButton_station.setEnabled(true);
-        	radioButton_leftDoor.setEnabled(true);
-        	radioButton_rightDoor.setEnabled(true);
-        	radioButton_lights.setEnabled(true);
-        	//radioButton_announcement.setEnabled(true);
+
 		}
 	}
 	private synchronized void beginPowerHandler(){
@@ -357,31 +273,6 @@ public class tcGUI {
 	        }
 	    });
 	}
-	private void beginThermHandler(){
-		slider_desTherm.addChangeListener(new ChangeListener() {
-	        public void stateChanged(ChangeEvent e) {
-	        	localState.desTemp = (double)slider_desTherm.getValue();
-	        }
-	    });
-	}
-	private void beginRadioHandler(){
-		radioButton_rightDoor.addChangeListener(new ChangeListener() {
-	        public void stateChanged(ChangeEvent e) {
-	        	localState.shouldRightDoor = radioButton_rightDoor.isSelected();
-	        }
-	    });
-		radioButton_leftDoor.addChangeListener(new ChangeListener() {
-	        public void stateChanged(ChangeEvent e) {
-	        	localState.shouldLeftDoor = radioButton_leftDoor.isSelected();
-	        }
-	    });
-		radioButton_lights.addChangeListener(new ChangeListener() {
-	        public void stateChanged(ChangeEvent e) {
-	        	localState.shouldLight = radioButton_lights.isSelected();
-	        }
-	    });
-	}
-	
 	private void beginServiceBrakeHandler(){
 		toggle_service.addActionListener(new ActionListener() {
         @Override
@@ -424,27 +315,36 @@ public class tcGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(tglbtnAutopilot.isSelected()){
+                	lblInManualMode.setText("Automatic Mode is ON");
+                	lblInManualMode.setForeground(Color.RED);
+                	slider.setEnabled(false);
+                	toggle_service.setEnabled(false);
+                	toggle_emergency.setEnabled(false);
+                	radioButton_station.setEnabled(false);
+                	radioButton_doors.setEnabled(false);
+                	radioButton_lights.setEnabled(false);
+                	radioButton_announcement.setEnabled(false);
+                	
                 	localState.isAutopilot = true;
+                	setCommandedSpeedBox(localState.tv.commandedSpeed);
+                	setDesiredVelocitySlider(localState.tv.commandedSpeed);
+                	
                 }
                 else{
+                	lblInManualMode.setText("Manual Mode is ON");
+                	lblInManualMode.setForeground(Color.BLACK);
+                	slider.setEnabled(true);
+                	toggle_service.setEnabled(true);
+                	toggle_emergency.setEnabled(true);
+                	radioButton_station.setEnabled(true);
+                	radioButton_doors.setEnabled(true);
+                	radioButton_lights.setEnabled(true);
+                	radioButton_announcement.setEnabled(true);
                 	localState.isAutopilot = false;
+                
                 }
             }
         });
-	}
-
-	public static void play(String filename)
-	{
-    try
-    {
-        Clip clip = AudioSystem.getClip();
-        clip.open(AudioSystem.getAudioInputStream(new File(filename)));
-        clip.start();
-    }
-    catch (Exception exc)
-    {
-        exc.printStackTrace(System.out);
-    }
 	}
 
 	/**
@@ -452,7 +352,7 @@ public class tcGUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("/Users/zachbarnes/Desktop/coe1186_train/TrackTrainIntegration/train_pic.png"));
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(".\\train_pic.png"));
 		frame.setBounds(100, 100, 792, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -465,128 +365,78 @@ public class tcGUI {
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
+						.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 777, Short.MAX_VALUE)
 						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 777, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 325, GroupLayout.PREFERRED_SIZE)
+					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel_1, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
 		panel_1.setLayout(null);
 		
-		lblArrivingAtStation = new JLabel("At Station");
-		lblArrivingAtStation.setHorizontalAlignment(SwingConstants.CENTER);
+		lblArrivingAtStation = new JLabel("Arriving At Station");
 		lblArrivingAtStation.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblArrivingAtStation.setBounds(6, 6, 73, 16);
+		lblArrivingAtStation.setBounds(24, 23, 129, 16);
 		panel_1.add(lblArrivingAtStation);
 		
-		lblLightsOnoff = new JLabel("Lights");
+		lblLightsOnoff = new JLabel("Lights On");
 		lblLightsOnoff.setHorizontalAlignment(SwingConstants.CENTER);
-		lblLightsOnoff.setFont(new Font("Modern No. 20", Font.BOLD, 15));
-		lblLightsOnoff.setBounds(6, 69, 73, 16);
+		lblLightsOnoff.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
+		lblLightsOnoff.setBounds(165, 23, 129, 16);
 		panel_1.add(lblLightsOnoff);
 		
-		lblLeftDoorsOpen = new JLabel("Left Doors Open");
-		lblLeftDoorsOpen.setHorizontalAlignment(SwingConstants.CENTER);
-		lblLeftDoorsOpen.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblLeftDoorsOpen.setBounds(93, 6, 110, 16);
-		panel_1.add(lblLeftDoorsOpen);
+		lblDoorsOpen = new JLabel("Doors Open");
+		lblDoorsOpen.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDoorsOpen.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
+		lblDoorsOpen.setBounds(306, 23, 107, 16);
+		panel_1.add(lblDoorsOpen);
+		
+		lblAnnouncementInProgress = new JLabel("Announcement in Progress");
+		lblAnnouncementInProgress.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAnnouncementInProgress.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
+		lblAnnouncementInProgress.setBounds(441, 23, 180, 16);
+		panel_1.add(lblAnnouncementInProgress);
 		
 		lblThermostat = new JLabel("Thermostat");
 		lblThermostat.setHorizontalAlignment(SwingConstants.CENTER);
 		lblThermostat.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblThermostat.setBounds(621, 6, 107, 16);
+		lblThermostat.setBounds(648, 23, 107, 16);
 		panel_1.add(lblThermostat);
 		
-		slider_desTherm = new JSlider();
-		slider_desTherm.setMinorTickSpacing(1);
-		slider_desTherm.setMinimum(50);
-		slider_desTherm.setMaximum(90);
-		slider_desTherm.setMajorTickSpacing(10);
-		slider_desTherm.setSnapToTicks(true);
-		slider_desTherm.setPaintTicks(true);
-		slider_desTherm.setPaintLabels(true);
-		slider_desTherm.setBounds(584, 23, 190, 40);
-		panel_1.add(slider_desTherm);
+		slider_thermo = new JSlider();
+		slider_thermo.setMaximum(80);
+		slider_thermo.setMajorTickSpacing(15);
+		slider_thermo.setSnapToTicks(true);
+		slider_thermo.setPaintTicks(true);
+		slider_thermo.setPaintLabels(true);
+		slider_thermo.setBounds(630, 40, 144, 49);
+		panel_1.add(slider_thermo);
 		
-		radioButton_leftDoor = new JRadioButton("");
-		radioButton_leftDoor.setHorizontalAlignment(SwingConstants.CENTER);
-		radioButton_leftDoor.setBounds(93, 23, 110, 23);
-		panel_1.add(radioButton_leftDoor);
+		radioButton_announcement = new JRadioButton("");
+		radioButton_announcement.setHorizontalAlignment(SwingConstants.CENTER);
+		radioButton_announcement.setBounds(464, 51, 141, 23);
+		panel_1.add(radioButton_announcement);
+		
+		radioButton_doors = new JRadioButton("");
+		radioButton_doors.setHorizontalAlignment(SwingConstants.CENTER);
+		radioButton_doors.setBounds(293, 51, 141, 23);
+		panel_1.add(radioButton_doors);
 		
 		radioButton_lights = new JRadioButton("");
 		radioButton_lights.setHorizontalAlignment(SwingConstants.CENTER);
-		radioButton_lights.setBounds(6, 86, 73, 23);
+		radioButton_lights.setBounds(165, 51, 141, 23);
 		panel_1.add(radioButton_lights);
 		
 		radioButton_station = new JRadioButton("");
-		radioButton_station.setEnabled(false);
 		radioButton_station.setHorizontalAlignment(SwingConstants.CENTER);
-		radioButton_station.setBounds(6, 23, 73, 23);
+		radioButton_station.setBounds(12, 51, 141, 23);
 		panel_1.add(radioButton_station);
-		
-		slider_actTherm = new JSlider();
-		slider_actTherm.setEnabled(false);
-		slider_actTherm.setMinorTickSpacing(1);
-		slider_actTherm.setMinimum(50);
-		slider_actTherm.setSnapToTicks(true);
-		slider_actTherm.setPaintTicks(true);
-		slider_actTherm.setPaintLabels(true);
-		slider_actTherm.setMaximum(90);
-		slider_actTherm.setMajorTickSpacing(10);
-		slider_actTherm.setBounds(584, 69, 190, 40);
-		panel_1.add(slider_actTherm);
-		
-		JLabel lblRightDoorsOpen = new JLabel("Right Doors Open");
-		lblRightDoorsOpen.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRightDoorsOpen.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblRightDoorsOpen.setBounds(91, 69, 112, 16);
-		panel_1.add(lblRightDoorsOpen);
-		
-		radioButton_rightDoor = new JRadioButton("");
-		radioButton_rightDoor.setHorizontalAlignment(SwingConstants.CENTER);
-		radioButton_rightDoor.setBounds(91, 86, 112, 23);
-		panel_1.add(radioButton_rightDoor);
-		
-		JLabel lblDesired = new JLabel("Desired");
-		lblDesired.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDesired.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblDesired.setBounds(532, 30, 52, 16);
-		panel_1.add(lblDesired);
-		
-		JLabel lblActual = new JLabel("Actual");
-		lblActual.setHorizontalAlignment(SwingConstants.CENTER);
-		lblActual.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblActual.setBounds(543, 75, 41, 16);
-		panel_1.add(lblActual);
-		
-		textField_ads = new JTextField();
-		textField_ads.setEditable(false);
-		textField_ads.setBounds(249, 23, 245, 28);
-		panel_1.add(textField_ads);
-		textField_ads.setColumns(10);
-		
-		lblAnnouncements = new JLabel("Advertisements");
-		lblAnnouncements.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAnnouncements.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblAnnouncements.setBounds(308, 5, 110, 16);
-		panel_1.add(lblAnnouncements);
-		
-		btnHorn = new JButton("HORN!!!!!");
-		btnHorn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				play("Train_Whistle.wav");
-			}
-		});
-		btnHorn.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 15));
-		btnHorn.setBounds(249, 63, 245, 46);
-		panel_1.add(btnHorn);
 		panel.setLayout(null);
 		
 		slider = new JSlider();
@@ -640,22 +490,22 @@ public class tcGUI {
 		lblBeaconMessage.setBounds(164, 248, 132, 16);
 		panel.add(lblBeaconMessage);
 		
-		lblTrainControllerV = new JLabel("Train Controller V4:");
+		lblTrainControllerV = new JLabel("Train Controller V4");
 		lblTrainControllerV.setFont(new Font("Modern No. 20", Font.BOLD, 30));
 		lblTrainControllerV.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTrainControllerV.setBounds(16, 10, 254, 24);
+		lblTrainControllerV.setBounds(16, 10, 275, 24);
 		panel.add(lblTrainControllerV);
 		
 		lblNextStation = new JLabel("NEXT STATION");
 		lblNextStation.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNextStation.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-		lblNextStation.setBounds(536, 64, 219, 16);
+		lblNextStation.setBounds(536, 84, 219, 16);
 		panel.add(lblNextStation);
 		
 		toggle_service = new JToggleButton("SERVICE BRAKE");
 		toggle_service.setForeground(Color.GREEN);
-		//toggle_service.setBackground(Color.BLACK);
-		toggle_service.setBounds(536, 122, 219, 80);
+		toggle_service.setBackground(Color.BLACK);
+		toggle_service.setBounds(536, 142, 219, 80);
 		panel.add(toggle_service);
 		
 		label_7 = new JLabel("16");
@@ -665,8 +515,8 @@ public class tcGUI {
 		
 		toggle_emergency = new JToggleButton("EMERGENCY BRAKE");
 		toggle_emergency.setForeground(Color.RED);
-		//toggle_emergency.setBackground(Color.BLACK);
-		toggle_emergency.setBounds(536, 205, 219, 80);
+		toggle_emergency.setBackground(Color.BLACK);
+		toggle_emergency.setBounds(536, 225, 219, 80);
 		panel.add(toggle_emergency);
 		
 		slider_2 = new JSlider();
@@ -755,7 +605,7 @@ public class tcGUI {
 		textField_7 = new JTextField();
 		textField_7.setEditable(false);
 		textField_7.setColumns(10);
-		textField_7.setBounds(536, 86, 219, 28);
+		textField_7.setBounds(536, 106, 219, 28);
 		panel.add(textField_7);
 		
 		lblInManualMode = new JLabel("Manual Mode in ON");
@@ -767,16 +617,8 @@ public class tcGUI {
 		lblNoBraking = new JLabel("");
 		lblNoBraking.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNoBraking.setFont(new Font("Modern No. 20", Font.PLAIN, 15));
-			lblNoBraking.setBounds(524, 288, 247, 29);
+			lblNoBraking.setBounds(524, 317, 247, 16);
 			panel.add(lblNoBraking);
-			
-			lblTrainID = new JLabel("Train ID:");
-			lblTrainID.setBounds(26, 36, 61, 16);
-			panel.add(lblTrainID);
-			
-			lblID = new JLabel("");
-			lblID.setBounds(83, 36, 61, 16);
-			panel.add(lblID);
 			frame.getContentPane().setLayout(groupLayout);
 	}
 }

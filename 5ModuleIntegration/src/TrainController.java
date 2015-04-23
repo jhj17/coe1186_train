@@ -6,13 +6,12 @@ public class TrainController {
 	TrainModelInterface tm;
 	SimClock sm;
 	
-	public TrainController(SimClock sm, int trainID){
+	public TrainController(SimClock sm){
 		ts = new TrainState();
-		ts.trainID = trainID;
-		ts.clockFactor = sm.getSpeedFactor();
 		vh = new VitalHandler();
 		gui = new TrainControllerGUI(ts);
 		this.sm = sm;
+		ts.clockFactor = sm.getSpeedFactor();
 	}
 	public void initTrainModel(TrainModel tmodel)
 	{
@@ -57,10 +56,8 @@ public class TrainController {
 			ts.commandedPower = ts.MAXPOWER;
 		}
 
-		tm.setTemp(ts.desTemp);
-		
-		communicateStationSignals();
-		
+		//UPDATE TEMPERATURE
+
 		ts.tv=tm.updateSamples(ts.commandedPower);
 
 
@@ -103,7 +100,6 @@ public class TrainController {
 		ts.stationName = stuff[0];
 		ts.stationSide = stuff[1];
 		ts.dwellTime = Double.parseDouble(stuff[2]);
-		ts.pplAtStation = Integer.parseInt(stuff[3]);
 	}
 	public boolean stationArriveSequence(){
 		if(!ts.stationAnnounced){
@@ -116,8 +112,6 @@ public class TrainController {
 				ts.shouldLeftDoor = true;
 			else
 				ts.shouldRightDoor = true;
-			tm.setStation(ts.stationName);
-			tm.updatePassengers(ts.pplAtStation);
 			communicateStationSignals();
 		}
 		return true;
@@ -162,6 +156,7 @@ public class TrainController {
 			ts.isLeftDoor = tm.setLeftDoor(ts.shouldLeftDoor);
 		if(ts.isRightDoor != ts.shouldRightDoor)
 			ts.isRightDoor = tm.setRightDoor(ts.shouldRightDoor);
+		tm.setStation(ts.stationName);
 		return true;	
 	}
 	private void announceStation(String name){

@@ -28,8 +28,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.Panel;
 import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 
 public class TrainModelGUI 
@@ -57,10 +55,6 @@ public class TrainModelGUI
 	private JTextField txtID;
 	private JTextField txtDistance;
 	private DecimalFormat db = new DecimalFormat("0.00");
-
-	private boolean engineFailure;
-	private boolean brakeFailure;
-	private boolean signalFailure;
 
 	//How to call
 	//TrainModelGUI window = new TrainModelGUI();
@@ -287,30 +281,12 @@ public class TrainModelGUI
 		lblMode.setBounds(626, 282, 101, 16);
 		
 		JToggleButton tglbtnEngineFailure = new JToggleButton("Engine Failure");
-		tglbtnEngineFailure.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				engineFailure = !engineFailure;
-				System.out.println("ENGINE " + engineFailure);
-			}
-		});
 		tglbtnEngineFailure.setBounds(574, 85, 189, 41);
 		
 		JToggleButton tglbtnSignalPickupFailure = new JToggleButton("Signal Pickup Failure");
-		tglbtnSignalPickupFailure.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				signalFailure = !signalFailure;
-				System.out.println("SIGNAL " + signalFailure);
-			}
-		});
 		tglbtnSignalPickupFailure.setBounds(574, 128, 189, 41);
 		
 		JToggleButton tglbtnBrakeFailure = new JToggleButton("Brake Failure");
-		tglbtnBrakeFailure.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				brakeFailure = !brakeFailure;
-				System.out.println("BRAKE " + brakeFailure);
-			}
-		});
 		tglbtnBrakeFailure.setBounds(574, 173, 189, 41);
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(lblCars);
@@ -395,15 +371,14 @@ public class TrainModelGUI
 		txtMass.setText(db.format(data.mass * 2.2) + " lbs");
 		txtPassengerCount.setText(Integer.toString(data.passengers));
 		txtRoute.setText(data.lastStop);
-		txtDistance.setText(db.format(data.distance * 3.2) + " ft");
+		txtDistance.setText(db.format(data.dtv.distance * 3.2) + " ft");
 		txtGrade.setText(db.format(data.grade));
-		txtAuthority.setText(db.format(data.authority * 3.2) + " ft");
+		txtAuthority.setText(db.format(data.dtv.curAuthority * 3.2) + " ft");
 		txtPower.setText(db.format(data.power) + " W");
 		txtSpeedLimit.setText(db.format(data.dtv.commandedSpeed * 2.23) + " mph");
 		txtTempIn.setText(db.format(data.commandedTemperature) + " F");
 		txtSpeed.setText(db.format(data.dtv.curSpeed * 2.23) + " mph");
 		txtAcceleration.setText(db.format(data.dtv.curAcceleration * 3.28) + "ft/s^2");
-		txtAcceleration.setText(db.format(data.dtv.curAcceleration * 3.28) + " ft/s^2");
 		txtTemp.setText(db.format(data.dtv.curTemp) + " F");
 		if (data.leftDoor && data.rightDoor)
 			txtDoors.setText("Both Open");
@@ -417,28 +392,5 @@ public class TrainModelGUI
 			txtLights.setText("On");
 		else
 			txtLights.setText("Off");
-	}
-
-	// 1 for engine, 2 for signal, 4 for brake
-	public byte getFailures()
-	{
-		byte result = 0;
-		
-		if (engineFailure)
-		{
-			result += 1;
-		}
-
-		if (signalFailure)
-		{
-			result += 2;
-		}
-
-		if (brakeFailure)
-		{
-			result += 4;
-		}
-
-		return result;
 	}
 }
