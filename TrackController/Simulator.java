@@ -4,29 +4,31 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+import java.awt.EventQueue;
 
 public class Simulator 
 { 
 
 	public static void main(String[] args) throws Exception {
+		Track track = new Track();
+		TrackControllerWrapper trackControllerWrapper = new TrackControllerWrapper(track);
+		
 		SimClock sm = new SimClock(10,0,0,0);
 		Thread clockThread = new Thread(sm, "clockThread");
 		clockThread.start();
-		Track track = new Track();
-
-		TrackControllerWrapper trackControllerWrapper = new TrackControllerWrapper(track);
+		
+		//CTCGUI ctc = new CTCGUI(track, trackControllerWrapper, sm);
 
 		int trainID = 10;
 		String line = "green";
 
-		int trainID2 = 15;
-		String line2 = "green";
+		//int trainID2 = 15;
+		//String line2 = "green";
 
 		track.placeTrain(line, trainID);
 		//track.commandAuthority(line,1000000,track.getBlock(trainID).getBlockNumber());
 
-		//track.getBlock(trainID);
+		track.getBlock(trainID);
 		Train train1 = new Train(track, trainID, sm);
 		//Thread.sleep(10000);
 
@@ -52,8 +54,10 @@ public class Simulator
 
 		
 		// Read in test csv file to route a train to a station
+		
 		//Input file which needs to be parsed
 		ArrayList<String> commandsToTrackController = new ArrayList<String>();
+		ArrayList<Integer> nextBlocks = new ArrayList<Integer>();
 		String fileToParse = "simulatedCTC.csv";
 		BufferedReader fileReader = null;
 
@@ -72,6 +76,7 @@ public class Simulator
 				String command = tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + tokens[3] + "," + 
 						tokens[4] + "," + tokens[5];
 				
+				nextBlocks.add(Integer.parseInt(tokens[2]));
 				commandsToTrackController.add(command);
 			}
 		}
@@ -90,17 +95,24 @@ public class Simulator
 		Thread.sleep(2000);
 		
 		System.out.println("Start");
-		int count = 1;
-		
-		// Run the system with the test
-		for (String command : commandsToTrackController) {
-			trackControllerWrapper.newProceedMsg(command);
-			//trackControllerWrapper.getBlockStatus("green", count);
-			
-			//count++;
-		}
 		
 		trackControllerWrapper.showBeacon("green", 9);
+		
+		// Run the system with the test
+		for(int i = 0; i < commandsToTrackController.size(); i++) {
+			trackControllerWrapper.newProceedMsg(commandsToTrackController.get(i));
+			
+			while (trackControllerWrapper.getBlockStatus("green", nextBlocks.get(i)) != 1) {
+				if ((i+1) < commandsToTrackController.size() && 
+						trackControllerWrapper.getBlockStatus("green", nextBlocks.get(i+1)) == 1 ) {
+					i++;
+					break;
+				}
+				// track is not on next block
+				Thread.sleep(50);
+			}
+		}
+		
 		
 	}
 }
