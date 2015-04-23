@@ -395,9 +395,9 @@ public class TrainModelGUI
 		txtMass.setText(db.format(data.mass * 2.2) + " lbs");
 		txtPassengerCount.setText(Integer.toString(data.passengers));
 		txtRoute.setText(data.lastStop);
-		txtDistance.setText(db.format(data.dtv.distance * 3.2) + " ft");
+		txtDistance.setText(db.format(data.distance * 3.2) + " ft");
 		txtGrade.setText(db.format(data.grade));
-		txtAuthority.setText(db.format(data.dtv.curAuthority * 3.2) + " ft");
+		txtAuthority.setText(db.format(data.authority * 3.2) + " ft");
 		txtPower.setText(db.format(data.power) + " W");
 		txtSpeedLimit.setText(db.format(data.dtv.commandedSpeed * 2.23) + " mph");
 		txtTempIn.setText(db.format(data.commandedTemperature) + " F");

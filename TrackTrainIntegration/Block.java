@@ -359,9 +359,9 @@ public Block(String[] splitStrings, Block lastCreated) {
 				currentBlock.toggleSwitch();
 				currentBlock = currentBlock.traverseTrain(trainID);
 			}*/
-			if(temp==currentblock)
+			if(temp==currentBlock)
 			{
-				System.out.println("BOOM! POW! CRASH!")
+				System.out.println("BOOM! POW! CRASH!");
 			}
 			else
 			{

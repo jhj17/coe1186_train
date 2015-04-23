@@ -34,6 +34,7 @@ public class TrainModel implements TrainModelInterface
 	
 	private double mass = EMPTYMASS;
 
+	private double displayedAuthority = 0;
 	private double authority = 0;
 	private double commandedSpeed = 0;
 
@@ -82,7 +83,7 @@ public class TrainModel implements TrainModelInterface
 		this.clock = clock;
 		gui = new TrainModelGUI();
 		DTV = new DynamicTrainValues(0,0,0,0,0,temperature);
-		TD = new TrainData(DTV, ID, mass, numPassengers, lastStop, 0, 0, commandedTemperature, leftDoor, rightDoor, lights);
+		TD = new TrainData(DTV, ID, mass, numPassengers, lastStop, 0, 0, commandedTemperature, leftDoor, rightDoor, lights, 0, 0);
 		gui.updateGUI(TD);
 		mass = EMPTYMASS + (numCrew * PERSONMASS);
 	}
@@ -149,6 +150,12 @@ public class TrainModel implements TrainModelInterface
 		//		if (signalFailure)
 		//			authority = -1;
 		// 	}
+
+		// New authority so display it
+		if(authority > 0)
+		{
+			displayedAuthority = authority;
+		}
 		
 		String beacon = curBlock.getBeacon();
 		if (!beacon.isEmpty())
@@ -219,14 +226,14 @@ public class TrainModel implements TrainModelInterface
 			
 			double totalForce = engineForce + gravityForce + frictionForce;
 			
-			//if (totalForce > 0)
-			//{
 			acceleration = totalForce / mass;
-			//}
-			//else
-			//{
-			//	acceleration = 0;
-			//}
+
+			// The train has slowed to a stop and friction now holds the train instead of slowing it down.
+			if (totalForce < 0 && speed < 0.05)
+			{
+				speed = 0; 
+				acceleration = 0;
+			}
 		}
 
 		// vf = vi + at;
@@ -238,12 +245,12 @@ public class TrainModel implements TrainModelInterface
 		// Update temperature;
 		if (commandedTemperature > temperature)
 		{
-		temperature += (0.005 * deltaT);
+			temperature += (0.005 * deltaT);
 		}
 
 		else if (commandedTemperature < temperature)
 		{
-		temperature -= (0.005 * deltaT);
+			temperature -= (0.005 * deltaT);
 		}
 
 		if ((commandedTemperature - temperature) > -0.01 && (commandedTemperature - temperature) < 0.01)
@@ -255,7 +262,7 @@ public class TrainModel implements TrainModelInterface
 
 		// Populate train values and return them
 		DTV = new DynamicTrainValues(speed, acceleration, authority, commandedSpeed, distance, temperature);
-		TD = new TrainData(DTV, ID, mass, numPassengers, lastStop, grade, power, commandedTemperature, leftDoor, rightDoor, lights);
+		TD = new TrainData(DTV, ID, mass, numPassengers, lastStop, grade, power, commandedTemperature, leftDoor, rightDoor, lights, displayedAuthority, (distance - checkpoint));
 		gui.updateGUI(TD);
 		//mbo.setPosition(this.getPosition(), ID);
 		return DTV;
@@ -425,8 +432,10 @@ class TrainData
 	public final boolean leftDoor;
 	public final boolean rightDoor;
 	public final boolean lights;
+	public final double authority;
+	public final double distance;
 
-	public TrainData(DynamicTrainValues dtv, int ID, double mass, int passengers, String lastStop, double grade, double power, double commandedTemperature, boolean leftDoor, boolean rightDoor, boolean lights)
+	public TrainData(DynamicTrainValues dtv, int ID, double mass, int passengers, String lastStop, double grade, double power, double commandedTemperature, boolean leftDoor, boolean rightDoor, boolean lights, double authority, double distance)
 	{
 		this.dtv = dtv;
 		this.ID = ID;
@@ -439,5 +448,7 @@ class TrainData
 		this.leftDoor = leftDoor;
 		this.rightDoor = rightDoor;
 		this.lights = lights;
+		this.authority = authority;
+		this.distance = distance;
 	}
 }
