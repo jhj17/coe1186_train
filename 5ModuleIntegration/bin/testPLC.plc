@@ -1,0 +1,4 @@
+proceed: ((!b1_occupied) && (!b2_occupied))
+crossing: ((!b1_occupied) && (!b2_occupied))
+switch: (!b1_occupied)
+maintenance: (!prevBlock_occupied && !b1_occupied)
