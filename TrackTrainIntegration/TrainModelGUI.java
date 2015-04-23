@@ -56,6 +56,10 @@ public class TrainModelGUI
 	private JTextField txtDistance;
 	private DecimalFormat db = new DecimalFormat("0.00");
 
+	private boolean engineFailure;
+	private boolean brakeFailure;
+	private boolean signalFailure;
+
 	//How to call
 	//TrainModelGUI window = new TrainModelGUI();
 	//window.frame.setVisible(true);
@@ -378,7 +382,7 @@ public class TrainModelGUI
 		txtSpeedLimit.setText(db.format(data.dtv.commandedSpeed * 2.23) + " mph");
 		txtTempIn.setText(db.format(data.commandedTemperature) + " F");
 		txtSpeed.setText(db.format(data.dtv.curSpeed * 2.23) + " mph");
-		txtAcceleration.setText(db.format(data.dtv.curAcceleration * 3.28) + "ft/s^2");
+		txtAcceleration.setText(db.format(data.dtv.curAcceleration * 3.28) + " ft/s^2");
 		txtTemp.setText(db.format(data.dtv.curTemp) + " F");
 		if (data.leftDoor && data.rightDoor)
 			txtDoors.setText("Both Open");
@@ -392,5 +396,28 @@ public class TrainModelGUI
 			txtLights.setText("On");
 		else
 			txtLights.setText("Off");
+	}
+
+	// 1 for engine, 2 for signal, 4 for brake
+	public byte getFailures()
+	{
+		byte result = 0;
+		
+		if (engineFailure)
+		{
+			result += 1;
+		}
+
+		if (signalFailure)
+		{
+			result += 2;
+		}
+
+		if (brakeFailure)
+		{
+			result += 4;
+		}
+
+		return result;
 	}
 }
