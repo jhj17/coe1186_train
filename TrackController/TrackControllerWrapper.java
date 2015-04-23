@@ -57,7 +57,7 @@ public class TrackControllerWrapper {
 
 	private ArrayList<TrackController> greenLineTrackControllers;
 	private ArrayList<TrackController> redLineTrackControllers;
-
+	
 	// block assignments to the track controllers, at most 50 blocks per TC with a 2 block overlap between controllers
 	private final int greenTc1Blocks[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,
 			27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,147,148,148,149,150};
@@ -68,11 +68,27 @@ public class TrackControllerWrapper {
 			124,125,126,127,128,129};
 	private final int greenTc4Blocks[] = {128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,
 			148,149,150,27,28,29,30};
+	
+	private ArrayList<Integer> greenTc1Railways;
+	private ArrayList<Integer> greenTc2Railways;
+	private ArrayList<Integer> greenTc3Railways;
+	private ArrayList<Integer> greenTc4Railways;
+	
+	private ArrayList<Integer> greenTc1Switches;
+	private ArrayList<Integer> greenTc2Switches;
+	private ArrayList<Integer> greenTc3Switches;
+	private ArrayList<Integer> greenTc4Switches;
 
 	private final int redTc1Blocks[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,
 			31,32,33,34,35,36,74,75,76,77,78,79,80,81};
 	private final int redTc2Blocks[] = {32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,
 			61,62,63,64,65,66,67,68,69,70,71,72,73,74,75};
+	
+	private ArrayList<Integer> redTc1Railways;
+	private ArrayList<Integer> redTc2Railways;
+	
+	private ArrayList<Integer> redTc1Switches;
+	private ArrayList<Integer> redTc2Switches;
 
 	public boolean plcLoaded = true;
 
@@ -108,6 +124,24 @@ public class TrackControllerWrapper {
 		// track controllers will have an overlap of 2 blocks at the beginning and the end
 		greenLineTrackControllers = new ArrayList<TrackController>();
 		redLineTrackControllers = new ArrayList<TrackController>();
+		
+		// Green line block property array lists
+		greenTc1Railways = new ArrayList<Integer>();
+		greenTc2Railways = new ArrayList<Integer>();
+		greenTc3Railways = new ArrayList<Integer>();
+		greenTc4Railways = new ArrayList<Integer>();
+		
+		greenTc1Switches = new ArrayList<Integer>();
+		greenTc2Switches = new ArrayList<Integer>();
+		greenTc3Switches = new ArrayList<Integer>();
+		greenTc4Switches = new ArrayList<Integer>();
+		
+		// Red line block property array lists
+		redTc1Railways = new ArrayList<Integer>();
+		redTc2Railways = new ArrayList<Integer>();
+		
+		redTc1Switches = new ArrayList<Integer>();
+		redTc2Switches = new ArrayList<Integer>();
 
 		greenLineTrackControllers.add(new TrackController("green", 0, greenTc1Blocks));
 		greenLineTrackControllers.add(new TrackController("green", 1, greenTc2Blocks));
@@ -186,13 +220,15 @@ public class TrackControllerWrapper {
 							// Add block to list box
 							Block block = track.getBlock(id, "red");
 							blockModel.addElement(track.getBlock(id, "red").toString());
-
+							
 							// check if block contains railway and/or switch to add to respective list box
 							if(block.isSwitch()) {
+								redTc1Switches.add(id);
 								switchModel.addElement(block.getSwitch().toString());
 							}
-
+							
 							if(block.isCrossing()) {
+								redTc1Railways.add(id);
 								railwayModel.addElement(block.getCrossing().toString());
 							}
 						}
@@ -205,13 +241,15 @@ public class TrackControllerWrapper {
 							// Add block to list box
 							Block block = track.getBlock(id, "red");
 							blockModel.addElement(track.getBlock(id, "red").toString());
-
+							
 							// check if block contains railway and/or switch to add to respective list box
 							if(block.isSwitch()) {
+								redTc2Switches.add(id);
 								switchModel.addElement(block.getSwitch().toString());
 							}
-
+							
 							if(block.isCrossing()) {
+								redTc2Railways.add(id);
 								railwayModel.addElement(block.getCrossing().toString());
 							}
 						}
@@ -232,10 +270,12 @@ public class TrackControllerWrapper {
 
 							// check if block contains railway and/or switch to add to respective list box
 							if(block.isSwitch()) {
+								greenTc1Switches.add(id);
 								switchModel.addElement(block.getSwitch().toString());
 							}
 
 							if(block.isCrossing()) {
+								greenTc1Railways.add(id);
 								railwayModel.addElement(block.getCrossing().toString());
 							}
 						}
@@ -251,10 +291,12 @@ public class TrackControllerWrapper {
 
 							// check if block contains railway and/or switch to add to respective list box
 							if(block.isSwitch()) {
+								greenTc2Switches.add(id);
 								switchModel.addElement(block.getSwitch().toString());
 							}
 
 							if(block.isCrossing()) {
+								greenTc2Railways.add(id);
 								railwayModel.addElement(block.getCrossing().toString());
 							}
 						}
@@ -270,10 +312,12 @@ public class TrackControllerWrapper {
 
 							// check if block contains railway and/or switch to add to respective list box
 							if(block.isSwitch()) {
+								greenTc3Switches.add(id);
 								switchModel.addElement(block.getSwitch().toString());
 							}
 
 							if(block.isCrossing()) {
+								greenTc3Railways.add(id);
 								railwayModel.addElement(block.getCrossing().toString());
 							}
 						}					
@@ -289,10 +333,12 @@ public class TrackControllerWrapper {
 
 							// check if block contains railway and/or switch to add to respective list box
 							if(block.isSwitch()) {
+								greenTc4Switches.add(id);
 								switchModel.addElement(block.getSwitch().toString());
 							}
 
 							if(block.isCrossing()) {
+								greenTc4Railways.add(id);
 								railwayModel.addElement(block.getCrossing().toString());
 							}
 						}
@@ -1142,10 +1188,10 @@ public class TrackControllerWrapper {
 			// Viewing Red Line
 			// Based on the viewed track controller ID, get that block
 			if(tcComboBox.getSelectedIndex() == 0) {
-				selectedBlock = redTc1Blocks[switchListbox.getSelectedIndex()];
+				selectedBlock = redTc1Switches.get(switchListbox.getSelectedIndex());
 			}
 			else if(tcComboBox.getSelectedIndex() == 1) {
-				selectedBlock = redTc2Blocks[switchListbox.getSelectedIndex()];
+				selectedBlock = redTc2Switches.get(switchListbox.getSelectedIndex());
 			}
 
 			targetBlock = track.getBlock(selectedBlock, "red");
@@ -1154,16 +1200,16 @@ public class TrackControllerWrapper {
 			// Viewing Green Line
 			// Based on the viewed track controller ID, get that block
 			if(tcComboBox.getSelectedIndex() == 0) {
-				selectedBlock = greenTc1Blocks[switchListbox.getSelectedIndex()];
+				selectedBlock = greenTc1Switches.get(switchListbox.getSelectedIndex());
 			}
 			else if(tcComboBox.getSelectedIndex() == 1) {
-				selectedBlock = greenTc2Blocks[switchListbox.getSelectedIndex()];
+				selectedBlock = greenTc2Switches.get(switchListbox.getSelectedIndex());
 			}
 			else if(tcComboBox.getSelectedIndex() == 2) {
-				selectedBlock = greenTc3Blocks[switchListbox.getSelectedIndex()];
+				selectedBlock = greenTc3Switches.get(switchListbox.getSelectedIndex());
 			}
 			else if(tcComboBox.getSelectedIndex() == 3) {
-				selectedBlock = greenTc4Blocks[switchListbox.getSelectedIndex()];
+				selectedBlock = greenTc4Switches.get(switchListbox.getSelectedIndex());
 			}
 
 			targetBlock = track.getBlock(selectedBlock, "green");
@@ -1188,10 +1234,10 @@ public class TrackControllerWrapper {
 			// Viewing Red Line
 			// Based on the viewed track controller ID, get that block
 			if(tcComboBox.getSelectedIndex() == 0) {
-				selectedBlock = redTc1Blocks[railwayListbox.getSelectedIndex()];
+				selectedBlock = redTc1Railways.get(railwayListbox.getSelectedIndex());
 			}
 			else if(tcComboBox.getSelectedIndex() == 1) {
-				selectedBlock = redTc2Blocks[railwayListbox.getSelectedIndex()];
+				selectedBlock = redTc2Railways.get(railwayListbox.getSelectedIndex());
 			}
 
 			targetBlock = track.getBlock(selectedBlock, "red");
@@ -1200,22 +1246,20 @@ public class TrackControllerWrapper {
 			// Viewing Green Line
 			// Based on the viewed track controller ID, get that block
 			if(tcComboBox.getSelectedIndex() == 0) {
-				selectedBlock = greenTc1Blocks[railwayListbox.getSelectedIndex()];
+				selectedBlock = greenTc1Railways.get(railwayListbox.getSelectedIndex());
 			}
 			else if(tcComboBox.getSelectedIndex() == 1) {
-				selectedBlock = greenTc2Blocks[railwayListbox.getSelectedIndex()];
+				selectedBlock = greenTc2Railways.get(railwayListbox.getSelectedIndex());
 			}
 			else if(tcComboBox.getSelectedIndex() == 2) {
-				selectedBlock = greenTc3Blocks[railwayListbox.getSelectedIndex()];
+				selectedBlock = greenTc3Railways.get(railwayListbox.getSelectedIndex());
 			}
 			else if(tcComboBox.getSelectedIndex() == 3) {
-				selectedBlock = greenTc4Blocks[railwayListbox.getSelectedIndex()];
+				selectedBlock = greenTc4Railways.get(railwayListbox.getSelectedIndex());
 			}
 
 			targetBlock = track.getBlock(selectedBlock, "green");
 		}
-
-		System.out.println(targetBlock.getBlockNumber());
 		
 		// Depending on the state of the crossing, activate/deactivate it
 		targetBlock.getCrossing().toggleCrossing();
