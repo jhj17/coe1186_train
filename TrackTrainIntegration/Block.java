@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+//initialization: Authority: -1, Commanded Speed: speed limit
+//for yard: Authority = first 2 blocks, Commanded Speed = 10 (arbitrarily chosen)
 
 public class Block {
 
@@ -40,7 +42,7 @@ public class Block {
 	private boolean blockOccupied = false;
 	private boolean lightsGreenTrueRedFalse;
 	private boolean beaconCommanded = false;
-	private double commandedAuthority = 0;
+	private double commandedAuthority = -1;
 	private double commandedSpeed = 0;
 	private double distanceTraveled = 0;
 
@@ -75,8 +77,8 @@ public Block(String[] splitStrings, Block lastCreated) {
 	if(station.equals("FROM YARD") || station.equals("TO YARD/FROM YARD"))
 	{
 		fromYard = true;
-		//commandedAuthority = blockLength;
-		//commandedSpeed = 10;
+		commandedAuthority = 100;
+		commandedSpeed = 10;
 		//station = "";
 	}
 
@@ -112,10 +114,11 @@ public Block(String[] splitStrings, Block lastCreated) {
 
 	if(isStation())
 	{
-
 		Random pls = new Random();
 		stationPeople = pls.nextInt(50);
 	}
+
+	commandedSpeed = speedLimit;
 
 }
 
