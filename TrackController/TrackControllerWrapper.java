@@ -1073,7 +1073,7 @@ public class TrackControllerWrapper {
 		else if(requestedBlock.isClosed()) {
 			returnStatus = BLOCK_MAINT;
 		}
-		else if(requestedBlock.isSignalWorking()) {
+		else if(!requestedBlock.isSignalWorking()) {
 			returnStatus = SIGNAL_BROKEN;
 		}
 		
@@ -1088,6 +1088,8 @@ public class TrackControllerWrapper {
 				returnStatus = RAILWAY_BROKEN;
 			}
 		}
+		
+		//updateListBoxes();
 		
 		return returnStatus;
 	}
