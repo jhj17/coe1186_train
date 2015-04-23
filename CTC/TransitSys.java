@@ -26,7 +26,7 @@ public class TransitSys {
 		
 		trainInfo = new JTextArea();
 		trainInfo.setText("Train Location: \n");
-		trainInfo.append("Train: 1 Block: Yard\n");
+		//trainInfo.append("Train: 1 Block: Yard\n");
 		trainInfo.setEditable(false); 
 		trainInfo.setPreferredSize(new Dimension(328, 415));
 		trainTextPane = new JScrollPane(trainInfo);
@@ -50,7 +50,7 @@ public class TransitSys {
 			section = b.getSection();
 			blockNumber = b.getBlockNumber();
 			trainInfo.append("Train: " + trainID + "Section: " + section + "Block: " + blockNumber + "\n");
-			System.out.println("Train: " + trainID + "Section: " + section + "Block: " + blockNumber);
+			//System.out.println("Train: " + trainID + "Section: " + section + "Block: " + blockNumber);
 		}
 		
 	}

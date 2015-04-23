@@ -29,7 +29,7 @@ public class CTCGUI {
 
 	protected Shell shell;
 	private Text trainID;
-	private Button btnFixedBlock, btnMbo, btnRequestSchedule, btnLoadStations;
+	private Button btnFixedBlock, btnMbo, btnRequestSchedule, btnLoadStations, btnSend;
 	private Combo comboLine;
 	public static ArrayList<String> redLine = new ArrayList<String>();
 	public static ArrayList<String> greenLine = new ArrayList<String>();
@@ -60,6 +60,9 @@ public class CTCGUI {
 	private Router mainRouter = new Router();
 	private boolean done;
 	public boolean isMBO;
+	public static TransitSys ts;
+	private Text textSpeed;
+	private Text textAuthority;
 
 	public CTCGUI(Track tk, TrackControllerWrapper tcw, SimClock sm) throws FileNotFoundException
 	{
@@ -75,6 +78,11 @@ public class CTCGUI {
 		while(outScan.hasNextLine())
 		{
 			greenLine.add(outScan.nextLine());
+		}
+		outScan = new Scanner(new File("greenLineDefaultSchedule.txt"));
+		while(outScan.hasNextLine())
+		{
+			defaultSchedule.add(outScan.nextLine());
 		}
 		for(int i =0; i < greenLine.size(); i++)
 			System.out.println(greenLine.get(i));
@@ -96,7 +104,7 @@ public class CTCGUI {
 	 * @throws FileNotFoundException 
 	 */
 	@SuppressWarnings("resource")
-	/*public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws FileNotFoundException {
 		Scanner outScan = new Scanner(new File("redLine.txt"));
 		while(outScan.hasNextLine())
 		{
@@ -123,7 +131,7 @@ public class CTCGUI {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 
 	/**
 	 * Open the window.
@@ -235,6 +243,17 @@ public class CTCGUI {
 				for(int i = 0; i < defaultSchedule.size(); i++)
 				{
 					schedGenerate = defaultSchedule.get(i).split(",");
+					if(i == 0)
+					{
+						String destination = schedGenerate[2];
+						Router autoRouter = new Router(schedGenerate[0], schedGenerate[1], tcw, sm, false);
+						try {
+							autoRouter.getRoute(tk, schedGenerate[0], destination);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
 					tableTrain[i] = new TableItem(table, SWT.NONE, 0);
 					tableTrain[i].setText(schedGenerate);
 					
@@ -581,13 +600,40 @@ public class CTCGUI {
 		btnTransitSystem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-			TransitSys ts = new TransitSys();
-					ts.locateTrain(1, tk);
+			ts = new TransitSys();
+					//ts.locateTrain(1, tk);
 
 			}
 		});
 		btnTransitSystem.setBounds(80, 572, 201, 25);
 		btnTransitSystem.setText("Transit System");
+		
+		textSpeed = new Text(shell, SWT.BORDER);
+		textSpeed.setBounds(609, 513, 76, 21);
+		
+		textAuthority = new Text(shell, SWT.BORDER);
+		textAuthority.setBounds(745, 513, 76, 21);
+		
+		Label lblSpeed = new Label(shell, SWT.NONE);
+		lblSpeed.setBounds(620, 492, 55, 15);
+		lblSpeed.setText("Speed");
+		
+		Label lblAuthority = new Label(shell, SWT.NONE);
+		lblAuthority.setBounds(748, 492, 55, 15);
+		lblAuthority.setText("Authority");
+		
+		btnSend = new Button(shell, SWT.NONE);
+		btnSend.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				btnSend.setEnabled(false);
+				textSpeed.setEnabled(false);
+				textAuthority.setEnabled(false);
+				//send information to track controller 
+			}
+		});
+		btnSend.setBounds(671, 551, 75, 25);
+		btnSend.setText("Send");
 		
 		for(int i = 0; i < greenLine.size(); i++)
 			comboStationsGreen.add(greenLine.get(i));

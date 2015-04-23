@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 
@@ -62,8 +63,9 @@ public class Router
 			tr.placeTrain(line, trainInt);
 			Train t = new Train(tr, trainInt, sm);
 			theTrains.add(t);
+			CTCGUI.ts = new TransitSys();
 			int i = 0;
-			System.out.println("Last Block Sent: " + getLastBlock());
+			//System.out.println("Last Block Sent: " + getLastBlock());
 			while(i < blockIDs.size())
 			{
 					
@@ -122,6 +124,7 @@ public class Router
 		int indexC = indexB+1;
 		int minSpeed;
 		authority = authority - Double.parseDouble(theAuthorities.get(index));
+		System.out.println("New Authority: " + authority);
 		StringBuffer msg = new StringBuffer(l);
 		if(indexC == blockIDs.size() - 1) //index 128
 		{
