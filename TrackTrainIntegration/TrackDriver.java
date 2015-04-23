@@ -12,6 +12,18 @@ public class TrackDriver {
 		// TODO Auto-generated method stub
 		
 		Track trackTester = new Track();
+		
+//TEST CROSSING 
+		
+
+
+
+
+
+
+
+
+
 		//trackTester.placeTrain("green", 1);
 		//System.out.println(trackTester.getBlock(1).toString());
 
@@ -111,13 +123,13 @@ public class TrackDriver {
 
 //TESTING TRAIN TRAVERSAL. 
 		
-		trackTester.placeTrain("green", 5);
+		/*trackTester.placeTrain("green", 5);
 		for(int i = 0;i<1000;i++)
 		{
 			trackTester.updateDistance(5,100);
 			//trackTester.updateDistance(TrainID, distance)
 		}
-		
+		*/ 
 
 		/*
 		trackTester.toggleSwitch("Green", 153);

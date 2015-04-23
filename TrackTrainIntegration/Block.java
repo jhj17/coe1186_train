@@ -17,7 +17,7 @@ public class Block {
 	private String arrow;
 	private String switchNumber; //***
 	private int direction;
-	private String crossing; //***
+	private String crossing = null; //***
 	private String switchType;
 	private String stationSide;
 //
@@ -51,7 +51,6 @@ public class Block {
 	private boolean lightsGreenTrueRedFalse;
 	private boolean beaconCommanded = false;
 
-	boolean crossingOccurence;
 	private double commandedAuthority = 0;
 	private double commandedSpeed = 0;
 	double distanceTraveled = 0;
@@ -85,19 +84,20 @@ public Block(String[] splitStrings, Block lastCreated) {
 	direction = Integer.parseInt(splitStrings[13]);
 	crossing = splitStrings[14];
 	switchType = splitStrings[15];
-
+	commandedAuthority = -1;
+	commandedSpeed = speedLimit;
 	
 	if(station.equals("TO YARD") || station.equals("TO YARD/FROM YARD"))
 	{
 		toYard = true;
-		station = "";
+		//station = "";
 	}
 	if(station.equals("FROM YARD") || station.equals("TO YARD/FROM YARD"))
 	{
 		fromYard = true;
-		commandedAuthority = blockLength;
-		commandedSpeed = 10;
-		station = "";
+		//commandedAuthority = blockLength;
+		//commandedSpeed = 10;
+		//station = "";
 	}
 
 	if(toYard == false && fromYard == false && station.length()>0)
@@ -267,7 +267,6 @@ public Block(String[] splitStrings, Block lastCreated) {
 				this.getPrevious().setSeen(0);
 			}
 		}
-
 		else
 		{
 			if(this.station.equals("TO YARD/FROM YARD"))
@@ -409,6 +408,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 		{
 			if(this.station.equals("TO YARD/FROM YARD"))
 			{
+				
 				returnBlock = this.getNext();
 				if(returnBlock == null)
 				{
@@ -570,7 +570,15 @@ public Block(String[] splitStrings, Block lastCreated) {
 	??? not done yet
 */
 	public boolean isCrossing() {
-		return false;
+		
+		if(crossingOccurence.equals("-"))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		} 
 	}
 
 /*

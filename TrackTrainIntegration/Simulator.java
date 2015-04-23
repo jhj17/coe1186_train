@@ -11,23 +11,23 @@ public class Simulator
 			Track track = new Track();
 			
 			int trainID = 10;
-			String line = "green";
+			String line = "red";
 
 			int trainID2 = 15;
-			String line2 = "green";
+			String line2 = "red";
 
 			track.placeTrain(line, trainID);
 			track.commandAuthority(line,1000000,track.getBlock(trainID).getBlockNumber());
 
 			track.getBlock(trainID);
 			Train train1 = new Train(track, trainID, sm);
-			Thread.sleep(10000);
+			//Thread.sleep(10000);
 
-			track.placeTrain(line2,trainID2);
+			/*track.placeTrain(line2,trainID2);
 			track.commandAuthority(line2,1000000,track.getBlock(trainID2).getBlockNumber());
 
 			Train train2 = new Train(track, trainID2, sm);
-
+*/
 
 			/*//TESTING TRAIN TRAVERSAL. 
 			for(int i = 0;i<1000;i++)

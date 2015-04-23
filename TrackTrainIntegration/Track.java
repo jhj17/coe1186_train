@@ -13,6 +13,7 @@ public class Track {
 	private ArrayList<Switch> redSwitches = new ArrayList<Switch>();
 	private ArrayList<Switch> greenSwitches = new ArrayList<Switch>();
 	ArrayList<Block> trainBlocks = new ArrayList<Block>();
+	private Crossing lineCrossing = null;
 
 	private double coeffFriction;
 	private int weather;
@@ -50,6 +51,19 @@ public class Track {
 
 			currentBlock = new Block(splitStrings, currentBlock);  // instantiate block				
 			currentAll.add(currentBlock); // add block to list for easy lookup
+
+			if(currentBlock.isCrossing())
+			{
+				if(lineCrossing == null)
+				{
+					lineCrossing = new Crossing(currentBlock);
+				}
+				else
+				{
+					lineCrossing.addBlock(currentBlock);
+				}
+			}
+			
 
 			switchMaker(splitStrings,currentBlock,currentSwitches); //connect all switch blocks and put them into ArrayList
 			if(splitStrings[6].equals("FROM YARD") || splitStrings[6].equals("TO YARD/FROM YARD"))
