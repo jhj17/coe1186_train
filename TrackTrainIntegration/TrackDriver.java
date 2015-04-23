@@ -13,6 +13,11 @@ public class TrackDriver {
 		
 		Track trackTester = new Track();
 		
+		while(true)
+		{
+			//
+		}
+
 //TEST CROSSING 
 		
 

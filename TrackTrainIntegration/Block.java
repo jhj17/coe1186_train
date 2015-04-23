@@ -359,9 +359,9 @@ public Block(String[] splitStrings, Block lastCreated) {
 				currentBlock.toggleSwitch();
 				currentBlock = currentBlock.traverseTrain(trainID);
 			}*/
-			if(temp==currentblock)
+			if(temp==currentBlock)
 			{
-				System.out.println("BOOM! POW! CRASH!")
+				System.out.println("BOOM! POW! CRASH!");
 			}
 			else
 			{
@@ -573,7 +573,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 
 
 /*
-	??? not done yet
+	[Wayside]
 */
 	public boolean isCrossing() {
 		
@@ -595,11 +595,19 @@ public Block(String[] splitStrings, Block lastCreated) {
 	}
 
 /*
-	??? not done yet.
+	[Internal]
 */
 	public boolean isStation() {
-		// TODO Auto-generated method stub
-		return false;
+
+		if(station.length()>0 && (toYard == false && fromYard == false))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
 	}
 
 													/*			TRAIN RELEVANT METHODS 			*/
@@ -650,7 +658,7 @@ public Block(String[] splitStrings, Block lastCreated) {
 		if(station.length()>0 && beaconCommanded)
 		{
 			beaconCommanded = false;
-			return station + "," + stationSide + "," + "90" + "," + "4";
+			return station + "," + stationSide + "," + "90" + "," + stationPeople;
 		}
 		else
 		{
@@ -749,6 +757,31 @@ public Block(String[] splitStrings, Block lastCreated) {
 	{
 		beaconCommanded = true;	
 	}
+
+	public String gui1()
+	{
+		int directional = direction;
+		if(direction == -1)
+			direction = 1;
+
+		String firstGui = "";
+		firstGui = firstGui + "Grade: " + grade + "\tElevation (cum): " + cumElevation + "\tLength: " + blockLength + "\tSpeed Limit: " + speedLimit + "\nDirection: " + direction;
+		
+		/*String stationString = "";
+		if(isStation())
+		{
+			stationString = "\tBeacon: " + station + "\t" + 
+
+						return station + "," + stationSide + "," + "90" + "," + "4";
+
+		}
+		firstGui= firstGui + "\nIs station: " + isStation() + "\t" ;*/
+
+// station string, is station? if yes, beacon, number of people 
+
+
+	}
+
 
 
 }

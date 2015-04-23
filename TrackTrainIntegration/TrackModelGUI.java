@@ -11,11 +11,15 @@ import java.awt.Font;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class TrackModelGUI {
 
 	private JFrame frame;
+	private Track theTrack;
+	private String[] blockNames;
+	private String[] switchNames;
 
 	/**
 	 * Launch the application.
@@ -28,6 +32,7 @@ public class TrackModelGUI {
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
+
 				}
 			}
 		});
@@ -37,13 +42,40 @@ public class TrackModelGUI {
 	 * Create the application.
 	 */
 	public TrackModelGUI() {
-		initialize();
+
+		//theTrack = trackIn;
+		//System.out.println(theTrack.getRoute("green","PIONEER"));
+
 	}
+
+	public void sendTrack(Track tracker)
+	{
+	
+
+	}
+
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	public void initialize(Track tracker) {
+
+
+		theTrack = tracker;
+	//	System.out.println(theTrack.getRoute("green","PIONEER"));
+
+
+		blockNames = theTrack.getGUIBlocks();
+		/*for(int i= 0;i<blockNames.length;i++)
+			System.out.println(blockNames[i]);
+		System.out.println(blockNames);
+*/
+
+		switchNames = theTrack.getGUISwitches();
+
+	
+		//System.out.println(new String[] {"Block 1", "Block 2", "Block 3", "Block 4"});
+
 		frame = new JFrame();
 		frame.setBounds(100, 100, 960, 619);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,13 +91,13 @@ public class TrackModelGUI {
 		lblTrainModel.setBounds(6, 6, 197, 32);
 		panel.add(lblTrainModel);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Block 1", "Block 2", "Block 3", "Block 4", "Block 5"}));
+		final JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(blockNames));
 		comboBox.setToolTipText("BLOCK");
 		comboBox.setBounds(133, 51, 197, 38);
 		panel.add(comboBox);
 		
-		JTextArea textArea = new JTextArea();
+		final JTextArea textArea = new JTextArea();
 		textArea.setBounds(6, 88, 484, 167);
 		panel.add(textArea);
 		
@@ -74,7 +106,7 @@ public class TrackModelGUI {
 		lblWeather.setBounds(542, 526, 79, 16);
 		panel.add(lblWeather);
 		
-		JTextArea textArea_1 = new JTextArea();
+		final JTextArea textArea_1 = new JTextArea();
 		textArea_1.setBounds(6, 467, 484, 95);
 		panel.add(textArea_1);
 		
@@ -83,8 +115,8 @@ public class TrackModelGUI {
 		lblSwitchInfo.setBounds(6, 435, 141, 20);
 		panel.add(lblSwitchInfo);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Switch 1", "Switch 2", "Switch 3", "Switch 4"}));
+		final JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setModel(new DefaultComboBoxModel(switchNames));
 		comboBox_1.setToolTipText("BLOCK");
 		comboBox_1.setBounds(145, 432, 197, 23);
 		panel.add(comboBox_1);
@@ -106,17 +138,71 @@ public class TrackModelGUI {
 		lblBlockInfo.setBounds(6, 52, 141, 27);
 		panel.add(lblBlockInfo);
 		
-		JTextArea textArea_2 = new JTextArea();
+		final JTextArea textArea_2 = new JTextArea();
 		textArea_2.setBounds(6, 267, 484, 153);
 		panel.add(textArea_2);
 		
-		JButton btnSubmit = new JButton("REFRESH");
+		/*JButton btnSubmit = new JButton("REFRESH");
 		btnSubmit.setBounds(750, 523, 178, 57);
-		panel.add(btnSubmit);
+		panel.add(btnSubmit); */
 		
 		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon("/Users/zachbarnes/Desktop/trackpic.png"));
+		lblNewLabel_1.setIcon(new ImageIcon("trackpic.png"));
 		lblNewLabel_1.setBounds(502, 6, 436, 508);
 		panel.add(lblNewLabel_1);
+
+		JButton btnSubmit = new JButton("REFRESH");
+		btnSubmit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
+
+
+				
+				System.out.println("REFRESSSSH");
+
+				String chosenBlock = (String) comboBox.getSelectedItem();
+				String chosenSwitch = (String) comboBox_1.getSelectedItem();
+
+				String[] blockParams = chosenBlock.split(" ");
+				Block block = theTrack.getBlock(Integer.parseInt(blockParams[2]), blockParams[0]);
+
+				Switch switcher = theTrack.getSwitch(chosenSwitch);
+
+
+
+/*
+Text area 1: 
+???railway crossings, track heaters, switches, beacons???
+*/
+
+
+// Grade, Elevation, Length, Speed lim, direction (1/2)
+// station string, is station? if yes, beacon, number of people 
+// is crossing?  if yes, is down? 
+
+
+				
+				textArea.setText("");
+				textArea.append(block.gui1());
+
+
+				textArea_2.setText("");
+				textArea_2.append(block.toString());
+
+
+				textArea_1.setText("");
+				textArea_1.append(switcher.toString());
+
+				//block information, 
+				
+			}
+		});
+		btnSubmit.setBounds(750, 523, 178, 57);
+		panel.add(btnSubmit);
+
+
+		frame.setVisible(true);
+
 	}
 }

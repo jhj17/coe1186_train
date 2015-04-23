@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 
-public class Switch implements SwitchInterface {
+public class Switch {
 
 
 	private ArrayList<Block> switchBlocks;
@@ -132,7 +132,6 @@ public class Switch implements SwitchInterface {
 		}
 	}
 
-	@Override
 	public void toggleSwitch() {
 		// TODO Auto-generated method stub
 		//System.out.println("Toggling " + switchNumber);
@@ -147,16 +146,11 @@ public class Switch implements SwitchInterface {
 		brokenSwitch = (!brokenSwitch);
 	}
 
-	@Override
 	public boolean isSwitchWorking() {
 		return brokenSwitch;
 	}
 
-	@Override
-	public boolean getSwitchPosition() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 	public String toString()
 	{
 		if(brokenSwitch)
@@ -164,4 +158,6 @@ public class Switch implements SwitchInterface {
 		else
 			return switchedBlock.getLine() + "\t" + switchNumber + "\t" + switchedBlock.getSection() + switchedBlock.getBlockNumber();
 	}
+
+
 }
