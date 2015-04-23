@@ -117,6 +117,7 @@ public class TrainController {
 			else
 				ts.shouldRightDoor = true;
 			tm.setStation(ts.stationName);
+			tm.updatePassengers(ts.pplAtStation);
 			communicateStationSignals();
 		}
 		return true;
@@ -130,7 +131,6 @@ public class TrainController {
 			ts.shouldLeftDoor = false;
 		else
 			ts.shouldRightDoor = false;
-		tm.updatePassengers(ts.pplAtStation);
 		communicateStationSignals();
 		ts.atStation = false;
 		return true;
