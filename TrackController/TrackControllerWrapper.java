@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
 
@@ -28,6 +29,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import javax.swing.JComboBox;
 
@@ -46,6 +48,7 @@ public class TrackControllerWrapper {
 	private JButton maintBlockButton;
 	private JButton switchButton;
 	private JButton railwayButton;
+	private JButton plcProgramLoadButton;
 	private JComboBox<Integer> tcComboBox;
 	private final DefaultListModel<String> blockModel = new DefaultListModel<String>();
 	private final DefaultListModel<String> railwayModel = new DefaultListModel<String>();
@@ -200,14 +203,9 @@ public class TrackControllerWrapper {
 	 */
 	private void updateListBoxes() {
 		// clear existing data in list boxes
-		try {
-			blockModel.clear();
-			railwayModel.clear();
-			switchModel.clear();
-		}
-		catch(Exception e) {
-			//e.printStackTrace();
-		}
+		blockModel.clear();
+		railwayModel.clear();
+		switchModel.clear();
 
 		try {
 			if(changeViewSlider.getValue() == 0) {
@@ -357,7 +355,7 @@ public class TrackControllerWrapper {
 	 */
 	private void initialize() {
 		frmTrackController = new JFrame();
-		frmTrackController.setIconImage(Toolkit.getDefaultToolkit().getImage(".\\train_pic.png"));
+		frmTrackController.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Jeff\\Documents\\College\\Senior Year\\COE 1186\\Train_Controller\\train_pic.png"));
 		frmTrackController.setTitle("The Little Engine That Code - Track Controller");
 		frmTrackController.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmTrackController.setPreferredSize(new Dimension(676, 630));
@@ -430,7 +428,7 @@ public class TrackControllerWrapper {
 		plcProgramBrowseButton.setBounds(444, 41, 89, 23);
 		panel.add(plcProgramBrowseButton);
 
-		final JButton plcProgramLoadButton = new JButton("Load");
+		plcProgramLoadButton = new JButton("Load");
 		plcProgramLoadButton.setBounds(540, 41, 89, 23);
 		plcProgramLoadButton.setEnabled(false);
 		panel.add(plcProgramLoadButton);
@@ -523,8 +521,8 @@ public class TrackControllerWrapper {
 		railwayLabel.setBounds(366, 92, 146, 14);
 		panel.add(railwayLabel);
 
-		JLabel lblBlockStatus = new JLabel("Block              Status");
-		lblBlockStatus.setBounds(360, 124, 170, 14);
+		JLabel lblBlockStatus = new JLabel("Line             Section             Block ");
+		lblBlockStatus.setBounds(363, 124, 232, 14);
 		panel.add(lblBlockStatus);
 
 		JScrollPane scrollPane2 = new JScrollPane();
@@ -1087,8 +1085,6 @@ public class TrackControllerWrapper {
 				returnStatus = RAILWAY_BROKEN;
 			}
 		}
-		
-		updateListBoxes();
 		
 		return returnStatus;
 	}
