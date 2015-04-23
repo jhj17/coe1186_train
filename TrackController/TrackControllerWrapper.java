@@ -479,6 +479,7 @@ public class TrackControllerWrapper {
 		scrollPane.setBounds(10, 149, 340, 335);
 		panel.add(scrollPane);
 
+		blockModel.addElement("0");
 		blocksListbox = new JList<String>(blockModel);
 		scrollPane.setViewportView(blocksListbox);
 		blocksListbox.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -529,6 +530,7 @@ public class TrackControllerWrapper {
 		scrollPane2.setBounds(366, 370, 229, 114);
 		panel.add(scrollPane2);
 
+		switchModel.addElement("0");
 		switchListbox = new JList<String>(switchModel);
 		scrollPane2.setViewportView(switchListbox);
 		switchListbox.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -567,6 +569,7 @@ public class TrackControllerWrapper {
 		scrollPane1.setBounds(366, 149, 229, 119);
 		panel.add(scrollPane1);
 
+		railwayModel.addElement("0");
 		railwayListbox = new JList<String>(railwayModel);
 		scrollPane1.setViewportView(railwayListbox);
 		railwayListbox.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
