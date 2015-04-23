@@ -1,21 +1,25 @@
 /**
-* MBO.java
+* MBOController.java
 *
 * @author John Abraham
 *
 */
 
-//BRAKEACC = -1.2; m/s^2
-//EBRAKEACC = -2.73; m/s^2
-//d = (v^2)/(2ug)
-
+/**
+* Router theTrains = new Router();
+* BRAKEACC = -1.2; m/s^2
+* EBRAKEACC = -2.73; m/s^2
+* d = (v^2)/(2ug)
+*/
 public class MBOController{
 
 	private boolean mboMode;
 
 	/*
-	* Calculates the safe speed based on a given train and next train's locations. 
+	* Calculates speed based on a given train's position and the time it needs
+	* to get to a station on the schedule.
 	* Get train location from TrainModel objects container using trainID.
+	* This method is called by the train model.
 	*/
 	public double getSpeed(int trainID) {
 		if(!mboMode)
