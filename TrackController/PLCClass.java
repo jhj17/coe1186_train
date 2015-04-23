@@ -216,7 +216,7 @@ public class PLCClass {
 			context.set("b1_occupied", prevBlock.isBlockOccupied());
 			context.set("b2_occupied", desiredBlock.isBlockOccupied());
 			
-			//context.set("crossing_broken", desiredBlock.getCrossing().isBroken());
+			context.set("crossing_broken", desiredBlock.getCrossing().isBroken());
 
 			// evaluate expression with variables 
 			// all evaluations must be true for it to verify the crossing

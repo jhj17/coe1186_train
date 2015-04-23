@@ -69,8 +69,10 @@ public class TrackControllerWrapper {
 	private final int greenTc4Blocks[] = {128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,
 			148,149,150,27,28,29,30};
 
-	private final int redTc1Blocks[] = {1};
-	private final int redTc2Blocks[] = {2};
+	private final int redTc1Blocks[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,
+			31,32,33,34,35,36,74,75,76,77,78,79,80,81};
+	private final int redTc2Blocks[] = {32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,
+			61,62,63,64,65,66,67,68,69,70,71,72,73,74,75};
 
 	public boolean plcLoaded = true;
 
@@ -169,7 +171,7 @@ public class TrackControllerWrapper {
 	private void updateListBoxes() {
 		// clear existing data in list boxes
 		blockModel.clear();
-		//railwayModel.clear();
+		railwayModel.clear();
 		switchModel.clear();
 
 		try {
@@ -182,10 +184,17 @@ public class TrackControllerWrapper {
 
 						for(int id : redTc1Blocks) {
 							// Add block to list box
-							//blockModel.addElement(Integer.toString(id));
+							Block block = track.getBlock(id, "red");
 							blockModel.addElement(track.getBlock(id, "red").toString());
 
-							// TODO: check if block contains railway and/or switch to add to respective list box
+							// check if block contains railway and/or switch to add to respective list box
+							if(block.isSwitch()) {
+								switchModel.addElement(block.getSwitch().toString());
+							}
+
+							if(block.isCrossing()) {
+								railwayModel.addElement(block.getCrossing().toString());
+							}
 						}
 					}
 					else if(tcComboBox.getSelectedIndex() == 1) {
@@ -194,9 +203,17 @@ public class TrackControllerWrapper {
 
 						for(int id : redTc2Blocks) {
 							// Add block to list box
+							Block block = track.getBlock(id, "red");
 							blockModel.addElement(track.getBlock(id, "red").toString());
 
-							// TODO: check if block contains railway and/or switch to add to respective list box
+							// check if block contains railway and/or switch to add to respective list box
+							if(block.isSwitch()) {
+								switchModel.addElement(block.getSwitch().toString());
+							}
+
+							if(block.isCrossing()) {
+								railwayModel.addElement(block.getCrossing().toString());
+							}
 						}
 					}
 				}
@@ -219,7 +236,7 @@ public class TrackControllerWrapper {
 							}
 
 							if(block.isCrossing()) {
-								//railwayModel.addElement(block.getCrossing().toString());
+								railwayModel.addElement(block.getCrossing().toString());
 							}
 						}
 					}
@@ -229,9 +246,17 @@ public class TrackControllerWrapper {
 
 						for(int id : greenTc2Blocks) {
 							// Add block to list box
+							Block block = track.getBlock(id, "green");
 							blockModel.addElement(track.getBlock(id, "green").toString());
 
-							// TODO: check if block contains railway and/or switch to add to respective list box
+							// check if block contains railway and/or switch to add to respective list box
+							if(block.isSwitch()) {
+								switchModel.addElement(block.getSwitch().toString());
+							}
+
+							if(block.isCrossing()) {
+								railwayModel.addElement(block.getCrossing().toString());
+							}
 						}
 					}
 					else if(tcComboBox.getSelectedIndex() == 2) {
@@ -240,9 +265,17 @@ public class TrackControllerWrapper {
 
 						for(int id : greenTc3Blocks) {
 							// Add block to list box
+							Block block = track.getBlock(id, "green");
 							blockModel.addElement(track.getBlock(id, "green").toString());
 
-							// TODO: check if block contains railway and/or switch to add to respective list box
+							// check if block contains railway and/or switch to add to respective list box
+							if(block.isSwitch()) {
+								switchModel.addElement(block.getSwitch().toString());
+							}
+
+							if(block.isCrossing()) {
+								railwayModel.addElement(block.getCrossing().toString());
+							}
 						}					
 					}
 					else if(tcComboBox.getSelectedIndex() == 3) {
@@ -251,9 +284,17 @@ public class TrackControllerWrapper {
 
 						for(int id : greenTc4Blocks) {
 							// Add block to list box
+							Block block = track.getBlock(id, "green");
 							blockModel.addElement(track.getBlock(id, "green").toString());
 
-							// TODO: check if block contains railway and/or switch to add to respective list box
+							// check if block contains railway and/or switch to add to respective list box
+							if(block.isSwitch()) {
+								switchModel.addElement(block.getSwitch().toString());
+							}
+
+							if(block.isCrossing()) {
+								railwayModel.addElement(block.getCrossing().toString());
+							}
 						}
 					}
 				}
@@ -578,9 +619,12 @@ public class TrackControllerWrapper {
 				
 				// TODO: Check for railway crossing on 3rd block ahead
 				if(destBlock.traverse().isCrossing()) {
-					returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
-					if(returnResult) {
-						//destBlock.traverse().getCrossing().toggleCrossing();
+					// Only toggle the crossing if the bar is up for this track
+					if(destBlock.traverse().getCrossing().getCrossingState("red")) { 
+						returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+						if(returnResult) {
+							destBlock.traverse().getCrossing().toggleCrossing();
+						}
 					}
 				}
 				
@@ -605,19 +649,27 @@ public class TrackControllerWrapper {
 							
 							// TODO: Check for railway crossing on 3rd block ahead
 							if(destBlock.traverse().isCrossing()) {
-								returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
-								if(returnResult) {
-									// set crossing occurrence
-									//destBlock.traverse().getCrossing().toggleCrossing();
-									
-									// send block suggested speed and authority
-									track.commandAuthority("red", suggestedAuthority, currentBlock);
-									track.commandSpeed("red", suggestedSpeed, currentBlock);
+								// Only toggle the crossing if the bar is up for this track
+								if(destBlock.traverse().getCrossing().getCrossingState("red")) { 
+									returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+									if(returnResult) {
+										// set crossing occurrence
+										destBlock.traverse().getCrossing().toggleCrossing();
+										
+										// send block suggested speed and authority
+										track.commandAuthority("red", suggestedAuthority, currentBlock);
+										track.commandSpeed("red", suggestedSpeed, currentBlock);
+									}
+									else {
+										// send block suggested speed and authority
+										track.commandAuthority("red", 70, currentBlock);
+										track.commandSpeed("red", 0, currentBlock);
+									}
 								}
 								else {
 									// send block suggested speed and authority
-									track.commandAuthority("red", 70, currentBlock);
-									track.commandSpeed("red", 0, currentBlock);
+									track.commandAuthority("red", suggestedAuthority, currentBlock);
+									track.commandSpeed("red", suggestedSpeed, currentBlock);
 								}
 							}
 							else {
@@ -635,19 +687,26 @@ public class TrackControllerWrapper {
 					else {
 						// TODO: Check for railway crossing on 3rd block ahead
 						if(destBlock.traverse().isCrossing()) {
-							returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
-							if(returnResult) {
-								// set crossing occurrence
-								//destBlock.traverse().getCrossing().toggleCrossing();
-								
-								// send block suggested speed and authority
-								track.commandAuthority("red", suggestedAuthority, currentBlock);
-								track.commandSpeed("red", suggestedSpeed, currentBlock);
+							if(destBlock.traverse().getCrossing().getCrossingState("red")) { 
+								returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+								if(returnResult) {
+									// set crossing occurrence
+									destBlock.traverse().getCrossing().toggleCrossing();
+									
+									// send block suggested speed and authority
+									track.commandAuthority("red", suggestedAuthority, currentBlock);
+									track.commandSpeed("red", suggestedSpeed, currentBlock);
+								}
+								else {
+									// send block suggested speed and authority
+									track.commandAuthority("red", 70, currentBlock);
+									track.commandSpeed("red", 0, currentBlock);
+								}
 							}
 							else {
 								// send block suggested speed and authority
-								track.commandAuthority("red", 70, currentBlock);
-								track.commandSpeed("red", 0, currentBlock);
+								track.commandAuthority("red", suggestedAuthority, currentBlock);
+								track.commandSpeed("red", suggestedSpeed, currentBlock);
 							}
 						}
 						else {
@@ -711,6 +770,15 @@ public class TrackControllerWrapper {
 				}
 				
 				// TODO: Check for railway crossing
+				if(destBlock.traverse().isCrossing()) {
+					// Only toggle the crossing if the bar is up for this track
+					if(destBlock.traverse().getCrossing().getCrossingState("green")) { 
+						returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+						if(returnResult) {
+							destBlock.traverse().getCrossing().toggleCrossing();
+						}
+					}
+				}
 				
 				// send block suggested speed and authority - ignore
 				track.commandAuthority("green", suggestedAuthority, currentBlock);
@@ -730,6 +798,37 @@ public class TrackControllerWrapper {
 								// need to toggle switch
 								nxtBlock.toggleSwitch();
 							}
+							
+							// TODO: Check for railway crossing on 3rd block ahead
+							if(destBlock.traverse().isCrossing()) {
+								// Only toggle the crossing if the bar is up for this track
+								if(destBlock.traverse().getCrossing().getCrossingState("green")) { 
+									returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+									if(returnResult) {
+										// set crossing occurrence
+										destBlock.traverse().getCrossing().toggleCrossing();
+										
+										// send block suggested speed and authority
+										track.commandAuthority("green", suggestedAuthority, currentBlock);
+										track.commandSpeed("green", suggestedSpeed, currentBlock);
+									}
+									else {
+										// send block suggested speed and authority
+										track.commandAuthority("green", 70, currentBlock);
+										track.commandSpeed("green", 0, currentBlock);
+									}
+								}
+								else {
+									// send block suggested speed and authority
+									track.commandAuthority("green", suggestedAuthority, currentBlock);
+									track.commandSpeed("green", suggestedSpeed, currentBlock);
+								}
+							}
+							else {
+								// send block suggested speed and authority
+								track.commandAuthority("green", suggestedAuthority, currentBlock);
+								track.commandSpeed("green", suggestedSpeed, currentBlock);
+							}
 	
 							// send block suggested speed and authority
 							track.commandAuthority("green", suggestedAuthority, currentBlock);
@@ -742,11 +841,36 @@ public class TrackControllerWrapper {
 						}
 					}
 					else {
-						// next block is not a switch so just pass suggested speed and authority
-						track.commandAuthority("green", suggestedAuthority, currentBlock);
-						track.commandSpeed("green", suggestedSpeed, currentBlock);
+						// TODO: Check for railway crossing on 3rd block ahead
+						if(destBlock.traverse().isCrossing()) {
+							if(destBlock.traverse().getCrossing().getCrossingState("green")) { 
+								returnResult = trackController.plc.verifyRailwayCrossing(destBlock, destBlock.traverse());
+								if(returnResult) {
+									// set crossing occurrence
+									destBlock.traverse().getCrossing().toggleCrossing();
+									
+									// send block suggested speed and authority
+									track.commandAuthority("green", suggestedAuthority, currentBlock);
+									track.commandSpeed("green", suggestedSpeed, currentBlock);
+								}
+								else {
+									// send block suggested speed and authority
+									track.commandAuthority("green", 70, currentBlock);
+									track.commandSpeed("green", 0, currentBlock);
+								}
+							}
+							else {
+								// send block suggested speed and authority
+								track.commandAuthority("green", suggestedAuthority, currentBlock);
+								track.commandSpeed("green", suggestedSpeed, currentBlock);
+							}
+						}
+						else {
+							// send block suggested speed and authority
+							track.commandAuthority("green", suggestedAuthority, currentBlock);
+							track.commandSpeed("green", suggestedSpeed, currentBlock);
+						}
 					}
-	
 				}
 				else {
 					// send block speed and authority of 0
@@ -862,7 +986,7 @@ public class TrackControllerWrapper {
 	 * @return
 	 */
 	public boolean showBeacon(String line, int blockID) {
-		//track.showBeacon(blockID, line);
+		track.showBeacon(blockID, line);
 
 		return true;
 	}
@@ -881,10 +1005,11 @@ public class TrackControllerWrapper {
 			returnStatus = BLOCK_OCCUPIED;
 
 			// Toggle signal on the track block
-			//requestedBlock.toggleRedGreen(false);
+			requestedBlock.toggleRedGreen(false);
 		}
 		else {
-			//requestedBlock.toggleRedGreen(true);
+			// Show green signal to denote open block
+			requestedBlock.toggleRedGreen(true);
 		}
 		
 		if(requestedBlock.isBroken()) {
@@ -893,9 +1018,9 @@ public class TrackControllerWrapper {
 		else if(requestedBlock.isClosed()) {
 			returnStatus = BLOCK_MAINT;
 		}
-		//else if(requestedBlock.isSignalWorking()) {
-		//returnStatus = SIGNAL_BROKEN;
-		//}
+		else if(requestedBlock.isSignalWorking()) {
+			returnStatus = SIGNAL_BROKEN;
+		}
 		
 		if(requestedBlock.isSwitch()) {
 			if(requestedBlock.getSwitch().isSwitchWorking()) {
@@ -904,9 +1029,9 @@ public class TrackControllerWrapper {
 		}
 		
 		if(requestedBlock.isCrossing()) {
-			//else if(requestedBlock.getCrossing().isCrossingWorking()) {
-			//returnStatus = RAILWAY_BROKEN;
-			//}
+			if(requestedBlock.getCrossing().isBroken()) {
+				returnStatus = RAILWAY_BROKEN;
+			}
 		}
 		
 		return returnStatus;
@@ -929,7 +1054,7 @@ public class TrackControllerWrapper {
 				selectedBlock = redTc2Blocks[blocksListbox.getSelectedIndex()];
 			}
 
-			//track.breakBlock("red", selectedBlock);
+			track.breakBlock("red", selectedBlock);
 		}
 		else {
 			// Viewing Green Line
@@ -947,8 +1072,11 @@ public class TrackControllerWrapper {
 				selectedBlock = greenTc4Blocks[blocksListbox.getSelectedIndex()];
 			}
 
-			//track.breakBlock("green", selectedBlock);
+			track.breakBlock("green", selectedBlock);
 		}
+		
+		// Update list boxes to show changes
+		updateListBoxes();
 	}
 
 	/**
@@ -997,6 +1125,9 @@ public class TrackControllerWrapper {
 		else {
 			targetBlock.closeBlock();
 		}
+		
+		// Update list boxes to show changes
+		updateListBoxes();
 	}
 
 	/**
@@ -1040,6 +1171,9 @@ public class TrackControllerWrapper {
 
 		// Toggle the state of the switch
 		targetBlock.toggleSwitch();
+		
+		// Update list boxes to show changes
+		updateListBoxes();
 	}
 
 	/**
@@ -1081,8 +1215,12 @@ public class TrackControllerWrapper {
 			targetBlock = track.getBlock(selectedBlock, "green");
 		}
 
+		System.out.println(targetBlock.getBlockNumber());
+		
 		// Depending on the state of the crossing, activate/deactivate it
-		// TODO: Function to toggle railway crossing state
-		//targetBlock.getCrossing().toggleCrossing();
+		targetBlock.getCrossing().toggleCrossing();
+		
+		// Update list boxes to show changes
+		updateListBoxes();
 	}	
 }
