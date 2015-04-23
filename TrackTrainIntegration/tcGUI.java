@@ -43,6 +43,11 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
 import java.text.DecimalFormat;
+import java.awt.Toolkit;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class tcGUI {
 
@@ -430,6 +435,7 @@ public class tcGUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("/Users/zachbarnes/Desktop/coe1186_train/TrackTrainIntegration/train_pic.png"));
 		frame.setBounds(100, 100, 792, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -556,6 +562,11 @@ public class tcGUI {
 		panel_1.add(lblAnnouncements);
 		
 		btnHorn = new JButton("HORN!!!!!");
+		btnHorn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		btnHorn.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 15));
 		btnHorn.setBounds(249, 63, 245, 46);
 		panel_1.add(btnHorn);

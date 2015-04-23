@@ -28,6 +28,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.Panel;
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 public class TrainModelGUI 
@@ -285,12 +287,30 @@ public class TrainModelGUI
 		lblMode.setBounds(626, 282, 101, 16);
 		
 		JToggleButton tglbtnEngineFailure = new JToggleButton("Engine Failure");
+		tglbtnEngineFailure.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				engineFailure = !engineFailure;
+				System.out.println("ENGINE " + engineFailure);
+			}
+		});
 		tglbtnEngineFailure.setBounds(574, 85, 189, 41);
 		
 		JToggleButton tglbtnSignalPickupFailure = new JToggleButton("Signal Pickup Failure");
+		tglbtnSignalPickupFailure.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				signalFailure = !signalFailure;
+				System.out.println("SIGNAL " + signalFailure);
+			}
+		});
 		tglbtnSignalPickupFailure.setBounds(574, 128, 189, 41);
 		
 		JToggleButton tglbtnBrakeFailure = new JToggleButton("Brake Failure");
+		tglbtnBrakeFailure.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				brakeFailure = !brakeFailure;
+				System.out.println("BRAKE " + brakeFailure);
+			}
+		});
 		tglbtnBrakeFailure.setBounds(574, 173, 189, 41);
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(lblCars);
