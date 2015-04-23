@@ -430,13 +430,19 @@ public Block(String[] splitStrings, Block lastCreated) {
 			newDist = newDist - blockLength;
 			//((Block) this.getNext()).placeTrain(trainID, newDist); <----------- traversal move 
 			currentBlock = this.traverseTrain(trainID); 
-			if(temp == currentBlock) //THIS IS THE JOB OF THE WAYSIDE... DO NOT ACTUALLY IMPLEMENT
+			/*if(temp == currentBlock) //THIS IS THE JOB OF THE WAYSIDE... DO NOT ACTUALLY IMPLEMENT
 			{
 				currentBlock.toggleSwitch();
 				currentBlock = currentBlock.traverseTrain(trainID);
-				System.out.println("toggle");
+			}*/
+			if(temp==currentblock)
+			{
+				System.out.println("BOOM! POW! CRASH!")
 			}
-			currentBlock =currentBlock.placeTrain(trainID,newDist);
+			else
+			{
+				currentBlock = currentBlock.placeTrain(trainID,newDist);
+			}
 			//trainID = 0;
 		}
 		else
