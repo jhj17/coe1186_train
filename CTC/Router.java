@@ -8,6 +8,7 @@ public class Router
 	private ArrayList<String> blockInfo, blockIDs =  new ArrayList<String>(), theAuthorities = new ArrayList<String>();
 	private ArrayList<String> theSpeeds = new ArrayList<String>(), sectionIDs =  new ArrayList<String>();
 	public ArrayList<Train> theTrains = new ArrayList<Train>();
+	private ArrayList<String> proceedMsgs = new ArrayList<String>();
 	private String line;
 	private double authority;
 	private String train;
@@ -90,9 +91,43 @@ public class Router
 			{
 				//int blockInt = Integer.parseInt(blockIDs.get(i));
 					String msg = createProceedMsgFB(line, i1);
-					tcw.newProceedMsg(msg);
-					System.out.println("From CTC: " + msg);
+					proceedMsgs.add(msg);
+					
 			}*/
+			/*while(i < proceedMsgs.size())
+			{
+					
+					int blockInt = Integer.parseInt(blockIDs.get(i));
+					if(i == 0)
+					{
+						tcw.newProceedMsg(proceedMsgs.get(i));
+						i++;
+					}
+					else if(tcw.getBlockStatus(line, blockInt) == 1)
+					{
+						tcw.newProceedMsg(proceedMsgs.get(i));
+						i++;
+					}
+					else if(tcw.getBlockStatus(line, blockInt) != 1)
+					{
+						i++;
+					}
+					else
+						continue;
+			}*/
+			/*for(int i = 0; i < proceedMsgs.size(); i++) {
+				tcw.newProceedMsg(proceedMsgs.get(i));
+				System.out.println("From CTC: " + proceedMsgs.get(i));
+				while (tcw.getBlockStatus("green", Integer.parseInt(blockIDs.get(i))) != 1) {
+					if ((i+1) < proceedMsgs.size() && tcw.getBlockStatus("green",  Integer.parseInt(blockIDs.get(i))) == 1 ) 
+					{
+						i++;
+						break;
+					}
+					// track is not on next block
+					//Thread.sleep(50);
+				}
+			}*/		
 		}
 		else if(isMBO == true)
 		{
