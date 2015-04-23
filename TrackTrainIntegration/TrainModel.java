@@ -26,6 +26,7 @@ public class TrainModel implements TrainModelInterface
 	private double time = 0; //In seconds.
 	private double power = 0; //In Watts.
 	private double distance = 0; //In meters.
+	private double checkpoint = 0;
 	private double speed = 0; //In meters per second.
 	private double acceleration = 0; //In meters per second per second.
 	private double temperature = 69; //In fahrenheit.
@@ -83,6 +84,7 @@ public class TrainModel implements TrainModelInterface
 		DTV = new DynamicTrainValues(0,0,0,0,0,temperature);
 		TD = new TrainData(DTV, ID, mass, numPassengers, lastStop, 0, 0, commandedTemperature, leftDoor, rightDoor, lights);
 		gui.updateGUI(TD);
+		mass = EMPTYMASS + (numCrew * PERSONMASS);
 	}
 
 	public DynamicTrainValues updateSamples(double power)
@@ -96,8 +98,9 @@ public class TrainModel implements TrainModelInterface
 		
 		Block curBlock = track.getBlock(ID);
 		
-		while(curBlock == null){
-			for(Block blocksWTrains: track.trainBlocks)
+		while(curBlock == null)
+		{
+			for(Block blocksWTrains : track.trainBlocks)
 				System.out.println(blocksWTrains);
 			curBlock = track.getBlock(ID);
 			break;
@@ -108,19 +111,44 @@ public class TrainModel implements TrainModelInterface
 		commandedSpeed = curBlock.getTrainCommandedSpeed();
 		authority = curBlock.getTrainAuthority();
 
+		byte failures = gui.getFailures();
+		controller.passFailure(failures);
+
+		engineFailure = false;
+		signalFailure = false;
+		brakeFailure = false;
+
+		if ((failures & 0x01) > 0)
+		{
+			engineFailure = true;
+		}
+
+		if ((failures & 0x02) > 0)
+		{
+			signalFailure = true;
+		}
+
+		if ((failures & 0x04) > 0)
+		{
+			brakeFailure = true;
+		}
 
 		// mboSpeed = mbo.getSpeed(ID);
 		// mboAuthority = mbo.getAuthority(ID);
 
-		// if (mboSpeed > 0)
-		// {
-		// 	commandedSpeed = mboSpeed;
-		// }
+		//	if (mboSpeed > 0)
+		//	{
+		// 		commandedSpeed = mboSpeed;
+		//		if (signalFailure)
+		//			commandedSpeed = -1;
+		// 	}
 
-		// if (mboAuthority > 0)
-		// {
-		// 	authority = mboAuthority;
-		// }
+		// 	if (mboAuthority > 0)
+		// 	{
+		// 		authority = mboAuthority;
+		//		if (signalFailure)
+		//			authority = -1;
+		// 	}
 		
 		String beacon = curBlock.getBeacon();
 		if (!beacon.isEmpty())
@@ -162,17 +190,18 @@ public class TrainModel implements TrainModelInterface
 		if (eBrake)
 		{
 			acceleration = EBRAKEACC;
+
 		}
 		else if (brake)
 		{
 			acceleration = BRAKEACC;
 		}
 
-		double oldSpeed = speed;
-
-		// vf = vi + at;
-		speed += acceleration*deltaT;
-
+		if (brakeFailure)
+		{
+			eBrake = false;
+			brake = false;
+		}
 		
 		// If the brakes are on, the train stops at 0
 		if ((brake || eBrake) && (speed < 0.05))
@@ -186,37 +215,27 @@ public class TrainModel implements TrainModelInterface
 			//frictionForce = curBlock.getFrictionCoefficient() * mass * GRAVITY * Math.cos(theta);
 			frictionForce = ROLLINGCOEFFICIENT * mass * GRAVITY * Math.cos(theta);
 			gravityForce = mass * GRAVITY * Math.sin(theta);
-
 			engineForce = power / Math.max(speed, 1);
 			
 			double totalForce = engineForce + gravityForce + frictionForce;
 			
-			// Engine overcomes gravity and friction
-			if (totalForce > 0)
-			{
-				acceleration = totalForce / mass;
-			}
-			// Engine overcomes gravity, but not friction
-			else if (engineForce > Math.abs(gravityForce))
-			{
-				acceleration = totalForce / mass;
-			}
-			// Gravity overcomes both engine and friction and slides backwards
-			else if (Math.abs((engineForce - gravityForce)) > Math.abs(frictionForce))
-			{
-				acceleration = totalForce / mass;
-			}
-			else
-			{
-				acceleration = 0;
-			}
+			//if (totalForce > 0)
+			//{
+			acceleration = totalForce / mass;
+			//}
+			//else
+			//{
+			//	acceleration = 0;
+			//}
 		}
+
+		// vf = vi + at;
+		speed += acceleration*deltaT;
 		
 		double distChange = (speed * deltaT) + ( (1.0/2.0)*(acceleration)*(deltaT * deltaT));
 		distance += distChange;
 
 		// Update temperature;
-
 		if (commandedTemperature > temperature)
 		{
 		temperature += (0.005 * deltaT);
@@ -229,7 +248,7 @@ public class TrainModel implements TrainModelInterface
 
 		if ((commandedTemperature - temperature) > -0.01 && (commandedTemperature - temperature) < 0.01)
 		{
-		temperature = commandedTemperature;
+			temperature = commandedTemperature;
 		}
 
 		track.updateDistance(ID, distChange);
@@ -291,8 +310,10 @@ public class TrainModel implements TrainModelInterface
 		return rightDoor;
 	}
 
-	public boolean setStation(String stationName){
+	public boolean setStation(String stationName)
+	{
 		lastStop = stationName;
+		checkpoint = distance;
 		return true;
 	}
 
@@ -311,13 +332,13 @@ public class TrainModel implements TrainModelInterface
 		if (emptySpots > numBoarding)
 		{
 			numPassengers += numBoarding;
-			mass = EMPTYMASS + (PERSONMASS * numPassengers);
+			mass = EMPTYMASS + (PERSONMASS * numPassengers) + (PERSONMASS * numCrew);
 			return numBoarding;
 		}
 		else
 		{
 			numPassengers += emptySpots;
-			mass = EMPTYMASS * (PERSONMASS * numPassengers);
+			mass = EMPTYMASS * (PERSONMASS * numPassengers) + (PERSONMASS * numCrew);
 			return emptySpots;
 		}
 	}
@@ -325,7 +346,7 @@ public class TrainModel implements TrainModelInterface
 	// Getters
 	public Position getPosition()
 	{
-		return new Position(distance, lastStop);
+		return new Position(distance-checkpoint, lastStop);
 	}
 
 	public int getNumPassengers()
