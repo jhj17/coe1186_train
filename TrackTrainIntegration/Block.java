@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Block {
@@ -21,50 +22,28 @@ public class Block {
 	private String switchType;
 	private String stationSide;
 	private int stationPeople = 0;
-//
 	private boolean toYard = false;
 	private boolean fromYard = false;
 	private Block next;
 	private Block previous;
 	private int seen = 0;
-//
 	private Switch switcher = null;
-
-	String stationName;
+	private String stationName;
 	private double friction = 0.001;
-
 
 	//..User configurable attributes..
 	private boolean brokenBlock = false;
 	private boolean closedBlock = false;
-	private boolean signalWorking = true;
-
-	//boolean brokenCircuit;
-	
-	//Usage attributes
-	
-	
-//	..Usage attributes..
+	private boolean signalWorking = true;		
 	private Crossing railroadCrossing= null;
 	private int trainID = 0;
 	private boolean blockOccupied = false;
-
 	private boolean lightsGreenTrueRedFalse;
 	private boolean beaconCommanded = false;
-
 	private double commandedAuthority = 0;
 	private double commandedSpeed = 0;
-	double distanceTraveled = 0;
+	private double distanceTraveled = 0;
 
-/*
-	
-	
-	
-	Crossing crossing = null;
-	Station station = null; 
-	
-	
-	*/
 	
 public Block(String[] splitStrings, Block lastCreated) {
 		// TODO Auto-generated constructor stub
@@ -131,7 +110,12 @@ public Block(String[] splitStrings, Block lastCreated) {
 			previous.setNext(this);
 	}
 
+	if(isStation())
+	{
 
+		Random pls = new Random();
+		stationPeople = pls.nextInt(50);
+	}
 
 }
 
@@ -160,6 +144,13 @@ public Block(String[] splitStrings, Block lastCreated) {
 		switcher = aSwitch;
 	}
 	//complete
+
+
+	public int getStationPeople()  
+	{
+		return stationPeople;
+	}
+
 
 /*
 	[Internal, Wayside]
@@ -596,11 +587,19 @@ public Block(String[] splitStrings, Block lastCreated) {
 	}
 
 /*
-	??? not done yet.
+	[Internal]
 */
 	public boolean isStation() {
 		// TODO Auto-generated method stub
-		return false;
+		
+		if(station.length()>0 && (!toYard||!fromYard))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 													/*			TRAIN RELEVANT METHODS 			*/

@@ -1,6 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.Random;
 
 public class TrackDriver {
 
@@ -24,6 +24,12 @@ public class TrackDriver {
 		System.out.println(get1.getCrossing());
 		get1.getCrossing().toggleCrossing();
 		System.out.println(get2.getCrossing());
+
+		Random pls = new Random();
+		System.out.println(pls.nextInt(50));
+		System.out.println(pls.nextInt(50));
+
+
 
 //TEST CROSSING 
 
