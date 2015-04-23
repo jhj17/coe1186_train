@@ -13,14 +13,19 @@ public class TrackDriver {
 		
 		Track trackTester = new Track();
 		
+		Block get1 = trackTester.getBlock(19, "green");
+		System.out.println(get1);
+		System.out.println(get1.isCrossing());
+
+		Block get2 = trackTester.getBlock(47, "red");
+		System.out.println(get2);
+		System.out.println(get2.isCrossing());
+
+
 //TEST CROSSING 
-		
 
 
-
-
-
-
+		//E18
 
 
 

@@ -44,7 +44,7 @@ public class Block {
 	
 	
 //	..Usage attributes..
-
+	private Crossing railroadCrossing= null;
 	private int trainID = 0;
 	private boolean blockOccupied = false;
 
@@ -582,10 +582,11 @@ public Block(String[] splitStrings, Block lastCreated) {
 	}
 
 /*
-	??? not done yet
+	[Wayside]
 */
-	public boolean getCrossing() {
-		return false;
+	public Crossing getCrossing() {
+
+		return railroadCrossing;
 	}
 
 /*
@@ -738,11 +739,8 @@ public Block(String[] splitStrings, Block lastCreated) {
 		closedBlock = false;
 	}
 
-
 	public void setBeaconOn()
 	{
 		beaconCommanded = true;	
 	}
-
-
 }
