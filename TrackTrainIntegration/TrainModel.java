@@ -4,22 +4,6 @@ import java.lang.Thread;
 
 public class TrainModel implements TrainModelInterface
 {
-	//public enum TrainModelFailures
-	//{
-	//	ENGINE,
-	//	BRAKE,
-	//	SIGNAL;
-
-	//	public static final EnumSet<TrainModelFailures> TOTAL_FAILURE = EnumSet.allOf(TrainModelFailures.class);
-	//}
-
-	//public enum DoorStatus
-	//{
-	//	LEFT,
-	//	RIGHT;
-
-	//	public static final EnumSet<DoorStatus> BOTHDOORS = EnumSet.allOf(DoorStatus.class);
-	//}
 
 	//Constants
 	private final double EMPTYMASS = 36378.1; // kg
@@ -305,6 +289,11 @@ public class TrainModel implements TrainModelInterface
 	{
 		rightDoor = rightStatus;
 		return rightDoor;
+	}
+
+	public boolean setStation(String stationName){
+		lastStop = stationName;
+		return true;
 	}
 
 	// Update the number of passengers on the train
