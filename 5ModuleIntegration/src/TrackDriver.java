@@ -14,8 +14,23 @@ public class TrackDriver {
 		//Load track 
 		Track trackTester = new Track();
 
-		System.out.println("help");
-		Block get1 = trackTester.getBlock(19, "green");
+//SUB-SYSTEM DEMONSTRATION
+		//Run this-- loads track 
+		// 
+		//move 
+
+
+
+
+
+
+
+
+
+
+
+
+		/*Block get1 = trackTester.getBlock(19, "green");
 		Block get2 = trackTester.getBlock(47, "red");
 
 
@@ -28,7 +43,7 @@ public class TrackDriver {
 		System.out.println(trackTester.getBlock(1).gui1());
 
 		
-
+*/
 
 /*
 		//Broken Rail

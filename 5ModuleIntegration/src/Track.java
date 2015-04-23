@@ -17,6 +17,7 @@ public class Track {
 
 	private double coeffFriction;
 	private int weather;
+	private boolean powerFailure;
 
 	public Track() throws IOException
 	{
@@ -483,6 +484,11 @@ public String[] getGUIBlocks()
 
 	}
 
+	public void setPowerFailure()
+	{
+		powerFailure = true;
+		System.out.println("SYSTEM POWER FAILURE");
 
+	}
 
 }

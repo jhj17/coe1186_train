@@ -46,6 +46,7 @@ public class Block {
 	private double commandedAuthority = -1;
 	private double commandedSpeed = 0;
 	private double distanceTraveled = 0;
+	private boolean trackHeater = false;
 
 	
 public Block(String[] splitStrings, Block lastCreated) {
@@ -573,6 +574,11 @@ public String toString()
 	public void setFriction(double frictionIn)
 	{
 		friction = frictionIn;
+		if(friction == 0.0002)
+		{
+			trackHeater = true;
+		}
+		friction = 0.001;
 	}
 
 
